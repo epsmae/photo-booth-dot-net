@@ -30,19 +30,77 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
+        public string PrinterQueue
+        {
+            get;
+            set;
+        }
+
+        public string Printers
+        {
+            get;
+            set;
+        }
+
 
         protected override async Task OnInitializedAsync()
         {
+            await FetchAvailableCameras();
+            await FetchPrinters();
+            await FetchPrinterQueue();
+        }
+
+        private async Task FetchAvailableCameras()
+        {
             try
             {
-                List<CameraInfo> cameras = await HttpClient.GetFromJsonAsync<List<CameraInfo>>("api/Capture/State");
+                List<CameraInfo> cameras = await HttpClient.GetFromJsonAsync<List<CameraInfo>>("api/Camera/Cameras");
                 Cameras = string.Join(Environment.NewLine, cameras);
-
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Failed to update server state");
+                Logger.LogError(ex, "Failed to fetch cameras");
             }
+        }
+
+        private async Task FetchPrinters()
+        {
+            try
+            {
+                List<Printer> printers = await HttpClient.GetFromJsonAsync<List<Printer>>("api/Printer/Printers");
+                Printers = string.Join(Environment.NewLine, printers);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed fetch printers");
+            }
+        }
+
+        private async Task FetchPrinterQueue()
+        {
+            try
+            {
+                List<PrintQueueItem> queueItems = await HttpClient.GetFromJsonAsync<List<PrintQueueItem>>("api/Printer/PrinterQueue");
+                PrinterQueue = string.Join(Environment.NewLine, queueItems);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed fetch printer queue items");
+            }
+        }
+
+        private async Task ClearPrintQueue()
+        {
+            try
+            {
+                await HttpClient.PostAsJsonAsync("api/Printer/ClearPrintQueue", string.Empty);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to clear print queue");
+            }
+
+            await FetchPrinterQueue();
         }
     }
 }

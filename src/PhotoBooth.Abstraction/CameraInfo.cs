@@ -12,5 +12,10 @@ namespace PhotoBooth.Abstraction
             get;
             set;
         }
+
+        public override string ToString()
+        {
+            return $"{CameraModel}, {Port}";
+        }
     }
 }

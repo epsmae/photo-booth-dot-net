@@ -7,21 +7,16 @@ using System.Threading.Tasks;
 namespace PhotoBooth.Server.Controllers
 {
     [ApiController]
-    //[Route("[controller]")]
     [Route("api/[controller]/[action]")]
     public class CaptureController : ControllerBase
     {
         private readonly ILogger<CaptureController> _logger;
         private readonly IWorkflowController _workflowController;
-        private ICameraService _cameraService;
-        //private readonly LiveViewHelper liveViewHelper;
 
-        public CaptureController(ILogger<CaptureController> logger, IWorkflowController workflowController, ICameraService cameraService)
+        public CaptureController(ILogger<CaptureController> logger, IWorkflowController workflowController)
         {
             _logger = logger;
             _workflowController = workflowController;
-            _cameraService = cameraService;
-            //this.liveViewHelper = liveViewHelper;
         }
 
         [HttpPost]
@@ -36,22 +31,6 @@ namespace PhotoBooth.Server.Controllers
             {
                 _logger.LogError(ex, "Failed to trigger capture");
             }
-
-
-            //try
-            //{
-            //    _logger.LogInformation($"Capturing image");
-
-            //    await _workflowController.Capture();
-
-            //    return await _cameraService.CaptureImageData();
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError(ex, "Failed to trigger capture");
-            //}
-
-            //return new byte[] { };
         }
 
 

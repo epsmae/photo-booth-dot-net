@@ -13,6 +13,7 @@ namespace PhotoBooth.Printer.Test
         private bool _simulatePrinterNotAvailable;
         private bool _simulateEmptyPrintQueue;
         private bool _simulateNoPrinterAvailable;
+        private bool _simulateMultiplePrinterAvailable;
 
         private string SampleDirectory
         {
@@ -20,47 +21,6 @@ namespace PhotoBooth.Printer.Test
             {
                 return Path.Combine(TestContext.CurrentContext.TestDirectory, "SampleResponses");
             }
-        }
-
-
-        internal PrinterAdapterMock()
-        {
-            _mock = new Mock<IPrinterAdapter>();
-            _mock.Setup(m => m.Print(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
-                (string printer, string file) => Print(printer, file));
-            _mock.Setup(m => m.ClearPrintQueue()).ReturnsAsync(ClearPrintQueue);
-            _mock.Setup(m => m.ListPrintQueue()).ReturnsAsync(ListPrintQueue);
-            _mock.Setup(m => m.ListPrinters()).ReturnsAsync(ListPrinters);
-        }
-
-        private CommandLineResult ListPrinters()
-        {
-            if (SimulateNoPrinterAvailable)
-            {
-                return CreateSuccessResult("cups_available_printers_lpstats-e.txt");
-            }
-
-            return CreateSuccessResult("cups_available_printers_lpstats-e.txt");
-        }
-
-        private CommandLineResult ListPrintQueue()
-        {
-            if (SimulateEmptyPrintQueue)
-            {
-                return CreateSuccessResult("cups_printer_queue_empty_lpstat.txt");
-            }
-
-            return CreateSuccessResult("cups_printer_queue_lpstat.txt");
-        }
-
-        private CommandLineResult ClearPrintQueue()
-        {
-            return new CommandLineResult
-            {
-                StandardError = string.Empty,
-                StandardOutput = string.Empty,
-                ExitCode = 0
-            };
         }
 
         internal IPrinterAdapter Object
@@ -107,7 +67,7 @@ namespace PhotoBooth.Printer.Test
             }
         }
 
-        public bool SimulatePrinterNotAvailable
+        internal bool SimulatePrinterNotAvailable
         {
             get
             {
@@ -118,6 +78,66 @@ namespace PhotoBooth.Printer.Test
                 _simulatePrinterNotAvailable = value;
             }
         }
+
+        internal bool SimulateMultiplePrinterAvailable
+        {
+            get
+            {
+                return _simulateMultiplePrinterAvailable;
+            }
+            set
+            {
+                _simulateMultiplePrinterAvailable = value;
+            }
+        }
+
+
+
+        internal PrinterAdapterMock()
+        {
+            _mock = new Mock<IPrinterAdapter>();
+            _mock.Setup(m => m.Print(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
+                (string printer, string file) => Print(printer, file));
+            _mock.Setup(m => m.ClearPrintQueue()).ReturnsAsync(ClearPrintQueue);
+            _mock.Setup(m => m.ListPrintQueue()).ReturnsAsync(ListPrintQueue);
+            _mock.Setup(m => m.ListPrinters()).ReturnsAsync(ListPrinters);
+        }
+
+        private CommandLineResult ListPrinters()
+        {
+            if (SimulateNoPrinterAvailable)
+            {
+                return CreateSuccessResult("cups_available_printers_lpstats-e.txt");
+            }
+
+            if (SimulateMultiplePrinterAvailable)
+            {
+                return CreateSuccessResult("cups_available_printers_lpstats-e.txt");
+            }
+
+            return CreateSuccessResult("cups_available_printer_lpstats-e.txt");
+        }
+
+        private CommandLineResult ListPrintQueue()
+        {
+            if (SimulateEmptyPrintQueue)
+            {
+                return CreateSuccessResult("cups_printer_queue_empty_lpstat.txt");
+            }
+
+            return CreateSuccessResult("cups_printer_queue_lpstat.txt");
+        }
+
+        private CommandLineResult ClearPrintQueue()
+        {
+            return new CommandLineResult
+            {
+                StandardError = string.Empty,
+                StandardOutput = string.Empty,
+                ExitCode = 0
+            };
+        }
+
 
         private CommandLineResult Print(string printer, string file)
         {

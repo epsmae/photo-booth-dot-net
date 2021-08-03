@@ -10,7 +10,7 @@ using PhotoBooth.Abstraction;
 
 namespace PhotoBooth.Client.Pages
 {
-    public partial class Capture : ComponentBase
+    public partial class Capture : ComponentBase, IAsyncDisposable
     {
         private string _lastError;
         private HubConnection _hubConnection;
@@ -169,7 +169,7 @@ namespace PhotoBooth.Client.Pages
 
             await UpdateServerState();
         }
-
+        
         public async ValueTask DisposeAsync()
         {
             if (_hubConnection is not null)
@@ -177,12 +177,7 @@ namespace PhotoBooth.Client.Pages
                 await _hubConnection.DisposeAsync();
             }
         }
-
-        protected void Delete_Click()
-        {
-            InfoDialog.Show();
-        }
-
+        
         protected async Task ConfirmDelete_Click(bool deleteConfirmed)
         {
             try
@@ -197,36 +192,14 @@ namespace PhotoBooth.Client.Pages
         
         protected async Task CaptureImage()
         {
-            //await HttpClient.GetFromJsonAsync<byte[]>("api/Capture/GetCapture");
-
             await HttpClient.PostAsJsonAsync("api/Capture/Capture", string.Empty);
-
-            //byte[] imageData = await HttpClient.GetFromJsonAsync<byte[]>("api/Capture/GetCapture");
-            //_image = Convert.ToBase64String(imageData);
-            //await UpdateServerInfo();
             StateHasChanged();
         }
 
         protected async Task PrintImage()
         {
             await HttpClient.PostAsJsonAsync("api/Capture/Print", string.Empty);
-            //await UpdateServerInfo();
-            StateHasChanged();
         }
-
-        //private async Task UpdateServerInfo()
-        //{
-        //    await UpdateServerState();
-        //    await UpdateCountDownState();
-        //    await UpdateErrorState();
-        //    await UpdateImage();
-        //}
-
-        //protected async Task FetchUpdateFromServer()
-        //{
-        //    await UpdateServerInfo();
-        //    StateHasChanged();
-        //}
 
         private async Task UpdateErrorState()
         {
@@ -274,7 +247,6 @@ namespace PhotoBooth.Client.Pages
                 else
                 {
                     Image = Convert.ToBase64String(imageData);
-                    //_image = await HttpClient.GetFromJsonAsync<string>("api/Capture/Image");
                 }
                 Logger.LogInformation($"Loaded image length={Image?.Length}");
             }
@@ -285,18 +257,5 @@ namespace PhotoBooth.Client.Pages
                 Logger.LogError(ex, $"Failed to load image");
             }
         }
-
-        //private async Task UpdateCountDownState()
-        //{
-        //    try
-        //    {
-        //        CountDownStep = await HttpClient.GetFromJsonAsync<int>("api/Capture/CountDownStep");
-        //    }
-        //    catch (Exception e)
-        //    {
-                
-        //    }
-            
-        //}
     }
 }

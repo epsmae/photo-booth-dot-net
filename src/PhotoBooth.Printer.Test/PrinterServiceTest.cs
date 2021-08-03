@@ -49,6 +49,17 @@ namespace PhotoBooth.Printer.Test
             Assert.AreEqual("Canon_SELPHY_CP1300", printers[0].Name);
         }
 
+        [Test]
+        public async Task TestListPrinters()
+        {
+            _mock.SimulateMultiplePrinterAvailable = true;
+
+            List<Abstraction.Printer> printers = await _service.ListPrinters();
+            Assert.AreEqual(2, printers.Count);
+            Assert.AreEqual("Canon_SELPHY_CP1300", printers[0].Name);
+            Assert.AreEqual("Canon_SELPHY_CP1301", printers[1].Name);
+        }
+
 
         [Test]
         public async Task TestListPrintQueue()

@@ -1,0 +1,12 @@
+assembly-versioning-scheme: MajorMinorPatch
+mode: ContinuousDeployment
+next-version: 1.0.0
+branches:
+  master:
+    increment: Patch
+    is-release-branch: true
+    prevent-increment-of-merged-branch-version: false
+    tag: 'beta'
+ignore:
+  sha: []
+merge-message-formats: {}

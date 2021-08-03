@@ -1,0 +1,54 @@
+@page "/capture"
+@inject HttpClient Http
+
+<h1>Capture</h1>
+
+<p>Current state: @State</p>
+
+@*<button class="btn btn-primary" @onclick="() => FetchUpdateFromServer()">Fetch Update</button>
+    <button class="btn btn-primary" @onclick="() => Delete_Click()">Delete</button>*@
+
+<InfoDialog @ref="InfoDialog" ConfirmationChanged="ConfirmDelete_Click"
+            Description=@LastError PositiveButtonText=@($"Ok") Title=@($"Error")>
+</InfoDialog>
+
+<br />
+@if (IsCaptureButtonVisible)
+{
+    <button class="btn btn-primary" @onclick="() => CaptureImage()">Take Photo</button>
+    <div class="round-button"><div class="round-button-circle"><div class="round-button-text" @onclick="() => CaptureImage()">Capture Photo</div></div></div>
+
+}
+
+<br />
+@if (IsPrintButtonVisible)
+{
+    <button class="btn btn-primary" @onclick="() => PrintImage()">Print Photo</button>
+}
+
+
+
+<br />
+@if (IsCountDownVisible)
+{
+    <p>Current count down step: @CountDownStep</p>
+}
+
+<br />
+@if (IsReviewCountDownVisible)
+{
+    <p>Remaining: @ReviewCountDownStep</p>
+}
+
+<br />
+@if (IsReviewImageVisible)
+{
+    <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="width:300px;height:200px" />
+}
+
+<br />
+@if (IsSpinnerVisible)
+{
+    <div class="spinner"></div>
+}
+

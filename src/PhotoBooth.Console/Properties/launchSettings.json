@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NikonCapture.App": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false,
+      "remoteDebugMachine": "raspphoto",
+      "authenticationMode": "None"
+    }
+  }
+}

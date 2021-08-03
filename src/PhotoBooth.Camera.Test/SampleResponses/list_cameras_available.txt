@@ -1,0 +1,5 @@
+Model                          Port
+----------------------------------------------------------
+Nikon DSC D7000 (PTP mode)     usb:001,007
+Nikon DSC D7000 (PTP mode)     usb:001,007
+

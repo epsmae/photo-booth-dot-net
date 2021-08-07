@@ -7,6 +7,12 @@ namespace PhotoBooth.Server
     {
         public Stream OpenFile(string fileName)
         {
+            if (File.Exists("SampleImage.jpg"))
+            {
+
+            }
+
+
             return File.OpenRead("SampleImage.jpg");
         }
     }

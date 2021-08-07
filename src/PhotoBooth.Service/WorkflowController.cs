@@ -194,6 +194,8 @@ namespace PhotoBooth.Service
                 try
                 {
                     _captureResult = await _cameraService.CaptureImage();
+
+
                     
                    using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
                    {

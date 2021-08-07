@@ -34,6 +34,7 @@ jobs:
       
     - name: Display GitVersion outputs
       run: |
+        echo "Major: ${{ major }}"
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
         echo "Patch: ${{ steps.gitversion.outputs.patch }}"

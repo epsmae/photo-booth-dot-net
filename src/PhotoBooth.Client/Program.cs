@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Blazorise;
+using Blazorise.Icons.Material;
+using Blazorise.Material;
 
 namespace PhotoBooth.Client
 {
@@ -18,6 +21,14 @@ namespace PhotoBooth.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+
+                builder.Services.AddBlazorise(options =>
+                {
+                    options.ChangeTextOnKeyPress = true;
+                })
+                .AddMaterialProviders()
+                .AddMaterialIcons();
 
             await builder.Build().RunAsync();
         }

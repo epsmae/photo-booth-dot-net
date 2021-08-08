@@ -129,6 +129,12 @@
   <data name="about.title.about_photo_booth_dot_net" xml:space="preserve">
     <value>Über Photo Booth .Net</value>
   </data>
+  <data name="capture.print" xml:space="preserve">
+    <value>DRUCKEN</value>
+  </data>
+  <data name="capture.start" xml:space="preserve">
+    <value>START</value>
+  </data>
   <data name="home.check_settings" xml:space="preserve">
     <value>Einstellungen prüfen</value>
   </data>

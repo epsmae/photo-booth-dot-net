@@ -1,54 +1,56 @@
 @page "/"
 @page "/capture"
+@inject IStringLocalizer<Index> localizer
 
-<h3>Capture</h3>
+<div class="capture_container">
 
-<p>Current state: @State</p>
+    <div class="center-div">
 
-@*<button class="btn btn-primary" @onclick="() => FetchUpdateFromServer()">Fetch Update</button>
-    <button class="btn btn-primary" @onclick="() => Delete_Click()">Delete</button>*@
+        @if (IsReviewImageVisible)
+        {
+        <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+        }
 
-<InfoDialog @ref="InfoDialog" ConfirmationChanged="ConfirmDelete_Click"
-            Description=@LastError PositiveButtonText=@($"Ok") Title=@($"Error")>
-</InfoDialog>
-
-<br />
-@if (IsCaptureButtonVisible)
-{
-    <button class="btn btn-primary" @onclick="() => CaptureImage()">Take Photo</button>
-    <div class="round-button"><div class="round-button-circle"><div class="round-button-text" @onclick="() => CaptureImage()">Capture Photo</div></div></div>
-
-}
-
-<br />
-@if (IsPrintButtonVisible)
-{
-    <button class="btn btn-primary" @onclick="() => PrintImage()">Print Photo</button>
-}
+    </div>
 
 
+    <div class="header">
 
-<br />
-@if (IsCountDownVisible)
-{
-    <p>Current count down step: @CountDownStep</p>
-}
+        @if (IsReviewCountDownVisible)
+        {
+        <p class="p-overlay">@ReviewCountDownStep s</p>
+        }
 
-<br />
-@if (IsReviewCountDownVisible)
-{
-    <p>Remaining: @ReviewCountDownStep</p>
-}
+    </div>
 
-<br />
-@if (IsReviewImageVisible)
-{
-    <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="width:300px;height:200px" />
-}
+    <div class="center-div">
+        @if (IsCaptureButtonVisible)
+        {
+        <div class="round-button"><div class="round-button-circle"><div class="round-button-text" style="font-size: 3.5em" @onclick="() => CaptureImage()">@localizer["capture.start"]</div></div></div>
+        }
 
-<br />
-@if (IsSpinnerVisible)
-{
-    <div class="spinner"></div>
-}
+        @if (IsSpinnerVisible)
+        {
+        <div class="spinner"></div>
+        }
 
+        @if (IsCountDownVisible)
+        {
+        <p style="font-size: 10em;">@CountDownStep</p>
+        }
+
+    </div>
+
+    <div class="footer_right">
+
+        @if (IsPrintButtonVisible)
+        {
+            <div class="round-button-small"><div class="round-button-circle"><div class="round-button-text" style="font-size: 1.8em" @onclick="() => PrintImage()">@localizer["capture.print"]</div></div></div>
+        }
+    </div>
+
+    <div class="footer_left">
+        <p class="p-overlay">@State</p>
+    </div>
+
+</div>

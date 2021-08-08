@@ -110,7 +110,7 @@ namespace PhotoBooth.Client.Pages
         {
             get
             {
-                return State == CaptureProcessState.Capture || (State == CaptureProcessState.Review && string.IsNullOrEmpty(Image));
+                return State == CaptureProcessState.Capture || State ==CaptureProcessState.Print || (State == CaptureProcessState.Review && string.IsNullOrEmpty(Image));
             }
         }
 

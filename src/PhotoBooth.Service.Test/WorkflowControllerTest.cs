@@ -19,24 +19,29 @@ namespace PhotoBooth.Service.Test
 
         private IList<CaptureProcessState> _traversedStates;
         private IList<int> _traversedCounts;
+        private ILogger<ILogger<WorkflowControllerTest>> _logger;
 
         [SetUp]
         public async Task Setup()
         {
+            _logger = loggerFactory.CreateLogger<ILogger<WorkflowControllerTest>>();
             _traversedStates = new List<CaptureProcessState>();
             _traversedCounts = new List<int>();
 
             _cameraServiceMock = new CameraServiceMock();
             _printerServiceMock = new PrinterServiceMock();
             _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileProviderMock());
+            _controller.CountDownChanged += OnCountDownChanged;
+            _controller.StateChanged += OnStateChanged;
+
             _controller.SetCountDown(CountDownStepCount);
             _controller.SetReviewDuration(ReviewStepCount);
             _controller.SetCountDownStepDuration(TimeSpan.FromMilliseconds(StepCountDownDurationMs));
 
             await WaitForState(CaptureProcessState.Ready, 5);
+            await WaitFor(()=> _traversedStates.Count == 1, TimeSpan.FromSeconds(5));
 
-            _controller.CountDownChanged += OnCountDownChanged;
-            _controller.StateChanged += OnStateChanged;
+            _traversedStates.Clear();
         }
         
         [TearDown]
@@ -53,11 +58,11 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.CountDown, 5);
             
-            await WaitForState(CaptureProcessState.Capture, 5);
+            await WaitForTraversedState(CaptureProcessState.Capture, 5);
 
-            await WaitForState(CaptureProcessState.Review, 5);
+            await WaitForTraversedState(CaptureProcessState.Review, 5);
 
-            await WaitForState(CaptureProcessState.Ready, 5);
+            await WaitForTraversedState(CaptureProcessState.Ready, 5);
         }
 
         [Test]
@@ -67,13 +72,13 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.CountDown, 5);
 
-            await WaitForState(CaptureProcessState.Capture, 5);
+            await WaitForTraversedState(CaptureProcessState.Capture, 5);
 
             await WaitForState(CaptureProcessState.Review, 5);
 
             await _controller.Print();
 
-            await WaitForState(CaptureProcessState.Print, 5);
+            await WaitForTraversedState(CaptureProcessState.Print, 5);
 
             await WaitForState(CaptureProcessState.Ready, 5);
         }
@@ -87,14 +92,14 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.CountDown, 5);
 
-            await WaitForState(CaptureProcessState.Capture, 5);
-            
+            await WaitForTraversedState(CaptureProcessState.Capture, 5);
+
             await WaitForState(CaptureProcessState.Error, 5);
 
             await _controller.ConfirmError();
 
             await WaitForState(CaptureProcessState.Ready, 5);
-
+            
             AssertTraversedStates(new List<CaptureProcessState>
             {
                 CaptureProcessState.CountDown,
@@ -113,13 +118,13 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.CountDown, 5);
 
-            await WaitForState(CaptureProcessState.Capture, 5);
+            await WaitForTraversedState(CaptureProcessState.Capture, 5);
 
-            await WaitForState(CaptureProcessState.Review, 5);
+            await WaitForTraversedState(CaptureProcessState.Review, 5);
 
             await _controller.Print();
 
-            await WaitForState(CaptureProcessState.Print, 5);
+            await WaitForTraversedState(CaptureProcessState.Print, 5);
 
             await WaitForState(CaptureProcessState.Error, 5);
 
@@ -149,7 +154,7 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.CountDown, 5);
 
-            await WaitForState(CaptureProcessState.Capture, 5);
+            await WaitForTraversedState(CaptureProcessState.Capture, 5);
 
             await WaitForState(CaptureProcessState.Review, 5);
 
@@ -200,8 +205,31 @@ namespace PhotoBooth.Service.Test
 
         private Task WaitForState(CaptureProcessState state, int timeoutInSeconds)
         {
-            return WaitFor(() => _controller.State == state, TimeSpan.FromSeconds(timeoutInSeconds));
+            try
+            {
+                return WaitFor(() => _controller.State == state, TimeSpan.FromSeconds(timeoutInSeconds));
+            }
+            catch (Exception)
+            {
+                _logger.LogError($"Did not reach state={state} within {timeoutInSeconds}s");
+                throw;
+            }
+            
         }
+
+        private Task WaitForTraversedState(CaptureProcessState state, int timeoutInSeconds)
+        {
+            try
+            {
+                return WaitFor(() => _traversedStates.Contains(state), TimeSpan.FromSeconds(timeoutInSeconds));
+            }
+            catch (Exception)
+            {
+                _logger.LogError($"Did not reach state={state} within {timeoutInSeconds}s");
+                throw;
+            }
+        }
+
 
         private void OnStateChanged(object? sender, EventArgs e)
         {

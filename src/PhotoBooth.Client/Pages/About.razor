@@ -1,10 +1,11 @@
 @page "/about"
+@inject IStringLocalizer<Index> localizer
 
-<h3>About</h3>
 
+<h3>@localizer["about.title.about_photo_booth_dot_net"]</h3>
 
-<a href="https://github.com/epsmae/photo-booth-dot-net" class="ml-md-auto">Github</a>
+<p>@localizer["about.server_version"] @ServerVersion</p>
 
-<p>Server Version: @ServerVersion</p>
+<p>@localizer["about.client_version"] @ClientVersion</p>
 
-<p>Client Version: @ClientVersion</p>
+<p>@localizer["about.project"] <a href="https://github.com/epsmae/photo-booth-dot-net" target="_blank" class="ml-md-auto">Github Photo Booth .Net</a></p>

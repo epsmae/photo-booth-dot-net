@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoBooth.Printer", "Photo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoBooth.Printer.Test", "PhotoBooth.Printer.Test\PhotoBooth.Printer.Test.csproj", "{29944077-8F0E-49A9-B397-A9ACE539B2AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoBooth.Console.Test", "PhotoBooth.Console.Test\PhotoBooth.Console.Test.csproj", "{69CA9FFF-C945-4FCC-83C9-79F676559AB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhotoBooth.Console.Test", "PhotoBooth.Console.Test\PhotoBooth.Console.Test.csproj", "{69CA9FFF-C945-4FCC-83C9-79F676559AB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

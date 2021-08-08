@@ -1,0 +1,31 @@
+@page "/settings"
+@inject IStringLocalizer<Index> localizer
+
+<h3>@localizer["settings.title.settings"]</h3>
+
+
+
+<Fields>
+    <Field ColumnSize="ColumnSize.IsThird">
+        <FieldLabel>City</FieldLabel>
+        <select class="form-control" @bind="SelectedLanguage">
+            @foreach (var langCode in langCodes)
+            {
+            <option value="@langCode.IsoCode">@langCode.Name</option>
+            }
+        </select>
+    </Field>
+</Fields>
+
+
+<p>@localizer["settings.available_cameras"]</p>
+<p>@Cameras</p>
+
+<p>@localizer["settings.available_printers"]</p>
+<p>@Printers</p>
+
+
+<p>@localizer["settings.printer_queue"]</p>
+<p>@PrinterQueue</p>
+
+<button class="btn btn-primary" @onclick="() => ClearPrintQueue()">@localizer["settings.clear_printer_queue"]</button>

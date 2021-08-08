@@ -35,6 +35,19 @@
     <script src="_content/Blazorise.Material/blazorise.material.js"></script>
 
 
+    <script>
+        const CultureFieldName = 'culture';
+
+        function getLanguage() {
+            return window.localStorage[CultureFieldName];
+        }
+
+        function setLanguage(value) {
+            window.localStorage[CultureFieldName] = value;
+        }
+    </script>
+
+
 </head>
 
 <body>

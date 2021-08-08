@@ -1,18 +1,17 @@
-@page "/"
+@page "/home"
+@inject IStringLocalizer<Index> localizer
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<p>Available cameras:</p>
-<p>@Cameras</p>
-
-<p>Available printers:</p>
-<p>@Printers</p>
+<h3>@localizer["home.title.welcome"]</h3>
 
 
-<p>Printer queue:</p>
-<p>@PrinterQueue</p>
+@localizer["home.intro.camera_connected"]
 
-<button class="btn btn-primary" @onclick="() => ClearPrintQueue()">Clear print queue</button>
+<NavLink class="nav-link" href="settings">
 
+    <Button class="btn btn-secondary">@localizer["home.check_settings"]</Button>
+</NavLink>
+
+<NavLink class="nav-link" href="capture">
+
+    <Button class="btn btn-primary">@localizer["home.lets_go"]</Button>
+</NavLink>

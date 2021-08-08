@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 
@@ -14,6 +15,13 @@ namespace PhotoBooth.Client.Pages
 
         [Inject]
         protected HttpClient HttpClient
+        {
+            get; set;
+        }
+
+
+        [Inject]
+        protected IStringLocalizer<Index> Localizer
         {
             get; set;
         }
@@ -39,7 +47,9 @@ namespace PhotoBooth.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            var a = Localizer.GetAllStrings();
 
+            var c = Localizer.GetString("about.title");
 
             try
             {

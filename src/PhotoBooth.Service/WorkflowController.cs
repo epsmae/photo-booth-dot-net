@@ -48,7 +48,8 @@ namespace PhotoBooth.Service
         private const int MinimalCountDownSteps = 3;
         private const int MinimalReviewCountDownSteps = 5;
 
-        private const int PreviewImageWidth = 1024;
+        // Raspberry pi touch 7" has width of 800px and side bar 50px
+        private const int PreviewImageWidth = 750;
 
         private readonly StateMachine<CaptureStates, CaptureTriggers> _machine;
 

@@ -19,6 +19,7 @@ namespace PhotoBooth.Service.Test
 
         private IList<CaptureProcessState> _traversedStates;
         private IList<int> _traversedCounts;
+        private ILogger<ILogger<WorkflowControllerTest>> _logger;
 
         [SetUp]
         public async Task Setup()
@@ -37,6 +38,7 @@ namespace PhotoBooth.Service.Test
 
             _controller.CountDownChanged += OnCountDownChanged;
             _controller.StateChanged += OnStateChanged;
+            _logger = loggerFactory.CreateLogger<ILogger<WorkflowControllerTest>>();
         }
         
         [TearDown]
@@ -200,7 +202,16 @@ namespace PhotoBooth.Service.Test
 
         private Task WaitForState(CaptureProcessState state, int timeoutInSeconds)
         {
-            return WaitFor(() => _controller.State == state, TimeSpan.FromSeconds(timeoutInSeconds));
+            try
+            {
+                return WaitFor(() => _controller.State == state, TimeSpan.FromSeconds(timeoutInSeconds));
+            }
+            catch (Exception)
+            {
+                _logger.LogError($"Did not reach state={state} within {timeoutInSeconds}s");
+                throw;
+            }
+            
         }
 
         private void OnStateChanged(object? sender, EventArgs e)

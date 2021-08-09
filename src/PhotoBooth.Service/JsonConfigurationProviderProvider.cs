@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
 
 namespace PhotoBooth.Service
@@ -15,9 +16,9 @@ namespace PhotoBooth.Service
         private readonly string _path;
 
 
-        public JsonConfigurationProviderProvider(string configPath)
+        public JsonConfigurationProviderProvider(IFilePathProvider filePathProvider)
         {
-            _path = configPath;
+            _path = Path.Combine(filePathProvider.ExecutionDirectory, "config.json");
 
             if (!File.Exists(_path))
             {

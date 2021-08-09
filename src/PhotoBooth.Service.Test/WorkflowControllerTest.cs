@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using PhotoBooth.Abstraction;
+using PhotoBooth.Abstraction.Configuration;
 
 namespace PhotoBooth.Service.Test
 {
@@ -12,10 +13,6 @@ namespace PhotoBooth.Service.Test
         private IWorkflowController _controller;
         private CameraServiceMock _cameraServiceMock;
         private PrinterServiceMock _printerServiceMock;
-
-        private const int StepCountDownDurationMs = 200;
-        private const int CountDownStepCount = 3;
-        private const int ReviewStepCount = 10;
 
         private IList<CaptureProcessState> _traversedStates;
         private IList<int> _traversedCounts;
@@ -30,13 +27,12 @@ namespace PhotoBooth.Service.Test
 
             _cameraServiceMock = new CameraServiceMock();
             _printerServiceMock = new PrinterServiceMock();
-            _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileProviderMock());
+
+
+            IConfigurationService configService = new ConfigurationServiceMock().Object;
+            _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileProviderMock(), configService);
             _controller.CountDownChanged += OnCountDownChanged;
             _controller.StateChanged += OnStateChanged;
-
-            _controller.SetCountDown(CountDownStepCount);
-            _controller.SetReviewDuration(ReviewStepCount);
-            _controller.SetCountDownStepDuration(TimeSpan.FromMilliseconds(StepCountDownDurationMs));
 
             await WaitForState(CaptureProcessState.Ready, 5);
             await WaitFor(()=> _traversedStates.Count == 1, TimeSpan.FromSeconds(5));
@@ -185,11 +181,11 @@ namespace PhotoBooth.Service.Test
 
         private void AssertCountDownEvents()
         {
-            Assert.AreEqual(CountDownStepCount, _traversedCounts.Count - 1);
+            Assert.AreEqual(ConfigurationServiceMock.CountDownStepCount, _traversedCounts.Count - 1);
 
-            for (int i = CountDownStepCount -1; i >= 0; i--)
+            for (int i = ConfigurationServiceMock.CountDownStepCount - 1; i >= 0; i--)
             {
-                Assert.AreEqual(_traversedCounts[CountDownStepCount -(i+1)], i + 1);
+                Assert.AreEqual(_traversedCounts[ConfigurationServiceMock.CountDownStepCount - (i+1)], i + 1);
             }
         }
 

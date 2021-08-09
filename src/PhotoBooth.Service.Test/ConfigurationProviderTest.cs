@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using NUnit.Framework;
-using PhotoBooth.Abstraction.Configuration;
 
 namespace PhotoBooth.Service.Test
 {
@@ -19,13 +15,13 @@ namespace PhotoBooth.Service.Test
             }
         }
 
-        public string ConfigFile
-        {
-            get
-            {
-                return Path.Combine(ConfigDirectory, "config.json");
-            }
-        }
+        //public string ConfigFile
+        //{
+        //    get
+        //    {
+        //        return Path.Combine(ConfigDirectory, "config.json");
+        //    }
+        //}
 
         [SetUp]
         public void Setup()
@@ -38,7 +34,10 @@ namespace PhotoBooth.Service.Test
 
             Directory.CreateDirectory(ConfigDirectory);
 
-            _provider = new JsonConfigurationProviderProvider(ConfigFile);
+            FilePathProviderMock mock = new FilePathProviderMock();
+            mock.ExecutionDirectory = ConfigDirectory;
+
+            _provider = new JsonConfigurationProviderProvider(mock.Object);
         }
 
         [Test]

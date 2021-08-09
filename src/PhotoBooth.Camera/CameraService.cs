@@ -40,7 +40,7 @@ namespace PhotoBooth.Camera
 
         public async Task<CaptureResult> CaptureImage()
         {
-            string fileName = $"img_{System.DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg";
+            string fileName = $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg";
 
             _logger.LogInformation($"Capture image with file name={fileName}");
 

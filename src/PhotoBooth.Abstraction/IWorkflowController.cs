@@ -11,9 +11,9 @@ namespace PhotoBooth.Abstraction
 
         Task Print();
 
-        void SetReviewDuration(int stepCount);
+        //void SetReviewDuration(int stepCount);
 
-        void SetCountDown(int stepCount);
+        //void SetCountDown(int stepCount);
 
         int CurrentCountDownStep { get; }
 
@@ -30,7 +30,7 @@ namespace PhotoBooth.Abstraction
 
         Task ConfirmError();
 
-        void SetCountDownStepDuration(TimeSpan stepDuration);
+        //void SetCountDownStepDuration(TimeSpan stepDuration);
 
         event EventHandler ReviewCountDownChanged;
     }

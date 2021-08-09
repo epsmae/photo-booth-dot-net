@@ -10,8 +10,10 @@ using PhotoBooth.Abstraction;
 using PhotoBooth.Camera;
 using System.Linq;
 using Microsoft.AspNetCore.SignalR;
+using PhotoBooth.Abstraction.Configuration;
 using PhotoBooth.Printer;
 using PhotoBooth.Service;
+using IConfigurationProvider = Microsoft.Extensions.Configuration.IConfigurationProvider;
 
 namespace PhotoBooth.Server
 {
@@ -45,6 +47,9 @@ namespace PhotoBooth.Server
             services.AddSingleton<CaptureHub>();
             services.AddSingleton<NotificationService>();
             services.AddSingleton<IPrinterService, PrinterService>();
+            services.AddSingleton<IFilePathProvider, FilePathProvider>();
+            services.AddSingleton<Abstraction.Configuration.IConfigurationProvider, JsonConfigurationProviderProvider>();
+            services.AddSingleton<IConfigurationService, ConfigurationService>();
             services.AddSingleton<IWorkflowController, WorkflowController>();
             services.AddControllersWithViews();
             services.AddRazorPages();

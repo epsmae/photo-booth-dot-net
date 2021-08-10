@@ -1,31 +1,60 @@
 @page "/settings"
 @inject IStringLocalizer<Index> localizer
 
-<h3>@localizer["settings.title.settings"]</h3>
+<div style="padding: 20px; overflow: auto">
+
+    <h3>@localizer["settings.title.settings"]</h3>
+
+    <Fields Style="margin:20px; max-width: 200px; max-height: 100%">
+        <Field ColumnSize="ColumnSize.IsFull">
+
+            <FieldLabel>@localizer["settings.selected_language"]</FieldLabel>
+            <select class="form-control" @bind="SelectedLanguage">
+                @foreach (var langCode in langCodes)
+                {
+                    <option value="@langCode.IsoCode">@langCode.Name</option>
+                }
+            </select>
+        </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.available_cameras"]</FieldLabel>
+            <p>@Cameras</p>
+        </Field>
 
 
-
-<Fields>
-    <Field ColumnSize="ColumnSize.IsThird">
-        <FieldLabel>City</FieldLabel>
-        <select class="form-control" @bind="SelectedLanguage">
-            @foreach (var langCode in langCodes)
-            {
-            <option value="@langCode.IsoCode">@langCode.Name</option>
-            }
-        </select>
-    </Field>
-</Fields>
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.available_printers"]</FieldLabel>
+            <p>@Printers</p>
+        </Field>
 
 
-<p>@localizer["settings.available_cameras"]</p>
-<p>@Cameras</p>
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.printer_queue"]</FieldLabel>
+            <p>@PrinterQueue</p>
+        </Field>
 
-<p>@localizer["settings.available_printers"]</p>
-<p>@Printers</p>
+
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.review_count_down_step_count"]</FieldLabel>
+            <NumericEdit TValue="int" @bind-Value="@ReviewCountDownStepCount" />
+        </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.capture_count_down_step_count"]</FieldLabel>
+            <NumericEdit TValue="int" @bind-Value="@CaptureCountDownStepCount" />
+        </Field>
 
 
-<p>@localizer["settings.printer_queue"]</p>
-<p>@PrinterQueue</p>
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.step_duration_in_seconds"]</FieldLabel>
+            <NumericEdit TValue="double" @bind-Value="@StepDownDurationInSeconds" />
+        </Field>
+    </Fields>
 
-<button class="btn btn-primary" @onclick="() => ClearPrintQueue()">@localizer["settings.clear_printer_queue"]</button>
+    <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
+
+    <button class="btn btn-primary" @onclick="() => ClearPrintQueue()">@localizer["settings.clear_printer_queue"]</button>
+</div>
+
+

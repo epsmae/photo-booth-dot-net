@@ -73,15 +73,52 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
-
         protected override async Task OnInitializedAsync()
         {
             await FetchCurrentLanguage();
+            await FetchSettings();
             await FetchAvailableCameras();
             await FetchPrinters();
             await FetchPrinterQueue();
         }
-        
+
+        private async Task FetchSettings()
+        {
+            try
+            {
+                SettingsDto dto = await HttpClient.GetFromJsonAsync<SettingsDto>("api/Settings/Settings");
+                CaptureCountDownStepCount = dto.CaptureCountDownStepCount;
+                ReviewCountDownStepCount = dto.ReviewCountDownStepCount;
+                StepDownDurationInSeconds = dto.StepDownDurationInSeconds;
+                StateHasChanged();
+                //CaptureCountDownStepCount = await HttpClient.GetFromJsonAsync<int>("api/Settings/CaptureCountDownStepCount");
+                //ReviewCountDownStepCount = await HttpClient.GetFromJsonAsync<int>("api/Settings/ReviewCountDownStepCount");
+                //StepDownDurationInSeconds = await HttpClient.GetFromJsonAsync<double>("api/Settings/StepDownDurationInSeconds");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to fetch settings");
+            }
+        }
+
+        public double StepDownDurationInSeconds
+        {
+            get;
+            set;
+        }
+
+        public int ReviewCountDownStepCount
+        {
+            get;
+            set;
+        }
+
+        public int CaptureCountDownStepCount
+        {
+            get;
+            set;
+        }
+
         private async Task FetchAvailableCameras()
         {
             try
@@ -135,8 +172,6 @@ namespace PhotoBooth.Client.Pages
             await FetchPrinterQueue();
         }
 
-
-
         protected List<LanguageConfiguration> langCodes = new List<LanguageConfiguration>()
         {
             new LanguageConfiguration
@@ -162,6 +197,33 @@ namespace PhotoBooth.Client.Pages
         {
             _selectedLanguage = await JsRuntime.InvokeAsync<string>("getLanguage");
             StateHasChanged();
+        }
+
+
+        protected async Task SaveSettings()
+        {
+            try
+            {
+                SettingsDto dto = new SettingsDto()
+                {
+                    CaptureCountDownStepCount = CaptureCountDownStepCount,
+                    ReviewCountDownStepCount = ReviewCountDownStepCount,
+                    StepDownDurationInSeconds = StepDownDurationInSeconds
+                };
+
+                Logger.LogInformation($"CaptureCountDownStepCount {dto.CaptureCountDownStepCount} ");
+                Logger.LogInformation($"ReviewCountDownStepCount {dto.ReviewCountDownStepCount} ");
+                Logger.LogInformation($"StepDownDurationInSeconds {dto.StepDownDurationInSeconds} ");
+
+
+                await HttpClient.PostAsJsonAsync("api/Settings/SetSettings", dto);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to save settings");
+            }
+
+            await FetchSettings();
         }
     }
 }

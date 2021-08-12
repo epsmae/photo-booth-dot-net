@@ -1,11 +1,11 @@
 @page "/settings"
 @inject IStringLocalizer<Index> localizer
 
-<div style="padding: 20px; overflow: auto">
+<div style="padding: 20px; overflow-x: auto; overflow-y: scroll; height: 100%; ">
 
     <h3>@localizer["settings.title.settings"]</h3>
 
-    <Fields Style="margin:20px; max-width: 200px; max-height: 100%">
+    <Fields Style="margin:20px; max-width: 400px; height: 100%;">
         <Field ColumnSize="ColumnSize.IsFull">
 
             <FieldLabel>@localizer["settings.selected_language"]</FieldLabel>
@@ -50,11 +50,15 @@
             <FieldLabel>@localizer["settings.step_duration_in_seconds"]</FieldLabel>
             <NumericEdit TValue="double" @bind-Value="@StepDownDurationInSeconds" />
         </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
+            <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
+            <button class="btn btn-primary" @onclick="() => ClearPrintQueue()">@localizer["settings.clear_printer_queue"]</button>
+        </Field>
+
     </Fields>
 
-    <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
-
-    <button class="btn btn-primary" @onclick="() => ClearPrintQueue()">@localizer["settings.clear_printer_queue"]</button>
+  
 </div>
 
 

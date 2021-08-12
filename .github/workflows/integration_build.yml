@@ -34,12 +34,12 @@ jobs:
       
     - name: Display GitVersion outputs
       run: |
-        echo "Major: ${{ env.major }}"
-        echo "Major: ${{ steps.gitversion.outputs.major }}"
-        echo "Minor: ${{ steps.gitversion.outputs.minor }}"
-        echo "Patch: ${{ steps.gitversion.outputs.patch }}"
-        echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
-        echo "AssemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}"
+        echo "Major: ${{ GitVersion_SemVer }}"
+        echo "Major: ${{ GitVersion_Major }}"
+        echo "Minor: ${{ GitVersion_Minor }}"
+        echo "Patch: ${{ GitVersion_Patch }}"
+        echo "AssemblySemVer: ${{ GitVersion_AssemblySemVer }}"
+        echo "AssemblySemFileVer: ${{ GitVersion_AssemblySemFileVer }}"
       
     - name: Restore dependencies
       run: dotnet restore ./src/PhotoBooth.sln
@@ -49,3 +49,13 @@ jobs:
       
     - name: Test
       run: dotnet test -c Debug --no-build --verbosity normal ./src/PhotoBooth.sln
+      
+    - name: Publish application
+      run: dotnet publish ./src/PhotoBooth.Server/PhotoBooth.Server.csproj -r linux-arm -c Release -o publish
+      
+    - name: Upload artefact
+      uses: actions/upload-artifact@v2
+      with:
+       name: PhotoBooth.Net
+       path: publish
+       if-no-files-found: error

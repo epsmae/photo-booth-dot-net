@@ -34,12 +34,12 @@ jobs:
       
     - name: Display GitVersion outputs
       run: |
-        echo "Major: ${{ GitVersion_SemVer }}"
-        echo "Major: ${{ GitVersion_Major }}"
-        echo "Minor: ${{ GitVersion_Minor }}"
-        echo "Patch: ${{ GitVersion_Patch }}"
-        echo "AssemblySemVer: ${{ GitVersion_AssemblySemVer }}"
-        echo "AssemblySemFileVer: ${{ GitVersion_AssemblySemFileVer }}"
+        echo "Major: ${{ env.GitVersion_SemVer }}"
+        echo "Major: ${{ env.GitVersion_Major }}"
+        echo "Minor: ${{ env.GitVersion_Minor }}"
+        echo "Patch: ${{ env.GitVersion_Patch }}"
+        echo "AssemblySemVer: ${{ env.GitVersion_AssemblySemVer }}"
+        echo "AssemblySemFileVer: ${{ env.GitVersion_AssemblySemFileVer }}"
       
     - name: Restore dependencies
       run: dotnet restore ./src/PhotoBooth.sln

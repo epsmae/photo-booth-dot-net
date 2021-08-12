@@ -153,14 +153,26 @@
   <data name="settings.available_printers" xml:space="preserve">
     <value>Available Printer</value>
   </data>
+  <data name="settings.capture_count_down_step_count" xml:space="preserve">
+    <value>Nr of count down steps in capture</value>
+  </data>
   <data name="settings.clear_printer_queue" xml:space="preserve">
     <value>Clear printer queue</value>
   </data>
   <data name="settings.printer_queue" xml:space="preserve">
     <value>Printer queue</value>
   </data>
+  <data name="settings.review_count_down_step_count" xml:space="preserve">
+    <value>Nr of count down steps in review</value>
+  </data>
+  <data name="settings.save_settings" xml:space="preserve">
+    <value>Save settings</value>
+  </data>
   <data name="settings.selected_language" xml:space="preserve">
     <value>Selected language</value>
+  </data>
+  <data name="settings.step_duration_in_seconds" xml:space="preserve">
+    <value>Step duration in seconds</value>
   </data>
   <data name="settings.title.settings" xml:space="preserve">
     <value>Settings</value>

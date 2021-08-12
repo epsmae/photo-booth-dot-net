@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
-using PhotoBooth.Abstraction.Exceptions;
+using PhotoBooth.Abstraction.Configuration;
 using Stateless;
 
 namespace PhotoBooth.Service
@@ -41,23 +41,16 @@ namespace PhotoBooth.Service
         private readonly IPrinterService _printerService;
         private readonly IImageResizer _imageResizer;
         private readonly IFileProvider _fileProvider;
+        private readonly IConfigurationService _configurationService;
         private CaptureStates _state = CaptureStates.Initializing;
-
-        //private const int MinimalReviewDurationMs = 200;
-        private const int MinimalCountDownStepDurationMs = 200;
-        private const int MinimalCountDownSteps = 3;
-        private const int MinimalReviewCountDownSteps = 5;
 
         // Raspberry pi touch 7" has width of 800px and side bar 50px
         private const int PreviewImageWidth = 750;
 
         private readonly StateMachine<CaptureStates, CaptureTriggers> _machine;
 
-        //private TimeSpan _reviewDuration;
         private TimeSpan _countDownStepDuration;
-        private int _countDownStepCount;
-        private int _currentCountDownStep;
-        private int _reviewCountDown;
+        private int _currentCaptureCountDownStep;
         private int _currentReviewCountDownStep;
 
         private readonly Timer _countDownTimer;
@@ -65,22 +58,19 @@ namespace PhotoBooth.Service
         private Exception _lastException;
         private CaptureResult _captureResult;
         private byte[] _currentImageData;
-
-        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileProvider fileProvider)
+        
+        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileProvider fileProvider, IConfigurationService configurationService)
         {
             _logger = logger;
             _cameraService = cameraService;
             _printerService = printerService;
             _imageResizer = imageResizer;
             _fileProvider = fileProvider;
+            _configurationService = configurationService;
 
             _countDownTimer = new Timer(OnCountDownTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
             _reviewTimer = new Timer(OnReviewCountDownTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
-            //_reviewDuration = TimeSpan.FromSeconds(15);
-            _countDownStepDuration = TimeSpan.FromSeconds(1);
-            _countDownStepCount = 3;
-            _reviewCountDown = 15;
-
+            
             _machine = new StateMachine<CaptureStates, CaptureTriggers>(() => _state, s => _state = s);
 
             _machine.Configure(CaptureStates.Processing)
@@ -93,7 +83,6 @@ namespace PhotoBooth.Service
                 .OnEntry(() => StartInitialization())
                 .OnActivate(() => StartInitialization())
                 .Permit(CaptureTriggers.InitializationDone, CaptureStates.Ready);
-
 
             _machine.Configure(CaptureStates.Ready)
                 .SubstateOf(CaptureStates.Processing)
@@ -196,8 +185,6 @@ namespace PhotoBooth.Service
                 {
                     _captureResult = await _cameraService.CaptureImage();
 
-
-                    
                    using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
                    {
                        _currentImageData = _imageResizer.ResizeImage(stream, PreviewImageWidth);
@@ -243,7 +230,7 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _currentCountDownStep;
+                return _currentCaptureCountDownStep;
             }
         }
 
@@ -265,8 +252,9 @@ namespace PhotoBooth.Service
 
         public Task Capture()
         {
-            _currentCountDownStep = _countDownStepCount;
-            _currentReviewCountDownStep = _reviewCountDown;
+            _countDownStepDuration = TimeSpan.FromSeconds(_configurationService.StepDownDurationInSeconds);
+            _currentCaptureCountDownStep = _configurationService.CaptureCountDownStepCount;
+            _currentReviewCountDownStep = _configurationService.ReviewCountDownStepCount;
             return _machine.FireAsync(CaptureTriggers.Capture);
         }
 
@@ -274,76 +262,16 @@ namespace PhotoBooth.Service
         {
             return _machine.FireAsync(CaptureTriggers.Print);
         }
-
-
-        public void SetReviewDuration(int stepCount)
-        {
-            if (stepCount < MinimalReviewCountDownSteps)
-            {
-                throw new ArgumentException($"Review duration has to bo larger or equal as {MinimalReviewCountDownSteps}");
-            }
-
-            if (!(_machine.State == CaptureStates.Initializing || _machine.State == CaptureStates.Initializing))
-            {
-                throw new InvalidStateException($"Review duration can only be set in state={CaptureStates.Ready}");
-            }
-
-            _reviewCountDown = stepCount;
-        }
-
-
-
-        public void SetCountDown(int stepCount)
-        {
-            if (stepCount < MinimalCountDownSteps)
-            {
-                throw new ArgumentException($"Countdown steps has to bo larger or equal as {MinimalCountDownSteps}");
-            }
-            
-            if (! (_machine.State == CaptureStates.Initializing || _machine.State == CaptureStates.Initializing))
-            {
-                throw new InvalidStateException($"Countdown duration can only be set in state={CaptureStates.Ready}");
-            }
-
-            _countDownStepCount = stepCount;
-        }
-
-        public void SetCountDownStepDuration(TimeSpan stepDuration)
-        {
-            if (stepDuration.TotalMilliseconds < MinimalCountDownStepDurationMs)
-            {
-                throw new ArgumentException($"Countdown steps duration has to be larger or equal as {MinimalCountDownStepDurationMs}");
-            }
-
-            if (!(_machine.State == CaptureStates.Initializing || _machine.State == CaptureStates.Initializing))
-            {
-                throw new InvalidStateException($"Countdown duration can only be set in state={CaptureStates.Ready}");
-            }
-
-            _countDownStepDuration = stepDuration;
-        }
-
-        //private void OnReviewTimerElapsed(object state)
-        //{
-        //    try
-        //    {
-        //        _machine.Fire(CaptureTriggers.ReviewCountDownElapsed);
-        //    }
-        //    catch
-        //    {
-        //        // ignore invalid state exception
-        //    }
-        //}
-
+        
         private void OnCountDownTimerElapsed(object state)
         {
             try
             {
-                _currentCountDownStep--;
+                _currentCaptureCountDownStep--;
 
                 NotifyCountDownChanged();
 
-                if (_currentCountDownStep == 0)
+                if (_currentCaptureCountDownStep == 0)
                 {
                     _machine.Fire(CaptureTriggers.CountdownElapsed);
                 }
@@ -413,7 +341,6 @@ namespace PhotoBooth.Service
 
         private void StartCountDownTimer()
         {
-            _currentCountDownStep = _countDownStepCount;
             NotifyCountDownChanged();
             _countDownTimer.Change((int)_countDownStepDuration.TotalMilliseconds, Timeout.Infinite);
         }

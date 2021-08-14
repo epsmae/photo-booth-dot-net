@@ -12,10 +12,12 @@ namespace PhotoBooth.Service
         private const int MinimalReviewCountDownSteps = 5;
 
         private readonly IConfigurationProvider _provider;
+        private readonly Dictionary<string, object> _cache;
 
         public ConfigurationService(IConfigurationProvider provider)
         {
             _provider = provider;
+            _cache = new Dictionary<string, object>();
         }
 
         public List<string> AvailableKeys
@@ -30,14 +32,14 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<string>(ConfigurationKeys.SelectedCamera);
+                return GetValue<string>(ConfigurationKeys.SelectedCamera);
             }
             set
             {
-                _provider.AddOrUpdateEntry(ConfigurationKeys.SelectedCamera, value);
+                SetValue(ConfigurationKeys.SelectedCamera, value);
             }
         }
-
+        
         public void Register<T>(string key, T defaultValue)
         {
             _provider.RegisterEntry(key, defaultValue);
@@ -47,11 +49,11 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<int>(ConfigurationKeys.ReviewImageWidth);
+                return GetValue<int>(ConfigurationKeys.ReviewImageWidth);
             }
             set
             {
-                _provider.AddOrUpdateEntry(ConfigurationKeys.ReviewImageWidth, value);
+                SetValue(ConfigurationKeys.ReviewImageWidth, value);
             }
         }
 
@@ -59,11 +61,11 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<string>(ConfigurationKeys.SelectedPrinter);
+                return GetValue<string>(ConfigurationKeys.SelectedPrinter);
             }
             set
             {
-                _provider.AddOrUpdateEntry(ConfigurationKeys.SelectedPrinter, value);
+                SetValue(ConfigurationKeys.SelectedPrinter, value);
             }
         }
 
@@ -71,7 +73,7 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<double>(ConfigurationKeys.StepDownDurationInSeconds);
+                return GetValue<double>(ConfigurationKeys.StepDownDurationInSeconds);
             }
             set
             {
@@ -80,7 +82,7 @@ namespace PhotoBooth.Service
                     throw new ArgumentException($"Countdown steps duration has to be larger or equal as {MinimalCountDownStepDurationMs}");
                 }
 
-                _provider.AddOrUpdateEntry(ConfigurationKeys.StepDownDurationInSeconds, value);
+                SetValue(ConfigurationKeys.StepDownDurationInSeconds, value);
             }
         }
 
@@ -89,7 +91,7 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<int>(ConfigurationKeys.ReviewCountDownStepCount);
+                return GetValue<int>(ConfigurationKeys.ReviewCountDownStepCount);
             }
             set
             {
@@ -98,7 +100,7 @@ namespace PhotoBooth.Service
                     throw new ArgumentException($"Review duration has to bo larger or equal as {MinimalReviewCountDownSteps}");
                 }
 
-                _provider.AddOrUpdateEntry(ConfigurationKeys.ReviewCountDownStepCount, value);
+                SetValue(ConfigurationKeys.ReviewCountDownStepCount, value);
             }
         }
 
@@ -106,7 +108,7 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<int>(ConfigurationKeys.CaptureCountDownStepCount);
+                return GetValue<int>(ConfigurationKeys.CaptureCountDownStepCount);
             }
             set
             {
@@ -115,7 +117,40 @@ namespace PhotoBooth.Service
                     throw new ArgumentException($"Countdown steps has to bo larger or equal as {MinimalCountDownSteps}");
                 }
 
-                _provider.AddOrUpdateEntry(ConfigurationKeys.CaptureCountDownStepCount, value);
+                SetValue(ConfigurationKeys.CaptureCountDownStepCount, value);
+            }
+        }
+
+
+        private T GetValue<T>(string key)
+        {
+            if (_cache.ContainsKey(key))
+            {
+                return (T) _cache[key];
+            }
+
+            T value = _provider.LoadEntry<T>(key);
+            UpdateCache(key, value);
+
+            return value;
+        }
+
+        private void SetValue<T>(string key, T value)
+        {
+            _provider.AddOrUpdateEntry(key, value);
+
+            UpdateCache(key, value);
+        }
+
+        private void UpdateCache<T>(string key, T value)
+        {
+            if (_cache.ContainsKey(key))
+            {
+                _cache[key] = value;
+            }
+            else
+            {
+                _cache.Add(key, value);
             }
         }
     }

@@ -26,6 +26,42 @@ namespace PhotoBooth.Service
             }
         }
 
+        /// <summary>
+        /// Register a configuration with a default value.
+        /// If the entry is already existing nothing happens.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        public void RegisterEntry<T>(string key, T defaultValue)
+        {
+            lock (Lock)
+            {
+                List<ConfigurationEntry> entries = LoadEntries();
+                ConfigurationEntry entry = entries.FirstOrDefault(e => e.Key == key);
+
+                if (entry == null)
+                {
+                    string value = JsonConvert.SerializeObject(defaultValue);
+
+                    entries.Add(new ConfigurationEntry
+                    {
+                        Type = defaultValue.GetType(),
+                        Key = key,
+                        Value = value
+                    });
+
+                    Save(entries);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds or updates a configuration entry
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void AddOrUpdateEntry<T>(string key, T value)
         {
             lock (Lock)
@@ -44,11 +80,7 @@ namespace PhotoBooth.Service
                 }
                 else
                 {
-                    if (entry.Type != value.GetType())
-                    {
-                        throw new Exception("Invalid type");
-                    }
-
+                    entry.Type = value.GetType(),
                     entry.Value = JsonConvert.SerializeObject(value);
                 }
 
@@ -56,6 +88,14 @@ namespace PhotoBooth.Service
             }
         }
 
+        /// <summary>
+        /// Load an entry.
+        /// Throws exception when the key is not available
+        /// or the type is different.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public T LoadEntry<T>(string key)
         {
             lock (Lock)
@@ -77,7 +117,10 @@ namespace PhotoBooth.Service
             }
         }
 
-
+        /// <summary>
+        /// Loads all saved keys.
+        /// </summary>
+        /// <returns></returns>
         public List<string> LoadAvailableKeys()
         {
             lock (Lock)

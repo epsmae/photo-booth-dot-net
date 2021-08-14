@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using PhotoBooth.Abstraction.Configuration;
 
@@ -6,10 +7,6 @@ namespace PhotoBooth.Service
 {
     public class ConfigurationService: IConfigurationService
     {
-        private const string StepDownDurationInSecondsKey = "step_down_duration";
-        private const string CaptureCountDownStepCountKey = "capture_count_down_steps";
-        private const string ReviewCountDownStepCountKey = "review_count_down_steps";
-
         private const double MinimalCountDownStepDurationMs = 0.2;
         private const int MinimalCountDownSteps = 3;
         private const int MinimalReviewCountDownSteps = 5;
@@ -26,11 +23,48 @@ namespace PhotoBooth.Service
             }
         }
 
+        public List<string> AvailableKeys
+        {
+            get
+            {
+                return _provider.LoadAvailableKeys();
+            }
+        }
+
+        public void Register<T>(string key, T defaultValue)
+        {
+            _provider.RegisterEntry(key, defaultValue);
+        }
+
+        public int ReviewImageWidth
+        {
+            get
+            {
+                return _provider.LoadEntry<int>(ConfigurationKeys.ReviewImageWidth);
+            }
+            set
+            {
+                _provider.AddOrUpdateEntry(ConfigurationKeys.ReviewImageWidth, value);
+            }
+        }
+
+        public string SelectedPrinter
+        {
+            get
+            {
+                return _provider.LoadEntry<string>(ConfigurationKeys.SelectedPrinter);
+            }
+            set
+            {
+                _provider.AddOrUpdateEntry(ConfigurationKeys.SelectedPrinter, value);
+            }
+        }
+
         public double StepDownDurationInSeconds
         {
             get
             {
-                return _provider.LoadEntry<double>(StepDownDurationInSecondsKey);
+                return _provider.LoadEntry<double>(ConfigurationKeys.StepDownDurationInSeconds);
             }
             set
             {
@@ -39,7 +73,7 @@ namespace PhotoBooth.Service
                     throw new ArgumentException($"Countdown steps duration has to be larger or equal as {MinimalCountDownStepDurationMs}");
                 }
 
-                _provider.AddOrUpdateEntry(StepDownDurationInSecondsKey, value);
+                _provider.AddOrUpdateEntry(ConfigurationKeys.StepDownDurationInSeconds, value);
             }
         }
 
@@ -48,7 +82,7 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<int>(ReviewCountDownStepCountKey);
+                return _provider.LoadEntry<int>(ConfigurationKeys.ReviewCountDownStepCount);
             }
             set
             {
@@ -57,7 +91,7 @@ namespace PhotoBooth.Service
                     throw new ArgumentException($"Review duration has to bo larger or equal as {MinimalReviewCountDownSteps}");
                 }
 
-                _provider.AddOrUpdateEntry(ReviewCountDownStepCountKey, value);
+                _provider.AddOrUpdateEntry(ConfigurationKeys.ReviewCountDownStepCount, value);
             }
         }
 
@@ -65,7 +99,7 @@ namespace PhotoBooth.Service
         {
             get
             {
-                return _provider.LoadEntry<int>(CaptureCountDownStepCountKey);
+                return _provider.LoadEntry<int>(ConfigurationKeys.CaptureCountDownStepCount);
             }
             set
             {
@@ -74,7 +108,7 @@ namespace PhotoBooth.Service
                     throw new ArgumentException($"Countdown steps has to bo larger or equal as {MinimalCountDownSteps}");
                 }
 
-                _provider.AddOrUpdateEntry(CaptureCountDownStepCountKey, value);
+                _provider.AddOrUpdateEntry(ConfigurationKeys.CaptureCountDownStepCount, value);
             }
         }
 

@@ -18,5 +18,13 @@ namespace PhotoBooth.Service.Test
         {
             return File.OpenRead(SampleImagePath);
         }
+
+        public string PhotoDirectory
+        {
+            get
+            {
+                return Path.Combine(TestContext.CurrentContext.TestDirectory, "Images");
+            }
+        }
     }
 }

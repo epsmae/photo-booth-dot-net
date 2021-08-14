@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
@@ -31,16 +32,16 @@ namespace PhotoBooth.Camera
             EvaluateResult(result);
         }
 
-        public async Task<byte[]> CaptureImageData(string selectedCamera)
+        public async Task<byte[]> CaptureImageData(string directory, string selectedCamera)
         {
-            CaptureResult result = await CaptureImage(selectedCamera);
+            CaptureResult result = await CaptureImage(directory, selectedCamera);
 
             return System.IO.File.ReadAllBytes(result.FileName);
         }
 
-        public async Task<CaptureResult> CaptureImage(string selectedCamera)
+        public async Task<CaptureResult> CaptureImage(string directory, string selectedCamera)
         {
-            string fileName = $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg";
+            string fileName = Path.Combine(directory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
 
             _logger.LogInformation($"Capture image with file name={fileName}");
 

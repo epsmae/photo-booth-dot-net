@@ -202,7 +202,9 @@ namespace PhotoBooth.Service
                         throw new NoCameraAvailableException("No camera found");
                     }
 
-                    _captureResult = await _cameraService.CaptureImage(selectedCamera);
+
+
+                    _captureResult = await _cameraService.CaptureImage(_fileProvider.PhotoDirectory, _configurationService.SelectedCamera);
 
                    using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
                    {

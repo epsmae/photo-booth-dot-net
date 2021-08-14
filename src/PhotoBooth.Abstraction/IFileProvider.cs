@@ -5,5 +5,6 @@ namespace PhotoBooth.Abstraction
     public interface IFileProvider
     {
         Stream OpenFile(string fileName);
+        string PhotoDirectory { get; }
     }
 }

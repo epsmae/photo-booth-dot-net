@@ -10,6 +10,7 @@ namespace PhotoBooth.Service.Test
         public const int ReviewStepCount = 5;
         public const int ImageWidth = 1024;
         public const string Printer = "MyPrinter";
+        public const string Camera = "MyCamera";
 
 
         private readonly Mock<IConfigurationService> _mock;
@@ -22,6 +23,7 @@ namespace PhotoBooth.Service.Test
             _mock.SetupGet(m => m.StepDownDurationInSeconds).Returns(StepCountDownDurationMs);
             _mock.SetupGet(m => m.ReviewImageWidth).Returns(ImageWidth);
             _mock.SetupGet(m => m.SelectedPrinter).Returns(Printer);
+            _mock.SetupGet(m => m.SelectedCamera).Returns(Camera);
         }
 
         public IConfigurationService Object

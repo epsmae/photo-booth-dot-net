@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using PhotoBooth.Abstraction;
 using System;
 using System.Threading.Tasks;
@@ -13,10 +13,10 @@ namespace PhotoBooth.Service.Test
         internal CameraServiceMock()
         {
             _mock = new Mock<ICameraService>();
-            _mock.Setup(m => m.CaptureImage()).Returns(Capture);
+            _mock.Setup(m => m.CaptureImage(It.IsAny<string>())).Returns((string camera)=> Capture(camera));
         }
 
-        private async Task<CaptureResult> Capture()
+        private async Task<CaptureResult> Capture(string camera)
         {
             if (_throwCaptureException)
             {

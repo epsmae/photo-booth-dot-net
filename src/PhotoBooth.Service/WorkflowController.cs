@@ -195,7 +195,14 @@ namespace PhotoBooth.Service
             {
                 try
                 {
-                    _captureResult = await _cameraService.CaptureImage();
+                    string selectedCamera = _configurationService.SelectedCamera;
+
+                    if (string.IsNullOrEmpty(selectedCamera) && !await TrySetDefaultCamera())
+                    {
+                        throw new NoCameraAvailableException("No camera found");
+                    }
+
+                    _captureResult = await _cameraService.CaptureImage(selectedCamera);
 
                    using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
                    {
@@ -383,20 +390,40 @@ namespace PhotoBooth.Service
                 _configurationService.Register(ConfigurationKeys.StepDownDurationInSeconds, DefaultStepDownDurationInSeconds);
                 _configurationService.Register(ConfigurationKeys.ReviewImageWidth, DefaultPreviewImageWidth);
 
-                List<Printer> printers = await _printerService.ListPrinters();
-
-                if (printers.Any())
-                {
-                    _configurationService.Register(ConfigurationKeys.SelectedPrinter, printers.First().Name);
-                }
-                else
-                {
-                    _configurationService.Register(ConfigurationKeys.SelectedPrinter, string.Empty);
-                }
+                await TrySetInitialDefaultCamera();
+                await TrySetInitialDefaultPrinter();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to set default settings values");
+            }
+        }
+
+        private async Task TrySetInitialDefaultPrinter()
+        {
+            List<Printer> printers = await _printerService.ListPrinters();
+
+            if (printers.Any())
+            {
+                _configurationService.Register(ConfigurationKeys.SelectedPrinter, printers.First().Name);
+            }
+            else
+            {
+                _configurationService.Register(ConfigurationKeys.SelectedPrinter, string.Empty);
+            }
+        }
+
+        private async Task TrySetInitialDefaultCamera()
+        {
+            List<CameraInfo> cameras = await _cameraService.ListCameras();
+
+            if (cameras.Any())
+            {
+                _configurationService.Register(ConfigurationKeys.SelectedCamera, cameras.First().CameraModel);
+            }
+            else
+            {
+                _configurationService.Register(ConfigurationKeys.SelectedCamera, string.Empty);
             }
         }
 
@@ -409,6 +436,26 @@ namespace PhotoBooth.Service
                 if (printers.Any())
                 {
                     _configurationService.Register(ConfigurationKeys.SelectedPrinter, printers.First().Name);
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TrySetDefaultCamera()
+        {
+            try
+            {
+                List<CameraInfo> cameras = await _cameraService.ListCameras();
+                if (cameras.Any())
+                {
+                    _configurationService.Register(ConfigurationKeys.SelectedCamera, cameras.First().CameraModel);
                 }
 
                 return true;

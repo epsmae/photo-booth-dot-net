@@ -8,6 +8,11 @@ namespace PhotoBooth.Abstraction.Configuration
         int ReviewImageWidth { get; set; }
         string SelectedPrinter { get; set; }
 
+        string SelectedCamera
+        {
+            get; set;
+        }
+
 
         void Register<T>(string key, T defaultValue);
     }

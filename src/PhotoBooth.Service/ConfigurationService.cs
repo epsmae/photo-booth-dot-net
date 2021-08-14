@@ -16,11 +16,6 @@ namespace PhotoBooth.Service
         public ConfigurationService(IConfigurationProvider provider)
         {
             _provider = provider;
-
-            if (!_provider.LoadAvailableKeys().Any())
-            {
-                AddDefaultsValue();
-            }
         }
 
         public List<string> AvailableKeys
@@ -28,6 +23,18 @@ namespace PhotoBooth.Service
             get
             {
                 return _provider.LoadAvailableKeys();
+            }
+        }
+
+        public string SelectedCamera
+        {
+            get
+            {
+                return _provider.LoadEntry<string>(ConfigurationKeys.SelectedCamera);
+            }
+            set
+            {
+                _provider.AddOrUpdateEntry(ConfigurationKeys.SelectedCamera, value);
             }
         }
 
@@ -110,13 +117,6 @@ namespace PhotoBooth.Service
 
                 _provider.AddOrUpdateEntry(ConfigurationKeys.CaptureCountDownStepCount, value);
             }
-        }
-
-        private void AddDefaultsValue()
-        {
-            StepDownDurationInSeconds = 1;
-            ReviewCountDownStepCount = 10;
-            CaptureCountDownStepCount = 3;
         }
     }
 }

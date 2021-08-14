@@ -80,7 +80,7 @@ namespace PhotoBooth.Service
                 }
                 else
                 {
-                    entry.Type = value.GetType(),
+                    entry.Type = value.GetType();
                     entry.Value = JsonConvert.SerializeObject(value);
                 }
 

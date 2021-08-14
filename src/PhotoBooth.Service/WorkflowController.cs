@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
+using PhotoBooth.Abstraction.Exceptions;
 using Stateless;
 
 namespace PhotoBooth.Service
@@ -36,6 +39,13 @@ namespace PhotoBooth.Service
         public event EventHandler CountDownChanged;
         public event EventHandler ReviewCountDownChanged;
 
+        private const double DefaultStepDownDurationInSeconds = 1;
+        private const double DefaultReviewCountDownStepCount = 10;
+        private const double DefaultCaptureCountDownStepCount = 3;
+        // Raspberry pi touch 7" has width of 800px and side bar 50px
+        private const int DefaultPreviewImageWidth = 750;
+
+
         private readonly ILogger<WorkflowController> _logger;
         private readonly ICameraService _cameraService;
         private readonly IPrinterService _printerService;
@@ -44,8 +54,7 @@ namespace PhotoBooth.Service
         private readonly IConfigurationService _configurationService;
         private CaptureStates _state = CaptureStates.Initializing;
 
-        // Raspberry pi touch 7" has width of 800px and side bar 50px
-        private const int PreviewImageWidth = 750;
+
 
         private readonly StateMachine<CaptureStates, CaptureTriggers> _machine;
 
@@ -135,18 +144,14 @@ namespace PhotoBooth.Service
         {
             Task.Run(async () =>
             {
-                try
-                {
-                    await _cameraService.Initialize();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to initialize");
-                }
+                await RegisterSettings();
+                await InitializeCamera();
 
                 await _machine.FireAsync(CaptureTriggers.InitializationDone);
             });
         }
+
+        
 
         private void StopReviewTimer()
         {
@@ -164,13 +169,20 @@ namespace PhotoBooth.Service
             {
                 try
                 {
-                    await _printerService.Print("Canon_SELPHY_CP1300", _captureResult.FileName);
+                    string selectedPrinter = _configurationService.SelectedPrinter;
+
+                    if (string.IsNullOrEmpty(selectedPrinter) && !await TrySetDefaultPrinter())
+                    {
+                        throw new NoPrinterAvailableException("No printer found");
+                    }
+                    
+                    await _printerService.Print(_configurationService.SelectedPrinter, _captureResult.FileName);
 
                     await _machine.FireAsync(CaptureTriggers.PrintCompleted);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to capture image");
+                    _logger.LogError(ex, "Failed to print image");
                     _lastException = ex;
                     await _machine.FireAsync(CaptureTriggers.Error);
                 }
@@ -187,7 +199,7 @@ namespace PhotoBooth.Service
 
                    using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
                    {
-                       _currentImageData = _imageResizer.ResizeImage(stream, PreviewImageWidth);
+                       _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth);
                    }
 
                    await _machine.FireAsync(CaptureTriggers.CaptureCompleted);
@@ -348,6 +360,65 @@ namespace PhotoBooth.Service
         private void StartReviewTimer()
         {
             _reviewTimer.Change((int) _countDownStepDuration.TotalMilliseconds, Timeout.Infinite);
+        }
+
+        private async Task InitializeCamera()
+        {
+            try
+            {
+                await _cameraService.Initialize();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize");
+            }
+        }
+
+        private async Task RegisterSettings()
+        {
+            try
+            {
+                _configurationService.Register(ConfigurationKeys.CaptureCountDownStepCount, DefaultCaptureCountDownStepCount);
+                _configurationService.Register(ConfigurationKeys.ReviewCountDownStepCount, DefaultReviewCountDownStepCount);
+                _configurationService.Register(ConfigurationKeys.StepDownDurationInSeconds, DefaultStepDownDurationInSeconds);
+                _configurationService.Register(ConfigurationKeys.ReviewImageWidth, DefaultPreviewImageWidth);
+
+                List<Printer> printers = await _printerService.ListPrinters();
+
+                if (printers.Any())
+                {
+                    _configurationService.Register(ConfigurationKeys.SelectedPrinter, printers.First().Name);
+                }
+                else
+                {
+                    _configurationService.Register(ConfigurationKeys.SelectedPrinter, string.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to set default settings values");
+            }
+        }
+
+
+        private async Task<bool> TrySetDefaultPrinter()
+        {
+            try
+            {
+                List<PrintQueueItem> printers = await _printerService.ListPrintQueue();
+                if (printers.Any())
+                {
+                    _configurationService.Register(ConfigurationKeys.SelectedPrinter, printers.First().Name);
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+
+            return false;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace PhotoBooth.Client.Pages
             get; set;
         }
 
-        public string Cameras
+        public List<CameraInfo> Cameras
         {
             get;
             set;
@@ -51,7 +51,7 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
-        public string Printers
+        public List<Printer> Printers
         {
             get;
             set;
@@ -75,6 +75,11 @@ namespace PhotoBooth.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            SelectedPrinter = string.Empty;
+            SelectedCamera = string.Empty;
+            Printers = new List<Printer>();
+            Cameras = new List<CameraInfo>();
+
             await FetchCurrentLanguage();
             await FetchSettings();
             await FetchAvailableCameras();
@@ -90,10 +95,10 @@ namespace PhotoBooth.Client.Pages
                 CaptureCountDownStepCount = dto.CaptureCountDownStepCount;
                 ReviewCountDownStepCount = dto.ReviewCountDownStepCount;
                 StepDownDurationInSeconds = dto.StepDownDurationInSeconds;
+                ReviewImageWidth = dto.ReviewImageWidth;
+                SelectedCamera = dto.SelectedCamera;
+                SelectedPrinter = dto.SelectedPrinter;
                 StateHasChanged();
-                //CaptureCountDownStepCount = await HttpClient.GetFromJsonAsync<int>("api/Settings/CaptureCountDownStepCount");
-                //ReviewCountDownStepCount = await HttpClient.GetFromJsonAsync<int>("api/Settings/ReviewCountDownStepCount");
-                //StepDownDurationInSeconds = await HttpClient.GetFromJsonAsync<double>("api/Settings/StepDownDurationInSeconds");
             }
             catch (Exception ex)
             {
@@ -119,12 +124,30 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
+        public int ReviewImageWidth
+        {
+            get;
+            set;
+        }
+
+
+        public string SelectedCamera
+        {
+            get;
+            set;
+        }
+
+        public string SelectedPrinter
+        {
+            get;
+            set;
+        }
+
         private async Task FetchAvailableCameras()
         {
             try
             {
-                List<CameraInfo> cameras = await HttpClient.GetFromJsonAsync<List<CameraInfo>>("api/Camera/Cameras");
-                Cameras = string.Join(Environment.NewLine, cameras);
+                Cameras = await HttpClient.GetFromJsonAsync<List<CameraInfo>>("api/Camera/Cameras");
             }
             catch (Exception ex)
             {
@@ -136,8 +159,7 @@ namespace PhotoBooth.Client.Pages
         {
             try
             {
-                List<Printer> printers = await HttpClient.GetFromJsonAsync<List<Printer>>("api/Printer/Printers");
-                Printers = string.Join(Environment.NewLine, printers);
+                Printers = await HttpClient.GetFromJsonAsync<List<Printer>>("api/Printer/Printers");
             }
             catch (Exception ex)
             {
@@ -208,13 +230,11 @@ namespace PhotoBooth.Client.Pages
                 {
                     CaptureCountDownStepCount = CaptureCountDownStepCount,
                     ReviewCountDownStepCount = ReviewCountDownStepCount,
-                    StepDownDurationInSeconds = StepDownDurationInSeconds
+                    StepDownDurationInSeconds = StepDownDurationInSeconds,
+                    ReviewImageWidth = ReviewImageWidth,
+                    SelectedCamera = SelectedCamera,
+                    SelectedPrinter = SelectedPrinter
                 };
-
-                Logger.LogInformation($"CaptureCountDownStepCount {dto.CaptureCountDownStepCount} ");
-                Logger.LogInformation($"ReviewCountDownStepCount {dto.ReviewCountDownStepCount} ");
-                Logger.LogInformation($"StepDownDurationInSeconds {dto.StepDownDurationInSeconds} ");
-
 
                 await HttpClient.PostAsJsonAsync("api/Settings/SetSettings", dto);
             }

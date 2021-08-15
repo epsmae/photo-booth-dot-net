@@ -19,5 +19,23 @@ namespace PhotoBooth.Abstraction
             get;
             set;
         }
+
+        public int ReviewImageWidth
+        {
+            get;
+            set;
+        }
+
+        public string SelectedCamera
+        {
+            get;
+            set;
+        }
+
+        public string SelectedPrinter
+        {
+            get;
+            set;
+        }
     }
 }

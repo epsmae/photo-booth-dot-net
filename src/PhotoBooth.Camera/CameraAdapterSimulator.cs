@@ -43,6 +43,12 @@ namespace PhotoBooth.Camera
             return CreateSuccessResult();
         }
 
+        public async Task<CommandLineResult> Configure()
+        {
+            await Task.Delay(20);
+            return CreateSuccessResult();
+        }
+
         private static CommandLineResult CreateSuccessResult()
         {
             return CreateSuccessResult(string.Empty);

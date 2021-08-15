@@ -32,6 +32,13 @@ namespace PhotoBooth.Camera
             EvaluateResult(result);
         }
 
+        public async Task Configure()
+        {
+            CommandLineResult result = await _adapter.Configure();
+            LogResult(result);
+            EvaluateResult(result);
+        }
+
         public async Task<byte[]> CaptureImageData(string directory, string selectedCamera)
         {
             CaptureResult result = await CaptureImage(directory, selectedCamera);

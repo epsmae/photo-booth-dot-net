@@ -56,6 +56,16 @@ namespace PhotoBooth.Camera
             return MapResult(result);
         }
 
+        public async Task<CommandLineResult> Configure()
+        {
+            BufferedCommandResult result = await Cli.Wrap(GPhotoExe)
+                .WithArguments("--set-config capturetarget=1")
+                .WithValidation(CommandResultValidation.None)
+                .ExecuteBufferedAsync();
+
+            return MapResult(result);
+        }
+
 
         public async Task<CommandLineResult> GetStorageInfo()
         {

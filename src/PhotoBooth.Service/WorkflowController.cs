@@ -146,6 +146,7 @@ namespace PhotoBooth.Service
             {
                 await RegisterSettings();
                 await InitializeCamera();
+                await ConfigureCamera();
 
                 await _machine.FireAsync(CaptureTriggers.InitializationDone);
             });
@@ -380,6 +381,18 @@ namespace PhotoBooth.Service
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to initialize");
+            }
+        }
+
+        private async Task ConfigureCamera()
+        {
+            try
+            {
+                await _cameraService.Configure();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to configure");
             }
         }
 

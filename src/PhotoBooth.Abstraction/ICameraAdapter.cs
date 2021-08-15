@@ -10,5 +10,6 @@ namespace PhotoBooth.Abstraction
         Task<CommandLineResult> GetCameraStatus();
         Task<CommandLineResult> GetBatteryInfo();
         Task<CommandLineResult> Initialize();
+        Task<CommandLineResult> Configure();
     }
 }

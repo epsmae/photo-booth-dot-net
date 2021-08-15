@@ -11,5 +11,6 @@ namespace PhotoBooth.Abstraction
         Task<CameraStatus> FetchCameraStatus();
         Task<byte[]> CaptureImageData(string directory, string selectedCamera);
         Task Initialize();
+        Task Configure();
     }
 }

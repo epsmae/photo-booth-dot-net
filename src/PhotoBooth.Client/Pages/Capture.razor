@@ -4,11 +4,15 @@
 
 <div class="capture_container">
 
+    <InfoDialog @ref="InfoDialog" ConfirmationChanged="ConfirmDelete_Click"
+                Description=@LastError PositiveButtonText=@($"Ok") Title=@($"Error")>
+    </InfoDialog>
+
     <div class="center-div">
 
         @if (IsReviewImageVisible)
         {
-        <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+            <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
         }
 
     </div>
@@ -24,19 +28,24 @@
     </div>
 
     <div class="center-div">
+
+
+
         @if (IsCaptureButtonVisible)
         {
-        <div class="round-button"><div class="round-button-circle"><div class="round-button-text" style="font-size: 3.5em" @onclick="() => CaptureImage()">@localizer["capture.start"]</div></div></div>
+            <div class="round-button">
+                <div class="round-button-circle">
+                    <div class="round-button-text" style="font-size: 3.5em" @onclick="() => CaptureImage()">@localizer["capture.start"]</div></div></div>
         }
 
         @if (IsSpinnerVisible)
         {
-        <div class="spinner"></div>
+            <div class="spinner"></div>
         }
 
         @if (IsCountDownVisible)
         {
-        <p style="font-size: 10em;">@CountDownStep</p>
+            <p style="font-size: 10em;">@CountDownStep</p>
         }
 
     </div>

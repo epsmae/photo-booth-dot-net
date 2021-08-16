@@ -126,29 +126,7 @@ namespace PhotoBooth.Client.Pages
                 //messages.Add(encodedMsg);
                 State = state;
 
-                if (State == CaptureProcessState.Review)
-                {
-                    Task.Run(async () =>
-                    {
-                        await UpdateImage();
-                        StateHasChanged();
-                    });
-                }
-                else
-                {
-                    Image = string.Empty;
-                }
-                
-                if (State == CaptureProcessState.Error)
-                {
-                    Task.Run(async () =>
-                    {
-                        await UpdateErrorState();
-                        StateHasChanged();
-                    });
-                }
-
-                StateHasChanged();
+                HandleStateUpdate();
             });
 
 
@@ -169,7 +147,34 @@ namespace PhotoBooth.Client.Pages
 
             await UpdateServerState();
         }
-        
+
+        private void HandleStateUpdate()
+        {
+            if (State == CaptureProcessState.Review)
+            {
+                Task.Run(async () =>
+                {
+                    await UpdateImage();
+                    StateHasChanged();
+                });
+            }
+            else
+            {
+                Image = string.Empty;
+            }
+
+            if (State == CaptureProcessState.Error)
+            {
+                Task.Run(async () =>
+                {
+                    await UpdateErrorState();
+                    StateHasChanged();
+                });
+            }
+
+            StateHasChanged();
+        }
+
         public async ValueTask DisposeAsync()
         {
             if (_hubConnection is not null)
@@ -192,8 +197,17 @@ namespace PhotoBooth.Client.Pages
         
         protected async Task CaptureImage()
         {
-            await HttpClient.PostAsJsonAsync("api/Capture/Capture", string.Empty);
-            StateHasChanged();
+            try
+            {
+                await HttpClient.PostAsJsonAsync("api/Capture/Capture", string.Empty);
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+
         }
 
         protected async Task PrintImage()
@@ -226,6 +240,7 @@ namespace PhotoBooth.Client.Pages
             try
             {
                 State = await HttpClient.GetFromJsonAsync<CaptureProcessState>("api/Capture/State");
+                HandleStateUpdate();
             }
             catch (Exception ex)
             {

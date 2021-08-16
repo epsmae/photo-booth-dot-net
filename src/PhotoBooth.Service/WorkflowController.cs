@@ -40,8 +40,8 @@ namespace PhotoBooth.Service
         public event EventHandler ReviewCountDownChanged;
 
         private const double DefaultStepDownDurationInSeconds = 1;
-        private const double DefaultReviewCountDownStepCount = 10;
-        private const double DefaultCaptureCountDownStepCount = 3;
+        private const int DefaultReviewCountDownStepCount = 10;
+        private const int DefaultCaptureCountDownStepCount = 3;
         // Raspberry pi touch 7" has width of 800px and side bar 50px
         private const int DefaultPreviewImageWidth = 750;
 

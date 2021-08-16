@@ -50,7 +50,7 @@ namespace PhotoBooth.Camera
         {
             string fileName = Path.Combine(directory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
 
-            _logger.LogInformation($"Capture image with file name={fileName}");
+            _logger.LogInformation($"Capture image with camera={selectedCamera}, file name={fileName}");
 
             CommandLineResult result = await _adapter.Capture(selectedCamera, fileName);
             LogResult(result);

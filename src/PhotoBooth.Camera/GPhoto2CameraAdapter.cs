@@ -19,7 +19,7 @@ namespace PhotoBooth.Camera
         public async Task<CommandLineResult> Capture(string selectedCamera, string fileName)
         {
             BufferedCommandResult result = await Cli.Wrap(GPhotoExe)
-                .WithArguments($"--camera {selectedCamera} --filename {fileName} --keep --capture-image-and-download")
+                .WithArguments($"--camera \"{selectedCamera}\" --filename \"{fileName}\" --keep --capture-image-and-download")
                 .WithValidation(CommandResultValidation.None)
                 .ExecuteBufferedAsync();
 

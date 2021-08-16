@@ -14,8 +14,7 @@ namespace PhotoBooth.Server.Controllers
         {
             _service = service;
         }
-
-
+        
         [HttpGet]
         [ActionName(nameof(Settings))]
         public SettingsDto Settings()
@@ -24,7 +23,10 @@ namespace PhotoBooth.Server.Controllers
             {
                 CaptureCountDownStepCount = _service.CaptureCountDownStepCount,
                 ReviewCountDownStepCount = _service.ReviewCountDownStepCount,
-                StepDownDurationInSeconds = _service.StepDownDurationInSeconds
+                StepDownDurationInSeconds = _service.StepDownDurationInSeconds,
+                ReviewImageWidth = _service.ReviewImageWidth,
+                SelectedCamera = _service.SelectedCamera,
+                SelectedPrinter = _service.SelectedPrinter
             };
         }
 
@@ -35,51 +37,9 @@ namespace PhotoBooth.Server.Controllers
             _service.ReviewCountDownStepCount = settings.ReviewCountDownStepCount;
             _service.CaptureCountDownStepCount = settings.CaptureCountDownStepCount;
             _service.StepDownDurationInSeconds = settings.StepDownDurationInSeconds;
+            _service.ReviewImageWidth = settings.ReviewImageWidth;
+            _service.SelectedCamera = settings.SelectedCamera;
+            _service.SelectedPrinter = settings.SelectedPrinter;
         }
-
-        [HttpGet]
-        [ActionName(nameof(CaptureCountDownStepCount))]
-        public int CaptureCountDownStepCount()
-        {
-            return _service.CaptureCountDownStepCount;
-        }
-
-        [HttpGet]
-        [ActionName(nameof(ReviewCountDownStepCount))]
-        public int ReviewCountDownStepCount()
-        {
-            return _service.ReviewCountDownStepCount;
-        }
-
-        [HttpGet]
-        [ActionName(nameof(StepDownDurationInSeconds))]
-        public double StepDownDurationInSeconds()
-        {
-            return _service.StepDownDurationInSeconds;
-        }
-
-
-
-        [HttpPost]
-        [ActionName(nameof(SetCaptureCountDownStepCount))]
-        public void SetCaptureCountDownStepCount(int value)
-        {
-            _service.CaptureCountDownStepCount = value;
-        }
-
-        [HttpPost]
-        [ActionName(nameof(SetReviewCountDownStepCount))]
-        public void SetReviewCountDownStepCount(int value)
-        {
-            _service.ReviewCountDownStepCount = value;
-        }
-
-        [HttpPost]
-        [ActionName(nameof(SetStepDownDurationInSeconds))]
-        public void SetStepDownDurationInSeconds(double value)
-        {
-            _service.StepDownDurationInSeconds = value;
-        }
-
     }
 }

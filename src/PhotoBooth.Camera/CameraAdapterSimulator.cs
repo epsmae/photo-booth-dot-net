@@ -6,7 +6,7 @@ namespace PhotoBooth.Camera
 {
     public class CameraAdapterSimulator : ICameraAdapter
     {
-        public async Task<CommandLineResult> Capture(string fileName)
+        public async Task<CommandLineResult> Capture(string selectedCamera, string fileName)
         {
             await Task.Delay(5000);
 
@@ -16,7 +16,7 @@ namespace PhotoBooth.Camera
         public async Task<CommandLineResult> ListCameras()
         {
             await Task.Delay(200);
-            return CreateSuccessResult();
+            return CreateSuccessResult($"Model Port {Environment.NewLine}---{Environment.NewLine}Nikon  Port");
         }
 
         public async Task<CommandLineResult> GetStorageInfo()
@@ -43,12 +43,23 @@ namespace PhotoBooth.Camera
             return CreateSuccessResult();
         }
 
+        public async Task<CommandLineResult> Configure()
+        {
+            await Task.Delay(20);
+            return CreateSuccessResult();
+        }
+
         private static CommandLineResult CreateSuccessResult()
+        {
+            return CreateSuccessResult(string.Empty);
+        }
+
+        private static CommandLineResult CreateSuccessResult(string standardOutput)
         {
             return new CommandLineResult
             {
                 StandardError = string.Empty,
-                StandardOutput = string.Empty,
+                StandardOutput = standardOutput,
                 ExitCode = 0
             };
         }

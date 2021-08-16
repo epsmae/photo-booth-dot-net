@@ -18,14 +18,26 @@
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.available_cameras"]</FieldLabel>
-            <p>@Cameras</p>
+            <FieldLabel>@localizer["settings.selected_camera"]</FieldLabel>
+
+            <select class="form-control" @bind="SelectedCamera">
+                @foreach (var langCode in Cameras)
+                {
+                    <option value="@langCode.CameraModel">@langCode.CameraModel</option>
+                }
+            </select>
         </Field>
 
 
         <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.available_printers"]</FieldLabel>
-            <p>@Printers</p>
+            <FieldLabel>@localizer["settings.selected_printer"]</FieldLabel>
+
+            <select class="form-control" @bind="SelectedPrinter">
+                @foreach (var langCode in Printers)
+                {
+                    <option value="@langCode.Name">@langCode.Name</option>
+                }
+            </select>
         </Field>
 
 
@@ -49,6 +61,11 @@
         <Field ColumnSize="ColumnSize.IsFull">
             <FieldLabel>@localizer["settings.step_duration_in_seconds"]</FieldLabel>
             <NumericEdit TValue="double" @bind-Value="@StepDownDurationInSeconds" />
+        </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.review_image_width"]</FieldLabel>
+            <NumericEdit TValue="int" @bind-Value="@ReviewImageWidth" />
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">

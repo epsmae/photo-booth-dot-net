@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NUnit.Framework;
 
@@ -15,18 +16,9 @@ namespace PhotoBooth.Service.Test
             }
         }
 
-        //public string ConfigFile
-        //{
-        //    get
-        //    {
-        //        return Path.Combine(ConfigDirectory, "config.json");
-        //    }
-        //}
-
         [SetUp]
         public void Setup()
         {
-
             if (Directory.Exists(ConfigDirectory))
             {
                 Directory.Delete(ConfigDirectory, true);
@@ -36,9 +28,39 @@ namespace PhotoBooth.Service.Test
 
             FilePathProviderMock mock = new FilePathProviderMock();
             mock.ExecutionDirectory = ConfigDirectory;
-
             _provider = new JsonConfigurationProviderProvider(mock.Object);
         }
+
+        [Test]
+        public void TestRegisterEntryNotExisting()
+        {
+            Assert.AreEqual(0, _provider.LoadAvailableKeys().Count);
+
+            string userNameDefault = "MyDefaultUserName";
+            string userNameDefaultKey = "user_name_default";
+            _provider.RegisterEntry(userNameDefaultKey, userNameDefault);
+            
+            Assert.AreEqual(1, _provider.LoadAvailableKeys().Count);
+
+            Assert.AreEqual(userNameDefault, _provider.LoadEntry<string>(userNameDefaultKey));
+        }
+
+        [Test]
+        public void TestRegisterEntryExisting()
+        {
+            Assert.AreEqual(0, _provider.LoadAvailableKeys().Count);
+
+            string userName = "MyUserName";
+            string userNameKey = "user_name";
+            _provider.AddOrUpdateEntry(userNameKey, userName);
+            Assert.AreEqual(userName, _provider.LoadEntry<string>(userNameKey));
+
+            string userNameDefault = "MyDefaultUserName";
+            _provider.RegisterEntry(userNameKey, userNameDefault);
+
+            Assert.AreEqual(userName, _provider.LoadEntry<string>(userNameKey));
+        }
+
 
         [Test]
         public void TestSaveLoadLoadMultiple()
@@ -110,5 +132,4 @@ namespace PhotoBooth.Service.Test
             Assert.AreEqual(testObject.Name, loadedObject.Name);
         }
     }
-
 }

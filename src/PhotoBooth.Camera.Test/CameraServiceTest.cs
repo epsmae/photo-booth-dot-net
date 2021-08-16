@@ -10,6 +10,7 @@ namespace PhotoBooth.Camera.Test
 {
     public class CameraServiceTest
     {
+        private readonly string _imageDirectory = System.IO.Path.Combine(TestContext.CurrentContext.WorkDirectory, "Images");
         private CameraAdapterMock _mock;
         private CameraService _cameraService;
 
@@ -24,7 +25,7 @@ namespace PhotoBooth.Camera.Test
         [Test]
         public async Task TestCaptureSuccessful()
         {
-            CaptureResult result = await _cameraService.CaptureImage();
+            CaptureResult result = await _cameraService.CaptureImage(_imageDirectory, "my_camera");
             Assert.False(string.IsNullOrEmpty(result.FileName));
         }
 
@@ -33,7 +34,7 @@ namespace PhotoBooth.Camera.Test
         {
             _mock.ThrowCaptureNocCameraError = true;
 
-            Assert.CatchAsync<CameraException>(async () => await _cameraService.CaptureImage());
+            Assert.CatchAsync<CameraException>(async () => await _cameraService.CaptureImage(_imageDirectory,"my_camera"));
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace PhotoBooth.Camera.Test
         {
             _mock.ThrowCaptureOutOfFocus = true;
 
-            Assert.CatchAsync<CameraException>(async () => await _cameraService.CaptureImage());
+            Assert.CatchAsync<CameraException>(async () => await _cameraService.CaptureImage(_imageDirectory, "my_camera"));
         }
 
         [Test]

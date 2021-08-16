@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
@@ -78,7 +81,9 @@ namespace PhotoBooth.Console
         {
             try
             {
-                CaptureResult result = await _service.CaptureImage();
+                List<CameraInfo> cameras = await _service.ListCameras();
+                string directory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                CaptureResult result = await _service.CaptureImage(directory, cameras.First().CameraModel);
                 _logger.LogInformation($"Capture result: {result.FileName}");
                 return ResultCodes.Success;
             }

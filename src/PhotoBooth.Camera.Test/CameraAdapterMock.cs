@@ -23,7 +23,7 @@ namespace PhotoBooth.Camera.Test
         public CameraAdapterMock()
         {
             _mock = new Mock<ICameraAdapter>();
-            _mock.Setup(m => m.Capture(It.IsAny<string>())).ReturnsAsync((string fileName) => Capture(fileName));
+            _mock.Setup(m => m.Capture(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((string camera, string fileName) => Capture(camera, fileName));
             _mock.Setup(m => m.ListCameras()).ReturnsAsync(() => ListCameras());
         }
 
@@ -37,7 +37,7 @@ namespace PhotoBooth.Camera.Test
             return CreateSuccessResult("list_cameras_available.txt");
         }
 
-        private CommandLineResult Capture(string fileName)
+        private CommandLineResult Capture(string camera, string fileName)
         {
             if (ThrowCaptureNocCameraError)
             {

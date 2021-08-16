@@ -131,7 +131,7 @@ namespace PhotoBooth.Camera
         {
             if (result.StandardOutput.ToLower().Contains("Out of Focus".ToLower()))
             {
-                throw new CameraException("Camera Out of Focus");
+                throw new OutOfFocusException("Camera Out of Focus");
             }
             
             if (result.ExitCode != 0)

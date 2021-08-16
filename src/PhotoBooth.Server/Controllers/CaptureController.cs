@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using System;
 using System.Threading.Tasks;
+using PhotoBooth.Abstraction.Exceptions;
 
 namespace PhotoBooth.Server.Controllers
 {
@@ -89,8 +90,11 @@ namespace PhotoBooth.Server.Controllers
         [ActionName(nameof(LastException))]
         public CaptureError LastException()
         {
-
-            return new CaptureError{ErrorMessage = _workflowController.LastException.Message};
+            return new CaptureError
+            {
+                Exception = ExceptionHelper.Convert(_workflowController.LastException),
+                ErrorMessage = _workflowController.LastException.Message
+            };
         }
 
         [HttpGet]

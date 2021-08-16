@@ -5,8 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
+using PhotoBooth.Abstraction.Exceptions;
 
 namespace PhotoBooth.Client.Pages
 {
@@ -28,6 +30,13 @@ namespace PhotoBooth.Client.Pages
         protected ILogger<Capture> Logger
         {
             get; set;
+        }
+
+        [Inject]
+        protected IStringLocalizer<Index> Localizer
+        {
+            get;
+            set;
         }
 
 
@@ -204,15 +213,20 @@ namespace PhotoBooth.Client.Pages
             }
             catch (Exception ex)
             {
-                
+                Logger.LogError(ex, "Failed to capture image");
             }
-
-
         }
 
         protected async Task PrintImage()
         {
-            await HttpClient.PostAsJsonAsync("api/Capture/Print", string.Empty);
+            try
+            {
+                await HttpClient.PostAsJsonAsync("api/Capture/Print", string.Empty);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to print image");
+            }
         }
 
         private async Task UpdateErrorState()
@@ -221,7 +235,7 @@ namespace PhotoBooth.Client.Pages
             try
             {
                 CaptureError lastErrorException = await HttpClient.GetFromJsonAsync<CaptureError>("api/Capture/LastException");
-                _lastError = lastErrorException != null ? lastErrorException.ErrorMessage :  string.Empty;
+                _lastError = TryGetLocalizedErrorMessage(lastErrorException);
 
                 if (State == CaptureProcessState.Error && ! string.IsNullOrEmpty(_lastError))
                 {
@@ -233,6 +247,37 @@ namespace PhotoBooth.Client.Pages
                 _lastError = string.Empty;
                 Logger.LogError(ex, "Failed to fetch error");
             }
+        }
+
+        private string TryGetLocalizedErrorMessage(CaptureError error)
+        {
+            if (error.Exception == PhotoBoothExceptions.NoPrinterAvailable)
+            {
+                return Localizer.GetString("capture.error.no_camera_available");
+            }
+
+            if (error.Exception == PhotoBoothExceptions.GeneralPrinterError)
+            {
+                return Localizer.GetString("capture.error.printer_error");
+            }
+
+            if (error.Exception == PhotoBoothExceptions.NoCameraAvailable)
+            {
+                return Localizer.GetString("capture.error.no_printer_available");
+            }
+
+            if (error.Exception == PhotoBoothExceptions.CameraOutOfFocus)
+            {
+                return Localizer.GetString("capture.error.camera_out_of_focus");
+            }
+
+            if (error.Exception == PhotoBoothExceptions.GeneralCaptureError)
+            {
+                return Localizer.GetString("capture.error.capture_error");
+            }
+
+
+            return error != null ? error.ErrorMessage :  string.Empty;
         }
 
         private async Task UpdateServerState()

@@ -34,7 +34,7 @@ namespace PhotoBooth.Camera.Test
         {
             _mock.ThrowCaptureNocCameraError = true;
 
-            Assert.CatchAsync<CameraException>(async () => await _cameraService.CaptureImage(_imageDirectory,"my_camera"));
+            Assert.CatchAsync<CameraNotAvailableException>(async () => await _cameraService.CaptureImage(_imageDirectory,"my_camera"));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace PhotoBooth.Camera.Test
         {
             _mock.ThrowCaptureOutOfFocus = true;
 
-            Assert.CatchAsync<CameraException>(async () => await _cameraService.CaptureImage(_imageDirectory, "my_camera"));
+            Assert.CatchAsync<CameraOutOfFocusException>(async () => await _cameraService.CaptureImage(_imageDirectory, "my_camera"));
         }
 
         [Test]

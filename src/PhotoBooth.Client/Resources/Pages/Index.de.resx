@@ -129,6 +129,27 @@
   <data name="about.title.about_photo_booth_dot_net" xml:space="preserve">
     <value>Über Photo Booth .Net</value>
   </data>
+  <data name="capture.error.camera_out_of_focus" xml:space="preserve">
+    <value>Kamera Fokus-Fehler</value>
+  </data>
+  <data name="capture.error.capture_error" xml:space="preserve">
+    <value>Kamera Fehler</value>
+  </data>
+  <data name="capture.error.no_camera_available" xml:space="preserve">
+    <value>Keine Kamera verfügbar</value>
+  </data>
+  <data name="capture.error.no_printer_available" xml:space="preserve">
+    <value>Kein Drucker verfügbar</value>
+  </data>
+  <data name="capture.error.printer_error" xml:space="preserve">
+    <value>Drucker Fehler</value>
+  </data>
+  <data name="capture.error_dialog.error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="capture.error_dialog.ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
   <data name="capture.print" xml:space="preserve">
     <value>DRUCKEN</value>
   </data>

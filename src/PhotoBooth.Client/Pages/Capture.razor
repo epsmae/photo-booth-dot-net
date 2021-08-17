@@ -5,7 +5,7 @@
 <div class="capture_container">
 
     <InfoDialog @ref="InfoDialog" ConfirmationChanged="ConfirmDelete_Click"
-                Description=@LastError PositiveButtonText=@($"Ok") Title=@($"Error")>
+                Description=@LastError PositiveButtonText=@localizer["capture.error_dialog.ok"] Title=@localizer["capture.error_dialog.error"]>
     </InfoDialog>
 
     <div class="center-div">

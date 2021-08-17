@@ -144,6 +144,12 @@
   <data name="capture.error.printer_error" xml:space="preserve">
     <value>Printer error</value>
   </data>
+  <data name="capture.error_dialog.error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="capture.error_dialog.ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
   <data name="capture.print" xml:space="preserve">
     <value>PRINT</value>
   </data>

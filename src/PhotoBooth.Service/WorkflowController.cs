@@ -174,7 +174,7 @@ namespace PhotoBooth.Service
 
                     if (string.IsNullOrEmpty(selectedPrinter) && !await TrySetDefaultPrinter())
                     {
-                        throw new NoPrinterAvailableException("No printer found");
+                        throw new PrinterNotAvailableException("No printer found");
                     }
                     
                     await _printerService.Print(_configurationService.SelectedPrinter, _captureResult.FileName);

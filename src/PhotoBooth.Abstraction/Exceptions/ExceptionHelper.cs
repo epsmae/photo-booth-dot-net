@@ -25,7 +25,7 @@ namespace PhotoBooth.Abstraction.Exceptions
 
             if (ex is PrinterException)
             {
-                if (ex is NoPrinterAvailableException)
+                if (ex is PrinterNotAvailableException)
                 {
                     return PhotoBoothExceptions.NoPrinterAvailable;
                 }

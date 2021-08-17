@@ -9,12 +9,12 @@ namespace PhotoBooth.Abstraction.Exceptions
         {
             if (ex is CameraException)
             {
-                if (ex is NoCameraAvailableException)
+                if (ex is CameraNotAvailableException)
                 {
                     return PhotoBoothExceptions.NoCameraAvailable;
                 }
 
-                if (ex is OutOfFocusException)
+                if (ex is CameraOutOfFocusException)
                 {
                     return PhotoBoothExceptions.CameraOutOfFocus;
                 }

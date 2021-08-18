@@ -168,11 +168,17 @@
   <data name="home.title.welcome" xml:space="preserve">
     <value>Wilkommen bei Photo Boot .Net</value>
   </data>
+  <data name="printer_queue_dialog.clear_queue" xml:space="preserve">
+    <value>Warteschlange löschen</value>
+  </data>
+  <data name="printer_queue_dialog.ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="printer_queue_dialog.printer_queue" xml:space="preserve">
+    <value>Warteschlange</value>
+  </data>
   <data name="settings.capture_count_down_step_count" xml:space="preserve">
     <value>Anzahl Schritte im Capture Count Down</value>
-  </data>
-  <data name="settings.clear_printer_queue" xml:space="preserve">
-    <value>Warteschlange löschen</value>
   </data>
   <data name="settings.printer_queue" xml:space="preserve">
     <value>Drucker Warteschlange</value>
@@ -194,6 +200,9 @@
   </data>
   <data name="settings.selected_printer" xml:space="preserve">
     <value>Selektierter Drucker</value>
+  </data>
+  <data name="settings.show_printer_queue" xml:space="preserve">
+    <value>Warteschlange anzeigen</value>
   </data>
   <data name="settings.step_duration_in_seconds" xml:space="preserve">
     <value>Schrittdauer in Sekunden</value>

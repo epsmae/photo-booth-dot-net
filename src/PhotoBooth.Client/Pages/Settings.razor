@@ -5,6 +5,11 @@
 
     <h3>@localizer["settings.title.settings"]</h3>
 
+
+    <PrinterQueueDialog @ref="PrinterDialog" />
+    
+
+
     <Fields Style="margin:20px; max-width: 400px; height: 100%;">
         <Field ColumnSize="ColumnSize.IsFull">
 
@@ -43,7 +48,9 @@
 
         <Field ColumnSize="ColumnSize.IsFull">
             <FieldLabel>@localizer["settings.printer_queue"]</FieldLabel>
-            <p>@PrinterQueue</p>
+            <p>
+                <button class="btn btn-secondary" @onclick="() => ShowPrintQueue()">@localizer["settings.show_printer_queue"]</button>
+            </p>
         </Field>
 
 
@@ -70,7 +77,6 @@
 
         <Field ColumnSize="ColumnSize.IsFull">
             <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
-            <button class="btn btn-primary" @onclick="() => ClearPrintQueue()">@localizer["settings.clear_printer_queue"]</button>
         </Field>
 
     </Fields>

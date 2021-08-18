@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Client.Models;
+using PhotoBooth.Client.Shared;
 
 namespace PhotoBooth.Client.Pages
 {
@@ -39,13 +40,12 @@ namespace PhotoBooth.Client.Pages
             get; set;
         }
 
-        public List<CameraInfo> Cameras
+        protected PrinterQueueDialog PrinterDialog
         {
-            get;
-            set;
+            get; set;
         }
 
-        public string PrinterQueue
+        public List<CameraInfo> Cameras
         {
             get;
             set;
@@ -84,7 +84,6 @@ namespace PhotoBooth.Client.Pages
             await FetchSettings();
             await FetchAvailableCameras();
             await FetchPrinters();
-            await FetchPrinterQueue();
         }
 
         private async Task FetchSettings()
@@ -167,31 +166,10 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
-        private async Task FetchPrinterQueue()
-        {
-            try
-            {
-                List<PrintQueueItem> queueItems = await HttpClient.GetFromJsonAsync<List<PrintQueueItem>>("api/Printer/PrinterQueue");
-                PrinterQueue = string.Join(Environment.NewLine, queueItems);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed fetch printer queue items");
-            }
-        }
 
-        protected async Task ClearPrintQueue()
+        protected void ShowPrintQueue()
         {
-            try
-            {
-                await HttpClient.PostAsJsonAsync("api/Printer/ClearPrintQueue", string.Empty);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed to clear print queue");
-            }
-
-            await FetchPrinterQueue();
+            PrinterDialog.Show();
         }
 
         protected List<LanguageConfiguration> langCodes = new List<LanguageConfiguration>()
@@ -208,7 +186,12 @@ namespace PhotoBooth.Client.Pages
             }
         };
 
-        
+        protected async Task Ok_Click(bool deleteConfirmed)
+        {
+            await Task.Delay(10);
+        }
+
+
         protected async Task ChangeLanguage()
         {
             await JsRuntime.InvokeAsync<string>("setLanguage", _selectedLanguage);

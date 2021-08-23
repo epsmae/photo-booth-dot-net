@@ -43,7 +43,8 @@ namespace PhotoBooth.Service
         private const int DefaultReviewCountDownStepCount = 10;
         private const int DefaultCaptureCountDownStepCount = 3;
         // Raspberry pi touch 7" has width of 800px and side bar 50px
-        private const int DefaultPreviewImageWidth = 750;
+        private const int DefaultReviewImageWidth = 750;
+        private const int DefaultReviewImageQuality = 50;
 
 
         private readonly ILogger<WorkflowController> _logger;
@@ -212,7 +213,7 @@ namespace PhotoBooth.Service
 
                    using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
                    {
-                       _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth);
+                       _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth, _configurationService.ReviewImageQuality);
                    }
 
                    await _machine.FireAsync(CaptureTriggers.CaptureCompleted);
@@ -411,7 +412,8 @@ namespace PhotoBooth.Service
                 _configurationService.Register(ConfigurationKeys.CaptureCountDownStepCount, DefaultCaptureCountDownStepCount);
                 _configurationService.Register(ConfigurationKeys.ReviewCountDownStepCount, DefaultReviewCountDownStepCount);
                 _configurationService.Register(ConfigurationKeys.StepDownDurationInSeconds, DefaultStepDownDurationInSeconds);
-                _configurationService.Register(ConfigurationKeys.ReviewImageWidth, DefaultPreviewImageWidth);
+                _configurationService.Register(ConfigurationKeys.ReviewImageWidth, DefaultReviewImageWidth);
+                _configurationService.Register(ConfigurationKeys.ReviewImageQuality, DefaultReviewImageQuality);
 
                 await TrySetInitialDefaultCamera();
                 await TrySetInitialDefaultPrinter();

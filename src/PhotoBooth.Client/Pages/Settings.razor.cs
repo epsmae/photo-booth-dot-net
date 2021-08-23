@@ -95,6 +95,7 @@ namespace PhotoBooth.Client.Pages
                 ReviewCountDownStepCount = dto.ReviewCountDownStepCount;
                 StepDownDurationInSeconds = dto.StepDownDurationInSeconds;
                 ReviewImageWidth = dto.ReviewImageWidth;
+                ReviewImageQuality = dto.ReviewImageQuality;
                 SelectedCamera = dto.SelectedCamera;
                 SelectedPrinter = dto.SelectedPrinter;
                 StateHasChanged();
@@ -124,6 +125,12 @@ namespace PhotoBooth.Client.Pages
         }
 
         public int ReviewImageWidth
+        {
+            get;
+            set;
+        }
+
+        public int ReviewImageQuality
         {
             get;
             set;
@@ -215,6 +222,7 @@ namespace PhotoBooth.Client.Pages
                     ReviewCountDownStepCount = ReviewCountDownStepCount,
                     StepDownDurationInSeconds = StepDownDurationInSeconds,
                     ReviewImageWidth = ReviewImageWidth,
+                    ReviewImageQuality = ReviewImageQuality,
                     SelectedCamera = SelectedCamera,
                     SelectedPrinter = SelectedPrinter
                 };

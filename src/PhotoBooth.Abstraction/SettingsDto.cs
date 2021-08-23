@@ -26,6 +26,12 @@ namespace PhotoBooth.Abstraction
             set;
         }
 
+        public int ReviewImageQuality
+        {
+            get;
+            set;
+        }
+
         public string SelectedCamera
         {
             get;

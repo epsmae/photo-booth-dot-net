@@ -189,6 +189,9 @@
   <data name="settings.review_count_down_step_count" xml:space="preserve">
     <value>Nr of count down steps in review</value>
   </data>
+  <data name="settings.review_image_quality" xml:space="preserve">
+    <value>Review Quality</value>
+  </data>
   <data name="settings.review_image_width" xml:space="preserve">
     <value>Review Image Width</value>
   </data>

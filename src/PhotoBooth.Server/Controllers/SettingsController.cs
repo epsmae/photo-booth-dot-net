@@ -26,7 +26,8 @@ namespace PhotoBooth.Server.Controllers
                 StepDownDurationInSeconds = _service.StepDownDurationInSeconds,
                 ReviewImageWidth = _service.ReviewImageWidth,
                 SelectedCamera = _service.SelectedCamera,
-                SelectedPrinter = _service.SelectedPrinter
+                SelectedPrinter = _service.SelectedPrinter,
+                ReviewImageQuality = _service.ReviewImageQuality
             };
         }
 
@@ -40,6 +41,7 @@ namespace PhotoBooth.Server.Controllers
             _service.ReviewImageWidth = settings.ReviewImageWidth;
             _service.SelectedCamera = settings.SelectedCamera;
             _service.SelectedPrinter = settings.SelectedPrinter;
+            _service.ReviewImageQuality = settings.ReviewImageQuality;
         }
     }
 }

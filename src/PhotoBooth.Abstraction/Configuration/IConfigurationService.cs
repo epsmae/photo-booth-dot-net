@@ -6,14 +6,9 @@ namespace PhotoBooth.Abstraction.Configuration
         int ReviewCountDownStepCount { get; set; }
         int CaptureCountDownStepCount { get; set; }
         int ReviewImageWidth { get; set; }
+        int ReviewImageQuality { get; set; }
         string SelectedPrinter { get; set; }
-
-        string SelectedCamera
-        {
-            get; set;
-        }
-
-
+        string SelectedCamera { get; set; }
         void Register<T>(string key, T defaultValue);
     }
 }

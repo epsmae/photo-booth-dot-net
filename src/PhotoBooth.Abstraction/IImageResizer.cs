@@ -7,6 +7,6 @@ namespace PhotoBooth.Abstraction
         ImageDimensions LoadImageInfo(Stream fileStream);
 
 
-        byte[] ResizeImage(Stream fileStream, int expectedWidth);
+        byte[] ResizeImage(Stream fileStream, int expectedWidth, int expectedQuality);
     }
 }

@@ -57,6 +57,18 @@ namespace PhotoBooth.Service
             }
         }
 
+        public int ReviewImageQuality
+        {
+            get
+            {
+                return GetValue<int>(ConfigurationKeys.ReviewImageQuality);
+            }
+            set
+            {
+                SetValue(ConfigurationKeys.ReviewImageQuality, value);
+            }
+        }
+
         public string SelectedPrinter
         {
             get

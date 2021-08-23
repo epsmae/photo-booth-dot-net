@@ -76,6 +76,11 @@
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.review_image_quality"]</FieldLabel>
+            <NumericEdit TValue="int" @bind-Value="@ReviewImageQuality" />
+        </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
             <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
         </Field>
 

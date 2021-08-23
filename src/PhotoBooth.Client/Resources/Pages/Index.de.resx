@@ -189,8 +189,11 @@
   <data name="settings.review_count_down_step_count" xml:space="preserve">
     <value>Anzahl Schritte im Review Count Down</value>
   </data>
+  <data name="settings.review_image_quality" xml:space="preserve">
+    <value>Review Bildqualität</value>
+  </data>
   <data name="settings.review_image_width" xml:space="preserve">
-    <value>Review Image Width</value>
+    <value>Review Bildbreite</value>
   </data>
   <data name="settings.save_settings" xml:space="preserve">
     <value>Einstellungen speichern</value>

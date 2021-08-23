@@ -9,6 +9,7 @@ using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
 using PhotoBooth.Abstraction.Exceptions;
 using Stateless;
+using Stateless.Graph;
 
 namespace PhotoBooth.Service
 {
@@ -293,7 +294,13 @@ namespace PhotoBooth.Service
         {
             return _machine.FireAsync(CaptureTriggers.Print);
         }
-        
+
+
+        public string GenerateUmlDiagram()
+        {
+            return UmlDotGraph.Format(_machine.GetInfo());
+        }
+
         private void OnCountDownTimerElapsed(object state)
         {
             try

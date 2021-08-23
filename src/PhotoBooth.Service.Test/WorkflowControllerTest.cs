@@ -48,6 +48,14 @@ namespace PhotoBooth.Service.Test
         }
 
         [Test]
+        [Ignore("Only for doc generation")]
+        public void TestCreateDiagram()
+        {
+            // can be visualized on https://sketchviz.com/new
+            string diagram = _controller.GenerateUmlDiagram();
+        }
+
+        [Test]
         public async Task TestWorkflowSuccessfulWithoutPrint()
         {
             await _controller.Capture();

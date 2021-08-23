@@ -10,11 +10,7 @@ namespace PhotoBooth.Abstraction
         Task Capture();
 
         Task Print();
-
-        //void SetReviewDuration(int stepCount);
-
-        //void SetCountDown(int stepCount);
-
+        
         int CurrentCountDownStep { get; }
 
         Exception LastException { get; }
@@ -29,9 +25,8 @@ namespace PhotoBooth.Abstraction
         event EventHandler CountDownChanged;
 
         Task ConfirmError();
-
-        //void SetCountDownStepDuration(TimeSpan stepDuration);
-
+        
         event EventHandler ReviewCountDownChanged;
+        string GenerateUmlDiagram();
     }
 }

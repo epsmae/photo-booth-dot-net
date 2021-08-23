@@ -129,6 +129,9 @@
   <data name="about.title.about_photo_booth_dot_net" xml:space="preserve">
     <value>Über Photo Booth .Net</value>
   </data>
+  <data name="capture.error.camera_claim_failed" xml:space="preserve">
+    <value>Fehler Kamer wird von einer anderen Applikation verwendet. Versuchen Sie es nochmals.</value>
+  </data>
   <data name="capture.error.camera_out_of_focus" xml:space="preserve">
     <value>Kamera Fokus-Fehler</value>
   </data>

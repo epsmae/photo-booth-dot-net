@@ -129,6 +129,9 @@
   <data name="about.title.about_photo_booth_dot_net" xml:space="preserve">
     <value>About Photo Booth .Net</value>
   </data>
+  <data name="capture.error.camera_claim_failed" xml:space="preserve">
+    <value>Error camera is claimed by another application. Please try again.</value>
+  </data>
   <data name="capture.error.camera_out_of_focus" xml:space="preserve">
     <value>Camera out of focus</value>
   </data>

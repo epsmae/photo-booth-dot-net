@@ -219,6 +219,11 @@ namespace PhotoBooth.Service
                 }
                 catch (Exception ex)
                 {
+                    if (ex is CameraClaimException)
+                    {
+                        Task t = Task.Run(InitializeCamera);
+                    }
+                    
                     _logger.LogError(ex, "Failed to capture image");
                     _lastException = ex;
                     _captureResult = null;

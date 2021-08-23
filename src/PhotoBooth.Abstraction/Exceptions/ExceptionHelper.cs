@@ -19,6 +19,11 @@ namespace PhotoBooth.Abstraction.Exceptions
                     return PhotoBoothExceptions.CameraOutOfFocus;
                 }
 
+                if (ex is CameraClaimException)
+                {
+                    return PhotoBoothExceptions.CameraClaimFailed;
+                }
+
                 return PhotoBoothExceptions.UnknownError;
 
             }

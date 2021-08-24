@@ -38,6 +38,12 @@ $ hostname
 $ ifconfig -a
 ```
 
+#### Increase GPU memory
+1.Open Preferences/Raspberry Pi Configuration/Performance
+2. Set GPU Memory to 256
+
+
+
 
 ## Required tools
 
@@ -104,5 +110,67 @@ Now you should be able to acess it over your raspberry hostname.
 http://raspberrypi:631/
 ```
 
+Install unclutter to hide mouse:
+
+```
+sudo apt install unclutter
+```
+Add unclutter to file '/etc/xdg/lxsession/LXDE-pi/autostart'
+It should look similar:
+```
+
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+@xscreensaver -no-splash
+unclutter -idle 5
+```
+
+Disable screen saver:
+```
+sudo apt-get install xscreensaver
+```
+Openn Settings/Screensaver and select 'disable screensaver' in the dropdown menu.
 
 
+
+Set photobooth as service
+
+```
+sudo nano /etc/systemd/system/photobooth.service
+```
+
+```
+[Unit]
+Description=PhotoBooth App
+
+[Service]
+WorkingDirectory=/home/pi/photobooth
+ExecStart=dotnet PhotoBooth.Server.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=photobooth
+User=root
+
+[Install]
+WantedBy=multi-user.target
+```
+
+
+Start and Log
+```
+sudo systemctl enable photobooth.service
+sudo systemctl start photobooth.service
+sudo systemctl status photobooth.service
+journalctl -u photobooth.service
+```
+
+
+Auto Start kiosk browser
+
+Full screen mode can be closed with alt + F4
+
+```
+@chromium-browser --kiosk http://localhost:5050
+```

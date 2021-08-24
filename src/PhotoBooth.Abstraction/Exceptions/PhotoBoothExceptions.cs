@@ -4,6 +4,7 @@ namespace PhotoBooth.Abstraction.Exceptions
     {
         NoCameraAvailable,
         CameraOutOfFocus,
+        CameraClaimFailed,
         NoPrinterAvailable,
         GeneralCaptureError,
         GeneralPrinterError,

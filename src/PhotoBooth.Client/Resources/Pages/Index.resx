@@ -129,6 +129,9 @@
   <data name="about.title.about_photo_booth_dot_net" xml:space="preserve">
     <value>About Photo Booth .Net</value>
   </data>
+  <data name="capture.error.camera_claim_failed" xml:space="preserve">
+    <value>Error camera is claimed by another application. Please try again.</value>
+  </data>
   <data name="capture.error.camera_out_of_focus" xml:space="preserve">
     <value>Camera out of focus</value>
   </data>
@@ -156,6 +159,15 @@
   <data name="capture.start" xml:space="preserve">
     <value>START</value>
   </data>
+  <data name="captured_image_dialog.available_images" xml:space="preserve">
+    <value>Available Images</value>
+  </data>
+  <data name="captured_image_dialog.clear_images" xml:space="preserve">
+    <value>Clear Images</value>
+  </data>
+  <data name="captured_image_dialog.ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="home.check_settings" xml:space="preserve">
     <value>Check</value>
   </data>
@@ -177,6 +189,9 @@
   <data name="printer_queue_dialog.printer_queue" xml:space="preserve">
     <value>Printer queue</value>
   </data>
+  <data name="settings.captured_images" xml:space="preserve">
+    <value>Captured Images</value>
+  </data>
   <data name="settings.capture_count_down_step_count" xml:space="preserve">
     <value>Nr of count down steps in capture</value>
   </data>
@@ -185,6 +200,9 @@
   </data>
   <data name="settings.review_count_down_step_count" xml:space="preserve">
     <value>Nr of count down steps in review</value>
+  </data>
+  <data name="settings.review_image_quality" xml:space="preserve">
+    <value>Review Quality</value>
   </data>
   <data name="settings.review_image_width" xml:space="preserve">
     <value>Review Image Width</value>
@@ -200,6 +218,9 @@
   </data>
   <data name="settings.selected_printer" xml:space="preserve">
     <value>Selected Printer</value>
+  </data>
+  <data name="settings.show_captured_images" xml:space="preserve">
+    <value>Show Captured Images</value>
   </data>
   <data name="settings.show_printer_queue" xml:space="preserve">
     <value>Show printer queue</value>

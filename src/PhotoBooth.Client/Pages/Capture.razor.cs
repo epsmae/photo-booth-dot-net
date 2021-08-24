@@ -131,10 +131,7 @@ namespace PhotoBooth.Client.Pages
 
             _hubConnection.On<CaptureProcessState>("ReceiveStateChanged", (state) =>
             {
-                //var encodedMsg = $"{user}: {message}";
-                //messages.Add(encodedMsg);
                 State = state;
-
                 HandleStateUpdate();
             });
 
@@ -274,6 +271,11 @@ namespace PhotoBooth.Client.Pages
             if (error.Exception == PhotoBoothExceptions.GeneralCaptureError)
             {
                 return Localizer.GetString("capture.error.capture_error");
+            }
+
+            if (error.Exception == PhotoBoothExceptions.CameraClaimFailed)
+            {
+                return Localizer.GetString("capture.error.camera_claim_failed");
             }
 
 

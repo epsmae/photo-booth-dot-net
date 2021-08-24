@@ -7,7 +7,7 @@ namespace PhotoBooth.Service
     public class ImageResizer : IImageResizer
     {
 
-        public byte[] ResizeImage(Stream fileStream, int expectedWidth)
+        public byte[] ResizeImage(Stream fileStream, int expectedWidth, int expectedQuality)
         {
             using (SKBitmap srcBitmap = SKBitmap.Decode(fileStream))
             {
@@ -18,7 +18,7 @@ namespace PhotoBooth.Service
                 using (SKBitmap resizedBitmap =
                     srcBitmap.Resize(new SKSizeI(newWidth, newHeight), SKFilterQuality.Low))
                 {
-                    return resizedBitmap.Encode(SKEncodedImageFormat.Jpeg, 20).ToArray();
+                    return resizedBitmap.Encode(SKEncodedImageFormat.Jpeg, expectedQuality).ToArray();
                 }
             }
         }

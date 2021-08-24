@@ -30,7 +30,7 @@ namespace PhotoBooth.Service.Test
 
 
             IConfigurationService configService = new ConfigurationServiceMock().Object;
-            _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileProviderMock(), configService);
+            _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileServiceMock(), configService);
             _controller.CountDownChanged += OnCountDownChanged;
             _controller.StateChanged += OnStateChanged;
 
@@ -45,6 +45,14 @@ namespace PhotoBooth.Service.Test
         {
             _controller.CountDownChanged -= OnCountDownChanged;
             _controller.StateChanged -= OnStateChanged;
+        }
+
+        [Test]
+        [Ignore("Only for doc generation")]
+        public void TestCreateDiagram()
+        {
+            // can be visualized on https://sketchviz.com/new
+            string diagram = _controller.GenerateUmlDiagram();
         }
 
         [Test]

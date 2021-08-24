@@ -45,6 +45,12 @@ namespace PhotoBooth.Client.Pages
             get; set;
         }
 
+        protected CapturedImageDialog ImageDialog
+        {
+            get;
+            set;
+        }
+
         public List<CameraInfo> Cameras
         {
             get;
@@ -95,6 +101,7 @@ namespace PhotoBooth.Client.Pages
                 ReviewCountDownStepCount = dto.ReviewCountDownStepCount;
                 StepDownDurationInSeconds = dto.StepDownDurationInSeconds;
                 ReviewImageWidth = dto.ReviewImageWidth;
+                ReviewImageQuality = dto.ReviewImageQuality;
                 SelectedCamera = dto.SelectedCamera;
                 SelectedPrinter = dto.SelectedPrinter;
                 StateHasChanged();
@@ -124,6 +131,12 @@ namespace PhotoBooth.Client.Pages
         }
 
         public int ReviewImageWidth
+        {
+            get;
+            set;
+        }
+
+        public int ReviewImageQuality
         {
             get;
             set;
@@ -172,6 +185,11 @@ namespace PhotoBooth.Client.Pages
             PrinterDialog.Show();
         }
 
+        protected void ShowAvailableImages()
+        {
+            ImageDialog.Show();
+        }
+
         protected List<LanguageConfiguration> langCodes = new List<LanguageConfiguration>()
         {
             new LanguageConfiguration
@@ -215,6 +233,7 @@ namespace PhotoBooth.Client.Pages
                     ReviewCountDownStepCount = ReviewCountDownStepCount,
                     StepDownDurationInSeconds = StepDownDurationInSeconds,
                     ReviewImageWidth = ReviewImageWidth,
+                    ReviewImageQuality = ReviewImageQuality,
                     SelectedCamera = SelectedCamera,
                     SelectedPrinter = SelectedPrinter
                 };

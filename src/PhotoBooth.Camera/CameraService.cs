@@ -100,14 +100,7 @@ namespace PhotoBooth.Camera
             CommandLineResult result = await _adapter.GetStorageInfo();
             LogResult(result);
             EvaluateResult(result);
-
-
-
-            //var result = await Cli.Wrap(GPhotoExe)
-            //    .WithArguments("--storage-info")
-            //    .ExecuteBufferedAsync();
-
-         
+            
             return new StorageInfo();
         }
 
@@ -129,20 +122,33 @@ namespace PhotoBooth.Camera
 
         private void EvaluateResult(CommandLineResult result)
         {
-            if (result.StandardOutput.ToLower().Contains("Out of Focus".ToLower()))
+            if (ContainsError(result, "Out of Focus"))
             {
                 throw new CameraOutOfFocusException("Camera Out of Focus");
             }
 
-            if (result.StandardError.ToLower().Contains("no camera found"))
+            if (ContainsError(result, "no camera found"))
             {
                 throw new CameraNotAvailableException("No camera found");
+            }
+
+            if (ContainsError(result, "could not claim the usb device"))
+            {
+                throw new CameraClaimException("Failed to claim camera");
             }
 
             if (result.ExitCode != 0)
             {
                 throw new CameraException($"{result.StandardOutput}{result.StandardError}");
             }
+        }
+
+
+        private bool ContainsError(CommandLineResult result, string errorMessage)
+        {
+            return result.StandardOutput.ToLower().Contains(errorMessage.ToLower()) ||
+                   result.StandardError.ToLower().Contains(errorMessage.ToLower());
+
         }
     }
 }

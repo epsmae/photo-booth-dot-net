@@ -9,6 +9,7 @@ using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
 using PhotoBooth.Abstraction.Exceptions;
 using Stateless;
+using Stateless.Graph;
 
 namespace PhotoBooth.Service
 {
@@ -43,14 +44,15 @@ namespace PhotoBooth.Service
         private const int DefaultReviewCountDownStepCount = 10;
         private const int DefaultCaptureCountDownStepCount = 3;
         // Raspberry pi touch 7" has width of 800px and side bar 50px
-        private const int DefaultPreviewImageWidth = 750;
+        private const int DefaultReviewImageWidth = 750;
+        private const int DefaultReviewImageQuality = 50;
 
 
         private readonly ILogger<WorkflowController> _logger;
         private readonly ICameraService _cameraService;
         private readonly IPrinterService _printerService;
         private readonly IImageResizer _imageResizer;
-        private readonly IFileProvider _fileProvider;
+        private readonly IFileService _fileService;
         private readonly IConfigurationService _configurationService;
         private CaptureStates _state = CaptureStates.Initializing;
 
@@ -68,13 +70,13 @@ namespace PhotoBooth.Service
         private CaptureResult _captureResult;
         private byte[] _currentImageData;
         
-        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileProvider fileProvider, IConfigurationService configurationService)
+        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
         {
             _logger = logger;
             _cameraService = cameraService;
             _printerService = printerService;
             _imageResizer = imageResizer;
-            _fileProvider = fileProvider;
+            _fileService = fileService;
             _configurationService = configurationService;
 
             _countDownTimer = new Timer(OnCountDownTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
@@ -203,22 +205,27 @@ namespace PhotoBooth.Service
                         throw new CameraNotAvailableException("No camera found");
                     }
 
-                    if (!Directory.Exists(_fileProvider.PhotoDirectory))
+                    if (!Directory.Exists(_fileService.PhotoDirectory))
                     {
-                        Directory.CreateDirectory(_fileProvider.PhotoDirectory);
+                        Directory.CreateDirectory(_fileService.PhotoDirectory);
                     }
 
-                    _captureResult = await _cameraService.CaptureImage(_fileProvider.PhotoDirectory, _configurationService.SelectedCamera);
+                    _captureResult = await _cameraService.CaptureImage(_fileService.PhotoDirectory, _configurationService.SelectedCamera);
 
-                   using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
+                   using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
                    {
-                       _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth);
+                       _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth, _configurationService.ReviewImageQuality);
                    }
 
                    await _machine.FireAsync(CaptureTriggers.CaptureCompleted);
                 }
                 catch (Exception ex)
                 {
+                    if (ex is CameraClaimException)
+                    {
+                        Task t = Task.Run(InitializeCamera);
+                    }
+                    
                     _logger.LogError(ex, "Failed to capture image");
                     _lastException = ex;
                     _captureResult = null;
@@ -287,7 +294,13 @@ namespace PhotoBooth.Service
         {
             return _machine.FireAsync(CaptureTriggers.Print);
         }
-        
+
+
+        public string GenerateUmlDiagram()
+        {
+            return UmlDotGraph.Format(_machine.GetInfo());
+        }
+
         private void OnCountDownTimerElapsed(object state)
         {
             try
@@ -406,7 +419,8 @@ namespace PhotoBooth.Service
                 _configurationService.Register(ConfigurationKeys.CaptureCountDownStepCount, DefaultCaptureCountDownStepCount);
                 _configurationService.Register(ConfigurationKeys.ReviewCountDownStepCount, DefaultReviewCountDownStepCount);
                 _configurationService.Register(ConfigurationKeys.StepDownDurationInSeconds, DefaultStepDownDurationInSeconds);
-                _configurationService.Register(ConfigurationKeys.ReviewImageWidth, DefaultPreviewImageWidth);
+                _configurationService.Register(ConfigurationKeys.ReviewImageWidth, DefaultReviewImageWidth);
+                _configurationService.Register(ConfigurationKeys.ReviewImageQuality, DefaultReviewImageQuality);
 
                 await TrySetInitialDefaultCamera();
                 await TrySetInitialDefaultPrinter();

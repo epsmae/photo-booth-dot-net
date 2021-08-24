@@ -46,7 +46,7 @@ namespace PhotoBooth.Service.Test
             
             using (Stream stream = File.OpenRead(SourceImagePath))
             {
-                byte[] data = _resizer.ResizeImage(stream, expectedWidth);
+                byte[] data = _resizer.ResizeImage(stream, expectedWidth, 50);
                 File.WriteAllBytes(DestinationImagePath, data);
             }
 

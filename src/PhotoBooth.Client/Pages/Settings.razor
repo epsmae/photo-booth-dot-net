@@ -5,11 +5,9 @@
 
     <h3>@localizer["settings.title.settings"]</h3>
 
-
     <PrinterQueueDialog @ref="PrinterDialog" />
+    <CapturedImageDialog @ref="ImageDialog" />
     
-
-
     <Fields Style="margin:20px; max-width: 400px; height: 100%;">
         <Field ColumnSize="ColumnSize.IsFull">
 
@@ -17,7 +15,7 @@
             <select class="form-control" @bind="SelectedLanguage">
                 @foreach (var langCode in langCodes)
                 {
-                    <option value="@langCode.IsoCode">@langCode.Name</option>
+                <option value="@langCode.IsoCode">@langCode.Name</option>
                 }
             </select>
         </Field>
@@ -28,7 +26,7 @@
             <select class="form-control" @bind="SelectedCamera">
                 @foreach (var langCode in Cameras)
                 {
-                    <option value="@langCode.CameraModel">@langCode.CameraModel</option>
+                <option value="@langCode.CameraModel">@langCode.CameraModel</option>
                 }
             </select>
         </Field>
@@ -40,7 +38,7 @@
             <select class="form-control" @bind="SelectedPrinter">
                 @foreach (var langCode in Printers)
                 {
-                    <option value="@langCode.Name">@langCode.Name</option>
+                <option value="@langCode.Name">@langCode.Name</option>
                 }
             </select>
         </Field>
@@ -50,6 +48,13 @@
             <FieldLabel>@localizer["settings.printer_queue"]</FieldLabel>
             <p>
                 <button class="btn btn-secondary" @onclick="() => ShowPrintQueue()">@localizer["settings.show_printer_queue"]</button>
+            </p>
+        </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.captured_images"]</FieldLabel>
+            <p>
+                <button class="btn btn-secondary" @onclick="() => ShowAvailableImages()">@localizer["settings.show_captured_images"]</button>
             </p>
         </Field>
 
@@ -76,12 +81,17 @@
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.review_image_quality"]</FieldLabel>
+            <NumericEdit TValue="int" @bind-Value="@ReviewImageQuality" />
+        </Field>
+
+        <Field ColumnSize="ColumnSize.IsFull">
             <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
         </Field>
 
     </Fields>
 
-  
+
 </div>
 
 

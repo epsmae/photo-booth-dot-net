@@ -52,7 +52,7 @@ namespace PhotoBooth.Service
         private readonly ICameraService _cameraService;
         private readonly IPrinterService _printerService;
         private readonly IImageResizer _imageResizer;
-        private readonly IFileProvider _fileProvider;
+        private readonly IFileService _fileService;
         private readonly IConfigurationService _configurationService;
         private CaptureStates _state = CaptureStates.Initializing;
 
@@ -70,13 +70,13 @@ namespace PhotoBooth.Service
         private CaptureResult _captureResult;
         private byte[] _currentImageData;
         
-        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileProvider fileProvider, IConfigurationService configurationService)
+        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
         {
             _logger = logger;
             _cameraService = cameraService;
             _printerService = printerService;
             _imageResizer = imageResizer;
-            _fileProvider = fileProvider;
+            _fileService = fileService;
             _configurationService = configurationService;
 
             _countDownTimer = new Timer(OnCountDownTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
@@ -205,14 +205,14 @@ namespace PhotoBooth.Service
                         throw new CameraNotAvailableException("No camera found");
                     }
 
-                    if (!Directory.Exists(_fileProvider.PhotoDirectory))
+                    if (!Directory.Exists(_fileService.PhotoDirectory))
                     {
-                        Directory.CreateDirectory(_fileProvider.PhotoDirectory);
+                        Directory.CreateDirectory(_fileService.PhotoDirectory);
                     }
 
-                    _captureResult = await _cameraService.CaptureImage(_fileProvider.PhotoDirectory, _configurationService.SelectedCamera);
+                    _captureResult = await _cameraService.CaptureImage(_fileService.PhotoDirectory, _configurationService.SelectedCamera);
 
-                   using (Stream stream = _fileProvider.OpenFile(_captureResult.FileName))
+                   using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
                    {
                        _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth, _configurationService.ReviewImageQuality);
                    }

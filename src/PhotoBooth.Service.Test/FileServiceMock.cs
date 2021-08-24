@@ -1,10 +1,12 @@
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using PhotoBooth.Abstraction;
+using FileInfo = PhotoBooth.Abstraction.FileInfo;
 
 namespace PhotoBooth.Service.Test
 {
-    public class FileProviderMock : IFileProvider
+    public class FileServiceMock : IFileService
     {
         private string SampleImagePath
         {
@@ -25,6 +27,19 @@ namespace PhotoBooth.Service.Test
             {
                 return Path.Combine(TestContext.CurrentContext.TestDirectory, "Images");
             }
+        }
+
+        public List<FileInfo> AvailableImages
+        {
+            get
+            {
+                return new List<FileInfo>();
+            }
+        }
+
+        public void CleanupImageDirectory()
+        {
+            
         }
     }
 }

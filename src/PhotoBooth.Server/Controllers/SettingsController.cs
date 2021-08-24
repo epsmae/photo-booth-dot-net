@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
@@ -9,10 +10,12 @@ namespace PhotoBooth.Server.Controllers
     public class SettingsController : ControllerBase
     {
         private readonly IConfigurationService _service;
+        private readonly IFileService _fileService;
 
-        public SettingsController(IConfigurationService service)
+        public SettingsController(IConfigurationService service, IFileService fileService)
         {
             _service = service;
+            _fileService = fileService;
         }
         
         [HttpGet]
@@ -42,6 +45,20 @@ namespace PhotoBooth.Server.Controllers
             _service.SelectedCamera = settings.SelectedCamera;
             _service.SelectedPrinter = settings.SelectedPrinter;
             _service.ReviewImageQuality = settings.ReviewImageQuality;
+        }
+
+        [HttpGet]
+        [ActionName(nameof(AvailableImages))]
+        public List<FileInfo> AvailableImages()
+        {
+            return _fileService.AvailableImages;
+        }
+
+        [HttpPost]
+        [ActionName(nameof(ClearImages))]
+        public void ClearImages()
+        {
+            _fileService.CleanupImageDirectory();
         }
     }
 }

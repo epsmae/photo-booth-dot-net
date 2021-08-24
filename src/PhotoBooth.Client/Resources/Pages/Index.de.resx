@@ -159,6 +159,15 @@
   <data name="capture.start" xml:space="preserve">
     <value>START</value>
   </data>
+  <data name="captured_image_dialog.available_images" xml:space="preserve">
+    <value>Verfügbare Bilder</value>
+  </data>
+  <data name="captured_image_dialog.clear_images" xml:space="preserve">
+    <value>Bilder löschen</value>
+  </data>
+  <data name="captured_image_dialog.ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="home.check_settings" xml:space="preserve">
     <value>Einstellungen prüfen</value>
   </data>
@@ -179,6 +188,9 @@
   </data>
   <data name="printer_queue_dialog.printer_queue" xml:space="preserve">
     <value>Warteschlange</value>
+  </data>
+  <data name="settings.captured_images" xml:space="preserve">
+    <value>Aufgenommene Bilder</value>
   </data>
   <data name="settings.capture_count_down_step_count" xml:space="preserve">
     <value>Anzahl Schritte im Capture Count Down</value>
@@ -206,6 +218,9 @@
   </data>
   <data name="settings.selected_printer" xml:space="preserve">
     <value>Selektierter Drucker</value>
+  </data>
+  <data name="settings.show_captured_images" xml:space="preserve">
+    <value>Aufgenommene Bilder anzeigen</value>
   </data>
   <data name="settings.show_printer_queue" xml:space="preserve">
     <value>Warteschlange anzeigen</value>

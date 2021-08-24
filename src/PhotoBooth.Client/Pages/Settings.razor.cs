@@ -45,6 +45,12 @@ namespace PhotoBooth.Client.Pages
             get; set;
         }
 
+        protected CapturedImageDialog ImageDialog
+        {
+            get;
+            set;
+        }
+
         public List<CameraInfo> Cameras
         {
             get;
@@ -177,6 +183,11 @@ namespace PhotoBooth.Client.Pages
         protected void ShowPrintQueue()
         {
             PrinterDialog.Show();
+        }
+
+        protected void ShowAvailableImages()
+        {
+            ImageDialog.Show();
         }
 
         protected List<LanguageConfiguration> langCodes = new List<LanguageConfiguration>()

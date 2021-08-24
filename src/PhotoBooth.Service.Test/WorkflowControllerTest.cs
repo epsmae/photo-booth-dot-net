@@ -30,7 +30,7 @@ namespace PhotoBooth.Service.Test
 
 
             IConfigurationService configService = new ConfigurationServiceMock().Object;
-            _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileProviderMock(), configService);
+            _controller = new WorkflowController(loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, new ImageResizer(), new FileServiceMock(), configService);
             _controller.CountDownChanged += OnCountDownChanged;
             _controller.StateChanged += OnStateChanged;
 

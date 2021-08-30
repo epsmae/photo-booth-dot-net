@@ -52,15 +52,15 @@ Download the latest [dotnet core 5 SDK and runtime](https://dotnet.microsoft.com
 The links should look similar as below.
 ```
 $ mkdir tmp
-$ wget https://download.visualstudio.microsoft.com/download/pr/97820d77-2dba-42f5-acb5-74c810112805/84c9a471b5f53d6aaa545fbeb449ad2a/dotnet-sdk-5.0.301-linux-arm.tar.gz
-$ wget https://download.visualstudio.microsoft.com/download/pr/2f690848-1342-4768-a7d7-45fa476a4a22/50dd1c50ed7864140b04fec057bb8bd6/aspnetcore-runtime-5.0.7-linux-arm.tar.gz
+$ wget https://download.visualstudio.microsoft.com/download/pr/70bdb5a9-34cc-4f28-aa33-15535f73b593/7d31d53187c8937206bcc3b117b88978/dotnet-sdk-5.0.400-linux-arm.tar.gz
+$ wget https://download.visualstudio.microsoft.com/download/pr/08f79414-91fe-4072-a75b-7b7c21d0fced/46c49c781f43901eb7c27c465c448b0a/aspnetcore-runtime-5.0.9-linux-arm.tar.gz
 ```
 
 Now we have to move it depending on the version the downled archive may have different names.
 ```
 $ sudo mkdir /opt/dotnet
-$ sudo tar -xvf dotnet-sdk-5.0.301-linux-arm.tar.gz -C /opt/dotnet/
-$ sudo tar -xvf aspnetcore-runtime-5.0.7-linux-arm.tar.gz -C /opt/dotnet/
+$ sudo tar -xvf dotnet-sdk-5.0.400-linux-arm.tar.gz -C /opt/dotnet/
+$ sudo tar -xvf aspnetcore-runtime-5.0.9-linux-arm.tar.gz -C /opt/dotnet/
 $ sudo ln -s /opt/dotnet/dotnet /usr/local/bin
 ```
 
@@ -122,7 +122,7 @@ It should look similar:
 @lxpanel --profile LXDE-pi
 @pcmanfm --desktop --profile LXDE-pi
 @xscreensaver -no-splash
-unclutter -idle 5
+@unclutter -idle 1
 ```
 
 Disable screen saver:
@@ -169,8 +169,31 @@ journalctl -u photobooth.service
 
 Auto Start kiosk browser
 
-Full screen mode can be closed with alt + F4
+
+Create start script
+```
+nano /home/pi/start.photobooth.sh
+```
+The script will kill the gphoto2 camera viewer and start the application in kiosk mode
+```
+#!/bin/bash
+sleep 10
+pkill --f gphoto2
+chromium-browser --kiosk http://localhost:5050
+```
 
 ```
-@chromium-browser --kiosk http://localhost:5050
+chmod +x /home/pi/start.photobooth.sh
+```
+
+
+Full screen mode can be closed with alt + F4
+
+Add to start script:
+```
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+```
+
+```
+@bash /home/pi/start.photobooth.sh
 ```

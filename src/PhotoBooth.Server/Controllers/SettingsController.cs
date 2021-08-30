@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
 
@@ -53,6 +57,14 @@ namespace PhotoBooth.Server.Controllers
         {
             return _fileService.AvailableImages;
         }
+
+        [HttpGet]
+        [ActionName(nameof(PrintServerUrl))]
+        public string PrintServerUrl()
+        {
+            return $"http://localhost:631";
+        }
+
 
         [HttpPost]
         [ActionName(nameof(ClearImages))]

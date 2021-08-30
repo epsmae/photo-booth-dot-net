@@ -29,6 +29,11 @@ namespace PhotoBooth.Printer
             return CreateSuccessResult();
         }
 
+        public Task<CommandLineResult> EnablePrinter(string printerName)
+        {
+            return Task.FromResult(CreateSuccessResult());
+        }
+
         private static CommandLineResult CreateSuccessResult()
         {
             return new CommandLineResult

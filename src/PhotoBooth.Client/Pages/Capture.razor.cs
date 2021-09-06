@@ -9,6 +9,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Exceptions;
+using PhotoBooth.Client.Models;
 
 namespace PhotoBooth.Client.Pages
 {
@@ -16,6 +17,7 @@ namespace PhotoBooth.Client.Pages
     {
         private string _lastError;
         private HubConnection _hubConnection;
+        private const string ServerNotReachableError = "Server not reachable!";
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -39,6 +41,11 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
+        [Inject]
+        protected NavigationManager NavigationManager
+        {
+            get; set;
+        }
 
         protected CaptureProcessState State
         {
@@ -126,7 +133,11 @@ namespace PhotoBooth.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _hubConnection = new HubConnectionBuilder().WithUrl(Navigator.ToAbsoluteUri("capturehub"))
+            Logger.LogInformation("Setup hub connection");
+
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigator.ToAbsoluteUri("capturehub"))
+                .WithAutomaticReconnect(new CustomRetryPolicy())
                 .Build();
 
             _hubConnection.On<CaptureProcessState>("ReceiveStateChanged", (state) =>
@@ -147,11 +158,39 @@ namespace PhotoBooth.Client.Pages
                 CountDownStep = step;
                 StateHasChanged();
             });
+            
+            try
+            {
+                await _hubConnection.StartAsync();
+
+                var a = _hubConnection.State;
+                Logger.LogInformation($"State: {a}");
 
 
-            await _hubConnection.StartAsync();
+                var b = _hubConnection.HandshakeTimeout;
+                Logger.LogInformation($"THandshake: {b.TotalMilliseconds}ms");
+                var c = _hubConnection.ServerTimeout;
+                Logger.LogInformation($"TServer: {c.TotalMilliseconds}ms");
+                var d = _hubConnection.ConnectionId;
+                Logger.LogInformation($"Id: {d}");
+                var e = _hubConnection.KeepAliveInterval;
+                Logger.LogInformation($"TKeepAlive: {e.TotalMilliseconds}ms");
 
-            await UpdateServerState();
+                if (a != HubConnectionState.Connected)
+                {
+                    throw new Exception("Initial connect failed");
+                }
+
+
+                await UpdateServerState();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Unable to connect to server");
+                State = CaptureProcessState.Error;
+                _lastError = ServerNotReachableError;
+                InfoDialog.Show();
+            }
         }
 
         private void HandleStateUpdate()
@@ -191,13 +230,24 @@ namespace PhotoBooth.Client.Pages
         
         protected async Task ConfirmDelete_Click(bool deleteConfirmed)
         {
-            try
+
+            if (_lastError == ServerNotReachableError)
             {
-                await HttpClient.PostAsJsonAsync("api/Capture/ConfirmError", string.Empty);
+                _lastError = string.Empty;
+                State = default;
+
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogError(ex, "Failed to confirm error");
+                try
+                {
+                    await HttpClient.PostAsJsonAsync("api/Capture/ConfirmError", string.Empty);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Failed to confirm error");
+                }
             }
         }
         

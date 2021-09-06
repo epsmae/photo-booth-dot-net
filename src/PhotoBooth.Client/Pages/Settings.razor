@@ -34,6 +34,8 @@
 
         <Field ColumnSize="ColumnSize.IsFull">
             <FieldLabel>@localizer["settings.selected_printer"]</FieldLabel>
+            
+            <p><a href=@PrintServerUrl target="_blank" class="ml-md-auto">Cups-Print-Server</a></p>
 
             <select class="form-control" @bind="SelectedPrinter">
                 @foreach (var langCode in Printers)

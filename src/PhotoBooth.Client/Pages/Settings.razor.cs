@@ -57,6 +57,12 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
+        public string PrintServerUrl
+        {
+            get;
+            set;
+        }
+
         public List<Printer> Printers
         {
             get;
@@ -86,6 +92,7 @@ namespace PhotoBooth.Client.Pages
             Printers = new List<Printer>();
             Cameras = new List<CameraInfo>();
 
+            await FetchPrintServerUrl();
             await FetchCurrentLanguage();
             await FetchSettings();
             await FetchAvailableCameras();
@@ -164,6 +171,18 @@ namespace PhotoBooth.Client.Pages
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Failed to fetch cameras");
+            }
+        }
+
+        private async Task FetchPrintServerUrl()
+        {
+            try
+            {
+                PrintServerUrl = await HttpClient.GetStringAsync("api/Settings/PrintServerUrl");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to fetch printServerUrl");
             }
         }
 

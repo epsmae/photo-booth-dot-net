@@ -20,6 +20,7 @@ namespace PhotoBooth.Printer
         
         public async Task Print(string printerName, string fileName)
         {
+            await _adapter.EnablePrinter(printerName);
             CommandLineResult result = await _adapter.Print(printerName, fileName);
             LogResult(result);
             EvaluateResult(result);

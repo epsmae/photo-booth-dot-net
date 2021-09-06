@@ -15,7 +15,12 @@ namespace PhotoBooth.Server
         public SampleFileService()
         {
             _rootDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            
+
+            if (!Directory.Exists(PhotoDirectory))
+            {
+                Directory.CreateDirectory(PhotoDirectory);
+            }
+
             File.Copy(SampleImage, Path.Combine(PhotoDirectory, SampleImage), true);
         }
 

@@ -47,10 +47,6 @@ namespace PhotoBooth.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var a = Localizer.GetAllStrings();
-
-            var c = Localizer.GetString("about.title");
-
             try
             {
                 ClientVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();

@@ -11,5 +11,6 @@ namespace PhotoBooth.Abstraction
         Task<CommandLineResult> ListPrintQueue();
 
         Task<CommandLineResult> ClearPrintQueue();
+        Task<CommandLineResult> EnablePrinter(string printerName);
     }
 }

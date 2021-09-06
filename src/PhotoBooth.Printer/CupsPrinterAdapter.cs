@@ -30,6 +30,18 @@ namespace PhotoBooth.Printer
             return MapResult(result);
         }
 
+        public async Task<CommandLineResult> EnablePrinter(string printerName)
+        {
+            _logger.LogInformation($"Enable Printer={printerName}");
+
+            BufferedCommandResult result = await Cli.Wrap("cupsenable")
+                .WithArguments($"{printerName}")
+                .WithValidation(CommandResultValidation.None)
+                .ExecuteBufferedAsync();
+
+            return MapResult(result);
+        }
+
         public async Task<CommandLineResult> ListPrinters()
         {
             _logger.LogInformation($"List all printers");

@@ -56,6 +56,6 @@ jobs:
     - name: Upload artefact
       uses: actions/upload-artifact@v2
       with:
-       name: PhotoBooth.Net
+       name: "PhotoBooth.Net_${{ env.GitVersion_AssemblySemVer }}"
        path: publish
        if-no-files-found: error

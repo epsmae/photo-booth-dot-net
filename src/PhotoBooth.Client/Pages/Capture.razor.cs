@@ -158,10 +158,30 @@ namespace PhotoBooth.Client.Pages
                 CountDownStep = step;
                 StateHasChanged();
             });
-
+            
             try
             {
                 await _hubConnection.StartAsync();
+
+                var a = _hubConnection.State;
+                Logger.LogInformation($"State: {a}");
+
+
+                var b = _hubConnection.HandshakeTimeout;
+                Logger.LogInformation($"THandshake: {b.TotalMilliseconds}ms");
+                var c = _hubConnection.ServerTimeout;
+                Logger.LogInformation($"TServer: {c.TotalMilliseconds}ms");
+                var d = _hubConnection.ConnectionId;
+                Logger.LogInformation($"Id: {d}");
+                var e = _hubConnection.KeepAliveInterval;
+                Logger.LogInformation($"TKeepAlive: {e.TotalMilliseconds}ms");
+
+                if (a != HubConnectionState.Connected)
+                {
+                    throw new Exception("Initial connect failed");
+                }
+
+
                 await UpdateServerState();
             }
             catch (Exception ex)

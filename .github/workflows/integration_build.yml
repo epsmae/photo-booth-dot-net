@@ -30,7 +30,8 @@ jobs:
       uses: gittools/actions/gitversion/execute@v0.9.7
       with:
         useConfigFile: true
-        configFilePath: ./.github/Gitversion.yml   
+        configFilePath: ./.github/Gitversion.yml
+        updateAssemblyInfo: true
       
     - name: Display GitVersion outputs
       run: |

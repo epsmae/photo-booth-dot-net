@@ -31,7 +31,6 @@ jobs:
       with:
         useConfigFile: true
         configFilePath: ./.github/Gitversion.yml
-        updateAssemblyInfo: true
       
     - name: Display GitVersion outputs
       run: |
@@ -49,7 +48,7 @@ jobs:
       run: dotnet build -c Debug --no-restore ./src/PhotoBooth.sln
       
     - name: Test
-      run: dotnet test -c Debug --no-build --verbosity normal ./src/PhotoBooth.sln
+      run: dotnet test -c Debug p:Version=${{ env.GitVersion_AssemblySemVer }} --no-build --verbosity normal ./src/PhotoBooth.sln
       
     - name: Publish application
       run: dotnet publish ./src/PhotoBooth.Server/PhotoBooth.Server.csproj -r linux-arm -c Release -o publish

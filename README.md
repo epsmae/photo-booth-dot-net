@@ -63,4 +63,4 @@ Version 3.0
 
 ## Installation
 
-![Install-Guide](doc/Install.md)
+[Install-Guide](doc/Install.md)

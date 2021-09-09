@@ -28,8 +28,8 @@ In my Setup I use:
 
 ## Screenshots
 
-|Test    |Screenshot  |            |            |            |
----------|------------|------------|------------|------------|
+|Test    |Screenshot 1|Screenshot 2|Screenshot 3|
+---------|------------|------------|------------|
 |Capture |![Ready](doc/screenshot_capture_ready.JPG)|![CountDown](doc/screenshot_count_down.JPG)|![Review](doc/screenshot_review.JPG)|
 |Settings|![Settings](doc/screenshot_settings.JPG)|
 |Error   |![Error](doc/screenshot_error.JPG)|

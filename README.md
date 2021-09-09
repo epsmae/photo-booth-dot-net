@@ -1,5 +1,11 @@
 # Photoboot .Net
 
+|Description      |Link        |
+|-----------------|------------|
+|Sonarcloud       |[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=alert_status)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=coverage)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net)|
+|Build            |[![Build](https://github.com/epsmae/photo-booth-dot-net/actions/workflows/integration_build.yml/badge.svg?branch=master)](https://github.com/epsmae/photo-booth-dot-net/actions/workflows/integration_build.yml)|
+
+
 ## Technology
 
 The photobooth application is implemented in .Net 5 and uses blazor for the frontent (PWA).
@@ -8,7 +14,7 @@ Personally I use the Raspberry Pi touch panel and run the chromium browser direc
 
 ## Setup
 
-![Setup](doc/setup.png)
+<img src="doc/setup.png" width="50%" />
 
 In my Setup I use:
 
@@ -19,12 +25,13 @@ In my Setup I use:
 
 ## Screenshots
 
-![Ready](doc/screenshot_capture_ready.JPG)
-![CountDown](doc/screenshot_count_down)
-![Error](doc/screenshot_error.JPG)
-![Progress](doc/screenshot_in_progress.JPG)
-![Review](doc/screenshot_review.JPG)
-![Settings](doc/screenshot_settings.JPG)
+|Test    |Screenshot 1|Screenshot 2|Screenshot 3|
+---------|------------|------------|------------|
+|Capture |![Ready](doc/screenshot_capture_ready.JPG)|![CountDown](doc/screenshot_count_down.JPG)|![Review](doc/screenshot_review.JPG)|
+|Settings|![Settings](doc/screenshot_settings.JPG)|
+|Error   |![Error](doc/screenshot_error.JPG)|
+|Progress|![Progress](doc/screenshot_in_progress.JPG)|
+
 
 ## Features
 
@@ -53,6 +60,7 @@ Version 2.0
 
 Version 3.0
 
+- [ ] .Net 6
 - [ ] Preview
 - [ ] Display capture images
 - [ ] Reprint captured images

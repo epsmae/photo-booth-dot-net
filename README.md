@@ -14,10 +14,7 @@ Personally I use the Raspberry Pi touch panel and run the chromium browser direc
 
 ## Setup
 
-<img src="doc/setup.png" width="20%" />
-
-
-![Setup](doc/setup.png)
+<img src="doc/setup.png" width="50%" />
 
 In my Setup I use:
 

@@ -6,6 +6,54 @@
     <h3>@localizer["home.title.welcome"]</h3>
 
 
+    <Steps SelectedStep="@SelectedStep" SelectedStepChanged="@OnSelectedStepChanged" >
+        <Content >
+            <StepPanel Name="step_camera">
+                Select the desired camera.
+                If the camera is not available check the wiring and power setup of the camera and press update.
+
+                <select class="form-control" @bind="SelectedCamera">
+                    @foreach (var langCode in Cameras)
+                    {
+                        <option value="@langCode.CameraModel">@langCode.CameraModel</option>
+                    }
+                </select>
+
+                <Button class="btn btn-secondary" @onclick="ListCameras">@localizer["home.update_cameras"]</Button>
+
+            </StepPanel>
+            <StepPanel Name="step_printer">
+                Select the desired printer.
+                If the printer is not available check the wiring and power setup of the printer and press update.
+                <select class="form-control" @bind="SelectedPrinter">
+                    @foreach (var langCode in Printers)
+                    {
+                        <option value="@langCode.Name">@langCode.Name</option>
+                    }
+                </select>
+                <Button class="btn btn-secondary" @onclick="ListPrinters">@localizer["home.update_printers"]</Button>
+            </StepPanel>
+            <StepPanel Name="step_capture">
+                Trigger a camera image.
+                <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.capture_image"]</Button>
+            </StepPanel>
+            <StepPanel Name="step_print">
+                Print the camera image.
+                <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.print_image"]</Button>
+            </StepPanel>
+        </Content>
+
+        <Items>
+            <Step Name="step_camera">Select Camera</Step>
+            <Step Name="step_printer">Select Printer</Step>
+            <Step Name="step_capture">Capture Image</Step>
+            <Step Name="step_print">Print Image</Step>
+        </Items>
+
+    </Steps>
+
+
+
     @localizer["home.intro.camera_connected"]
 
     <NavLink class="nav-link" href="settings">
@@ -19,5 +67,4 @@
     </NavLink>
 
 </div>
-
 

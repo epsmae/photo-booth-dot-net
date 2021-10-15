@@ -13,11 +13,13 @@ namespace PhotoBooth.Server.Controllers
     {
         private readonly ILogger<CaptureController> _logger;
         private ICameraService _cameraService;
+        private readonly IFileService _fileService;
 
-        public CameraController(ILogger<CaptureController> logger, ICameraService cameraService)
+        public CameraController(ILogger<CaptureController> logger, ICameraService cameraService, IFileService fileService)
         {
             _logger = logger;
             _cameraService = cameraService;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -25,6 +27,13 @@ namespace PhotoBooth.Server.Controllers
         public Task<List<CameraInfo>> Cameras()
         {
             return _cameraService.ListCameras();
+        }
+
+        [HttpGet]
+        [ActionName(nameof(CaptureImageData))]
+        public Task<byte[]> CaptureImageData(string camera)
+        {
+            return _cameraService.CaptureImageData(_fileService.PhotoDirectory, camera);
         }
     }
 }

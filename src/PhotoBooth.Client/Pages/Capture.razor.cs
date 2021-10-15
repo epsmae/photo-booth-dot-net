@@ -146,7 +146,6 @@ namespace PhotoBooth.Client.Pages
                 HandleStateUpdate();
             });
 
-
             _hubConnection.On<int>("ReceiveReviewCountDownStepChanged", (step) =>
             {
                 ReviewCountDownStep = step;

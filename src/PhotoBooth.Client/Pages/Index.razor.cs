@@ -35,7 +35,7 @@ namespace PhotoBooth.Client.Pages
             get; set;
         }
 
-        public Printer SelectedPrinter
+        public string SelectedPrinter
         {
             get;
             set;
@@ -47,7 +47,7 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
-        public CameraInfo SelectedCamera
+        public string SelectedCamera
         {
             get;
             set;
@@ -68,8 +68,8 @@ namespace PhotoBooth.Client.Pages
         protected override Task OnInitializedAsync()
         {
             SelectedStep = "step_camera";
-            SelectedPrinter = null;
-            SelectedCamera = null;
+            SelectedPrinter = string.Empty;
+            SelectedCamera = string.Empty;
             Printers = new List<Printer>();
             Cameras = new List<CameraInfo>();
 
@@ -93,11 +93,23 @@ namespace PhotoBooth.Client.Pages
             try
             {
                 Cameras = await HttpClient.GetFromJsonAsync<List<CameraInfo>>("api/Camera/Cameras");
+
             }
             catch (Exception ex)
             {
                 Cameras = new List<CameraInfo>();
                 Logger.LogError(ex, "Failed to fetch cameras");
+            }
+            finally
+            {
+                if (Cameras != null && Cameras.Any())
+                {
+                    SelectedCamera = Cameras.First().CameraModel;
+                }
+                else
+                {
+                    SelectedCamera = string.Empty;
+                }
             }
         }
 
@@ -106,7 +118,7 @@ namespace PhotoBooth.Client.Pages
             try
             {
                 await EnsureHubConnected();
-                _capturedImageName = await _hubConnection.InvokeAsync<string>("CaptureImage", SelectedCamera.CameraModel);
+                _capturedImageName = await _hubConnection.InvokeAsync<string>("CaptureImage", SelectedCamera);
             }
             catch (Exception ex)
             {
@@ -136,7 +148,7 @@ namespace PhotoBooth.Client.Pages
             try
             {
                 await EnsureHubConnected();
-                await _hubConnection.InvokeAsync<string>("PrintImage", SelectedPrinter.Name);
+                await _hubConnection.InvokeAsync<string>("PrintImage", SelectedPrinter, _capturedImageName);
             }
             catch (Exception ex)
             {
@@ -154,6 +166,17 @@ namespace PhotoBooth.Client.Pages
             {
                 Logger.LogError(ex, "Failed fetch printers");
                 Printers = new List<Printer>();
+            }
+            finally
+            {
+                if (Printers != null && Printers.Any())
+                {
+                    SelectedPrinter = Printers.First().Name;
+                }
+                else
+                {
+                    SelectedCamera = string.Empty;
+                }
             }
         }
     }

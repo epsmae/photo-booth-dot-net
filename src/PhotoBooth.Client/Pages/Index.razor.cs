@@ -17,6 +17,26 @@ namespace PhotoBooth.Client.Pages
         private HubConnection _hubConnection;
         private string _capturedImageName;
 
+        private enum StepState
+        {
+            UsbDevices,
+            Camera,
+            Printer,
+            Capture,
+            Print
+        }
+
+        
+        private static Dictionary<StepState, string> _stepDictionary = new()
+        {
+            {StepState.UsbDevices, "step_usb_device"},
+            {StepState.Camera, "step_camera"},
+            {StepState.Printer, "step_printer"},
+            {StepState.Capture, "step_capture"},
+            {StepState.Print, "step_print"},
+        };
+
+
         [Inject]
         protected HttpClient HttpClient
         {
@@ -39,6 +59,31 @@ namespace PhotoBooth.Client.Pages
         {
             get;
             set;
+        }
+
+        public bool IsNextDisabled
+        {
+            get
+            {
+                return ! IsNextEnabled(SelectedStep);
+            }
+        }
+
+        private bool IsNextEnabled(string stateString)
+        {
+            StepState state = _stepDictionary.First(e => e.Value == stateString).Key;
+
+            if (state == StepState.Camera)
+            {
+                return ! string.IsNullOrEmpty(SelectedCamera);
+            }
+
+            if (state == StepState.Printer || state == StepState.Capture)
+            {
+                return ! string.IsNullOrEmpty(SelectedPrinter) && !string.IsNullOrEmpty(SelectedCamera);
+            }
+
+            return true;
         }
 
         public string SelectedStep
@@ -65,28 +110,41 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
-            SelectedStep = "step_camera";
+            SelectedStep = "step_usb_device";
             SelectedPrinter = string.Empty;
             SelectedCamera = string.Empty;
             Printers = new List<Printer>();
             Cameras = new List<CameraInfo>();
+            UsbDevices = new List<string>();
+
+            await UpdateUsbDevice();
 
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(Navigator.ToAbsoluteUri("capturehub"))
                 .WithAutomaticReconnect(new CustomRetryPolicy())
                 .Build();
-            return Task.CompletedTask;
         }
-        private Task OnSelectedStepChanged(string name)
+        private Task OnSelectedStepChanged(string selectedStep)
         {
-            SelectedStep = name;
+            int index = (int) _stepDictionary.First(e => e.Value == selectedStep).Key;
+
+            if (index > 0)
+            {
+                string name = _stepDictionary[(StepState) index - 1];
+                if (IsNextEnabled(name))
+                {
+                    SelectedStep = selectedStep;
+                }
+            }
+            else
+            {
+                SelectedStep = selectedStep;
+            }
 
             return Task.CompletedTask;
         }
-
-
 
         private async Task ListCameras()
         {
@@ -155,6 +213,55 @@ namespace PhotoBooth.Client.Pages
                 Logger.LogError(ex, "Failed to print image");
             }
         }
+
+
+        private async Task UpdateUsbDevice()
+        {
+            try
+            {
+                UsbDevices =  await HttpClient.GetFromJsonAsync<List<string>>("api/Setup/GetUsbDevices");
+            }
+            catch (Exception e)
+            {
+                UsbDevices = new List<string>();
+            }
+        }
+
+        private Task GoToNextStep()
+        {
+            
+            int index =  (int)_stepDictionary.First(e => e.Value == SelectedStep).Key;
+
+            if (index < _stepDictionary.Count -1)
+            {
+                SelectedStep = _stepDictionary[(StepState) index + 1];
+                StateHasChanged();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task GoToPreviousStep()
+        {
+
+            int index = (int) _stepDictionary.First(e => e.Value == SelectedStep).Key;
+
+            if (index > 0)
+            {
+                SelectedStep = _stepDictionary[(StepState) index -1];
+                StateHasChanged();
+            }
+
+            return Task.CompletedTask;
+        }
+
+
+        public List<string> UsbDevices
+        {
+            get;
+            set;
+        }
+
 
         private async Task ListPrinters()
         {

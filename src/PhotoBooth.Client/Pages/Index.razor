@@ -5,54 +5,166 @@
 <div style="padding: 20px;">
     <h3>@localizer["home.title.welcome"]</h3>
 
+    <div style="margin: 20px;background-color: white">
 
-    <Steps SelectedStep="@SelectedStep" SelectedStepChanged="@OnSelectedStepChanged" >
-        <Content >
-            <StepPanel Name="step_camera">
-                Select the desired camera.
-                If the camera is not available check the wiring and power setup of the camera and press update.
+        <Steps SelectedStep="@SelectedStep" SelectedStepChanged="@OnSelectedStepChanged">
+            <Content >
+                <StepPanel Name="step_usb_device" >
 
-                <select class="form-control" @bind="SelectedCamera">
-                    @foreach (var langCode in Cameras)
-                    {
-                        <option value="@langCode.CameraModel">@langCode.CameraModel</option>
-                    }
-                </select>
+                    <div Class="step_container" style="width: 500px">
 
-                <Button class="btn btn-secondary" @onclick="ListCameras">@localizer["home.update_cameras"]</Button>
+                        <Alert Color="Color.Success" Visible="true">
+                            <AlertMessage>Show USB Devices</AlertMessage>
+                            <AlertDescription>
+                                The printer and the camera have to be listed in the usb device list.
+                                If the printer or camera is not available check the wiring and power setup of the printer or camera and press update.
+                            </AlertDescription>
+                        </Alert>
 
-            </StepPanel>
-            <StepPanel Name="step_printer">
-                Select the desired printer.
-                If the printer is not available check the wiring and power setup of the printer and press update.
-                <select class="form-control" @bind="SelectedPrinter">
-                    @foreach (var langCode in Printers)
-                    {
-                        <option value="@langCode.Name">@langCode.Name</option>
-                    }
-                </select>
-                <Button class="btn btn-secondary" @onclick="ListPrinters">@localizer["home.update_printers"]</Button>
-            </StepPanel>
-            <StepPanel Name="step_capture">
-                Trigger a camera image.
-                <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.capture_image"]</Button>
-            </StepPanel>
-            <StepPanel Name="step_print">
-                Print the camera image.
-                <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.print_image"]</Button>
-            </StepPanel>
-        </Content>
+                        <Table Striped="true" Narrow="true" Bordered="true">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHeaderCell>
+                                        @localizer["home.devices"]
 
-        <Items>
-            <Step Name="step_camera">Select Camera</Step>
-            <Step Name="step_printer">Select Printer</Step>
-            <Step Name="step_capture">Capture Image</Step>
-            <Step Name="step_print">Print Image</Step>
-        </Items>
+                                            <Button class="btn btn-secondary" @onclick="UpdateUsbDevice">
+                                            <Icon Name="IconName.Redo" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
+                                        </Button>
+                                    </TableHeaderCell>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                @foreach (var device in UsbDevices)
+                                {
+                                    <TableRow>
+                                        <TableRowCell>@device</TableRowCell>
+                                    </TableRow>
+                                }
+                            </TableBody>
+                        </Table>
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">@localizer["home.next"]</Button>
+                        <br />
+                        <br />
+                    </div>
+                </StepPanel>
 
-    </Steps>
+                <StepPanel Name="step_camera" Class="step_container">
 
 
+                    <div Class="step_container" style="width: 500px">
+                        
+                        <Alert Color="Color.Success" Visible="true">
+                            <AlertMessage>Camera Selection</AlertMessage>
+                            <AlertDescription>
+                                Select the desired camera.
+                                If the camera is not available check the wiring and power setup of the camera and press update.
+                            </AlertDescription>
+                        </Alert>
+
+
+                        <Button class="btn btn-secondary" @onclick="ListCameras">
+                            <Icon Name="IconName.Redo" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
+                        </Button>
+
+                        <select class="form-control" @bind="SelectedCamera">
+                            @foreach (var langCode in Cameras)
+                            {
+                                <option value="@langCode.CameraModel">@langCode.CameraModel</option>
+                            }
+                        </select>
+
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToPreviousStep">@localizer["home.previous"]</Button>
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">@localizer["home.next"]</Button>
+                        <br />
+
+                    </div>
+
+                </StepPanel>
+                <StepPanel Name="step_printer" Class="step_container">
+
+                    <div Class="step_container" style="width: 500px">
+
+                        <Alert Color="Color.Success" Visible="true">
+                            <AlertMessage>Printer Selection</AlertMessage>
+                            <AlertDescription>
+                                Select the desired printer.
+                                If the printer is not available check the wiring and power setup of the printer and press update.
+                            </AlertDescription>
+                        </Alert>
+
+
+                        <Button class="btn btn-secondary" @onclick="ListPrinters">
+                            <Icon Name="IconName.Redo" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
+                        </Button>
+
+
+                        <select class="form-control" @bind="SelectedPrinter">
+                            @foreach (var langCode in Printers)
+                            {
+                                <option value="@langCode.Name">@langCode.Name</option>
+                            }
+                        </select>
+                        
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToPreviousStep">@localizer["home.previous"]</Button>
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">@localizer["home.next"]</Button>
+                        <br />
+
+                    </div>
+                </StepPanel>
+                <StepPanel Name="step_capture" Class="step_container">
+
+                    <div Class="step_container" style="width: 500px">
+
+                        Trigger a camera image.
+                        <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.capture_image"]</Button>
+
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToPreviousStep">@localizer["home.previous"]</Button>
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">@localizer["home.next"]</Button>
+                        <br />
+
+                    </div>
+
+                </StepPanel>
+                <StepPanel Name="step_print" Class="step_container">
+
+                    <div Class="step_container" style="width: 500px">
+
+
+
+                        <Alert Color="Color.Success" Visible="true">
+                            <AlertMessage>Print</AlertMessage>
+                            <AlertDescription>
+                                Print the camera image.
+                            </AlertDescription>
+                        </Alert>
+
+
+                        <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.print_image"]</Button>
+
+                        <br />
+                        <Button class="btn btn-secondary" @onclick="GoToPreviousStep">@localizer["home.previous"]</Button>
+                        <br />
+                    </div>
+
+                </StepPanel>
+            </Content>
+
+            <Items>
+                <Step Name="step_usb_device">Check USB devices</Step>
+                <Step Name="step_camera">Select Camera</Step>
+                <Step Name="step_printer">Select Printer</Step>
+                <Step Name="step_capture">Capture Image</Step>
+                <Step Name="step_print">Print Image</Step>
+            </Items>
+        </Steps>
+    </div>
 
     @localizer["home.intro.camera_connected"]
 

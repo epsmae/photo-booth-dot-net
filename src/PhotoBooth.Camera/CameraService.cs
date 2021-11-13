@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using CliWrap;
-using CliWrap.Buffered;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Exceptions;
@@ -23,8 +21,6 @@ namespace PhotoBooth.Camera
             _logger = logger;
             _adapter = adapter;
         }
-
-
         public async Task Initialize()
         {
             CommandLineResult result = await _adapter.Initialize();

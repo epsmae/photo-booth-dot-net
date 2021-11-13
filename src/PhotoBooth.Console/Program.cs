@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Camera;
 using PhotoBooth.Printer;
+using PhotoBooth.Service;
 using Serilog;
 
 namespace PhotoBooth.Console
@@ -24,9 +25,11 @@ namespace PhotoBooth.Console
 #if DEBUG
             services.AddSingleton<IPrinterAdapter, PrinterAdapterSimulator>();
             services.AddSingleton<ICameraAdapter, CameraAdapterSimulator>();
+            services.AddSingleton<IUsbService, UsbServiceStub>();
 #else
             services.AddSingleton<IPrinterAdapter, CupsPrinterAdapter>();
             services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
+            services.AddSingleton<IUsbService, UsbService>();
 #endif
             services.AddSingleton<PrintCommandHandler>();
             services.AddSingleton<CameraCommandHandler>();

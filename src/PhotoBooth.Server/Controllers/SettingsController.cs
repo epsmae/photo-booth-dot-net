@@ -1,9 +1,5 @@
 using System.Collections.Generic;
-using System.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
 

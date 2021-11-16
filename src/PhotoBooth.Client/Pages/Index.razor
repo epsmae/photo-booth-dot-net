@@ -120,15 +120,30 @@
 
                     <div Class="step_container" style="width: 500px">
 
-                        Trigger a camera image.
-                        <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.capture_image"]</Button>
+                        <Alert Color="Color.Success" Visible="true">
+                            <AlertMessage>Capture</AlertMessage>
+                            <AlertDescription>
+                                Trigger a camera image.
+                            </AlertDescription>
+                        </Alert>
 
-                        <br />
-                        <Button class="btn btn-secondary" @onclick="GoToPreviousStep">@localizer["home.previous"]</Button>
-                        <br />
-                        <Button class="btn btn-secondary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">@localizer["home.next"]</Button>
-                        <br />
+                                @if (IsSpinnerVisible)
+                                {
+                                    <div class="spinner"/>
+                                }else{
 
+                                            @if (IsReviewImageVisible)
+                                            {
+                                                <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+                                            }
+
+                                    <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.capture_image"]</Button>
+                                    <br />
+                                    <Button class="btn btn-secondary" @onclick="GoToPreviousStep">@localizer["home.previous"]</Button>
+                                    <br />
+                                    <Button class="btn btn-secondary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">@localizer["home.next"]</Button>
+                                    <br />
+                                }
                     </div>
 
                 </StepPanel>
@@ -144,6 +159,11 @@
                                 Print the camera image.
                             </AlertDescription>
                         </Alert>
+
+                            @if (IsReviewImageVisible)
+                            {
+                                <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+                            }
 
 
                         <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.print_image"]</Button>

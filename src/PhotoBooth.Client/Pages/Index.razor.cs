@@ -69,6 +69,25 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
+        public bool IsSpinnerVisible
+        {
+            get;
+            set;
+        }
+
+        public bool IsReviewImageVisible
+        {
+            get
+            {
+                return !IsSpinnerVisible && !string.IsNullOrEmpty(Image);
+            }
+        }
+
+        public string Image
+        {
+            get; set;
+        }
+
         private bool IsNextEnabled(string stateString)
         {
             StepState state = _stepDictionary.First(e => e.Value == stateString).Key;
@@ -175,12 +194,23 @@ namespace PhotoBooth.Client.Pages
         {
             try
             {
+                IsSpinnerVisible = true;
+                Image = string.Empty;
+                _capturedImageName = string.Empty;
+                StateHasChanged();
                 await EnsureHubConnected();
-                _capturedImageName = await _hubConnection.InvokeAsync<string>("CaptureImage", SelectedCamera);
+                PreviewCaptureResult result = await _hubConnection.InvokeAsync<PreviewCaptureResult>("CaptureImageData", SelectedCamera);
+                _capturedImageName = result.FileName;
+                Image = Convert.ToBase64String(result.ThumbnailData);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Failed capture image");
+            }
+            finally
+            {
+                IsSpinnerVisible = false;
+                StateHasChanged();
             }
         }
 

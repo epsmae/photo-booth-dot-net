@@ -4,3 +4,22 @@
     margin: 20px;
     height: 400px;
 }
+
+.spinner {
+    border: 16px solid silver;
+    border-top: 16px solid #1b6ec2;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}

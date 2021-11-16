@@ -10,12 +10,14 @@ namespace PhotoBooth.Server
         private readonly ICameraService _cameraService;
         private readonly IPrinterService _printerService;
         private readonly IFileService _fileService;
+        private readonly IImageResizer _imageResizer;
 
-        public CaptureHub(ICameraService cameraService, IPrinterService printerService, IFileService fileService)
+        public CaptureHub(ICameraService cameraService, IPrinterService printerService, IFileService fileService, IImageResizer imageResizer)
         {
             _cameraService = cameraService;
             _printerService = printerService;
             _fileService = fileService;
+            _imageResizer = imageResizer;
         }
 
 
@@ -52,6 +54,21 @@ namespace PhotoBooth.Server
         {
             CaptureResult result = await _cameraService.CaptureImage(_fileService.PhotoDirectory, camera);
             return result.FileName;
+        }
+
+        public async Task<PreviewCaptureResult> CaptureImageData(string camera)
+        {
+            PreviewCaptureResult previewCaptureResult = new PreviewCaptureResult();
+
+            CaptureResult result = await _cameraService.CaptureImage(_fileService.PhotoDirectory, camera);
+            previewCaptureResult.FileName = result.FileName;
+
+            using (Stream stream = _fileService.OpenFile(result.FileName))
+            {
+                previewCaptureResult.ThumbnailData = _imageResizer.ResizeImage(stream, 256, 30);
+            }
+
+            return previewCaptureResult;
         }
 
         public async Task PrintImage(string printer, string fileName)

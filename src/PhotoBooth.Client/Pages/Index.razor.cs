@@ -16,6 +16,7 @@ namespace PhotoBooth.Client.Pages
     {
         private HubConnection _hubConnection;
         private string _capturedImageName;
+        private string _selectedStep;
 
         private enum StepState
         {
@@ -107,8 +108,26 @@ namespace PhotoBooth.Client.Pages
 
         public string SelectedStep
         {
-            get;
-            set;
+            get
+            {
+                return _selectedStep;
+            }
+            set
+            {
+                if (_selectedStep != value)
+                {
+                    _selectedStep = value;
+                    StepState state = _stepDictionary.First(e => e.Value == _selectedStep).Key;
+                    if (state == StepState.Camera)
+                    {
+                        Task.Run(ListCameras);
+                    }
+                    else if (state == StepState.Printer)
+                    {
+                        Task.Run(ListPrinters);
+                    }
+                }
+            }
         }
 
         public string SelectedCamera
@@ -147,6 +166,12 @@ namespace PhotoBooth.Client.Pages
         }
         private Task OnSelectedStepChanged(string selectedStep)
         {
+            if (IsSpinnerVisible)
+            {
+                return Task.CompletedTask;
+            }
+
+
             int index = (int) _stepDictionary.First(e => e.Value == selectedStep).Key;
 
             if (index > 0)
@@ -187,6 +212,7 @@ namespace PhotoBooth.Client.Pages
                 {
                     SelectedCamera = string.Empty;
                 }
+                StateHasChanged();
             }
         }
 
@@ -314,6 +340,7 @@ namespace PhotoBooth.Client.Pages
                 {
                     SelectedCamera = string.Empty;
                 }
+                StateHasChanged();
             }
         }
     }

@@ -1,0 +1,27 @@
+@inject IStringLocalizer<Index> localizer
+
+<div Class="step_container" >
+
+    <div style="width: 500px;">
+
+        <div Class="header_container">
+            <Button class="btn btn-secondary" @onclick="GoToPreviousStep">
+                <Icon Name="IconName.ArrowLeft" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
+            </Button>
+            <p>@Header</p>
+            <Button class="btn btn-primary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">
+                <Icon Name="IconName.ArrowRight" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
+            </Button>
+        </div>
+                     
+        <Alert Color="Color.Success" Visible="true">
+            <AlertMessage>@Title</AlertMessage>
+            <AlertDescription>
+                @Description
+            </AlertDescription>
+        </Alert>
+
+        @ChildContent
+
+    </div>
+</div>

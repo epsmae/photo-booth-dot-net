@@ -1,0 +1,13 @@
+.step_container {
+    padding: 20px;
+    background-color: white;
+    margin: 20px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+.header_container {
+    display: flex;
+    justify-content: space-between;
+}

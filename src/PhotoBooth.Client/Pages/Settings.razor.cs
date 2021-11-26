@@ -51,19 +51,7 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
-        public List<CameraInfo> Cameras
-        {
-            get;
-            set;
-        }
-
         public string PrintServerUrl
-        {
-            get;
-            set;
-        }
-
-        public List<Printer> Printers
         {
             get;
             set;
@@ -89,14 +77,10 @@ namespace PhotoBooth.Client.Pages
         {
             SelectedPrinter = string.Empty;
             SelectedCamera = string.Empty;
-            Printers = new List<Printer>();
-            Cameras = new List<CameraInfo>();
 
             await FetchPrintServerUrl();
             await FetchCurrentLanguage();
             await FetchSettings();
-            await FetchAvailableCameras();
-            await FetchPrinters();
         }
 
         private async Task FetchSettings()
@@ -162,18 +146,6 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
-        private async Task FetchAvailableCameras()
-        {
-            try
-            {
-                Cameras = await HttpClient.GetFromJsonAsync<List<CameraInfo>>("api/Camera/Cameras");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed to fetch cameras");
-            }
-        }
-
         private async Task FetchPrintServerUrl()
         {
             try
@@ -185,19 +157,6 @@ namespace PhotoBooth.Client.Pages
                 Logger.LogError(ex, "Failed to fetch printServerUrl");
             }
         }
-
-        private async Task FetchPrinters()
-        {
-            try
-            {
-                Printers = await HttpClient.GetFromJsonAsync<List<Printer>>("api/Printer/Printers");
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed fetch printers");
-            }
-        }
-
 
         protected void ShowPrintQueue()
         {
@@ -240,7 +199,6 @@ namespace PhotoBooth.Client.Pages
             _selectedLanguage = await JsRuntime.InvokeAsync<string>("getLanguage");
             StateHasChanged();
         }
-
 
         protected async Task SaveSettings()
         {

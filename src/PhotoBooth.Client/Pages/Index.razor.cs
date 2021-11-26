@@ -343,5 +343,20 @@ namespace PhotoBooth.Client.Pages
                 StateHasChanged();
             }
         }
+
+        protected async Task CompleteSetup()
+        {
+            try
+            {
+                SettingsDto dto = await HttpClient.GetFromJsonAsync<SettingsDto>("api/Settings/Settings");
+                dto.SelectedCamera = SelectedCamera;
+                dto.SelectedPrinter = SelectedPrinter;
+                await HttpClient.PostAsJsonAsync("api/Settings/SetSettings", dto);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to save settings");
+            }
+        }
     }
 }

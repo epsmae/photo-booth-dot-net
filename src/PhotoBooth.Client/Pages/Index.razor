@@ -11,14 +11,13 @@
             <Content >
                 <StepPanel Name="step_usb_device" >
 
-                    <StepItem Header="Connected Devices" Title="Show USB Devices" Description="The printer and the camera have to be listed in the usb device list.
-                                If the printer or camera is not available check the wiring and power setup of the printer or camera and press update." IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+                    <StepItem Header=@localizer["home.step_devices.header"] Title=@localizer["home.step_devices.title"] Description=@localizer["home.step_devices.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                         <Table Striped="true" Narrow="true" Bordered="true">
                             <TableHeader>
                                 <TableRow>
                                     <TableHeaderCell>
-                                        @localizer["home.devices"]
+                                        @localizer["home.step_devices.available_devices"]
 
                                         <Button @onclick="UpdateUsbDevice" Style="background-color:white">
                                             <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
@@ -42,8 +41,7 @@
 
                 <StepPanel Name="step_camera" Class="step_container">
 
-                    <StepItem Header="Connected Cameras" Title="Camera Selection" Description="Select the desired camera.
-                                If the camera is not available check the wiring and power setup of the camera and press update." IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+                    <StepItem Header=@localizer["home.step_camera.header"] Title=@localizer["home.step_camera.title"] Description=@localizer["home.step_camera.description"]  IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                         <Button class="btn btn-secondary" @onclick="ListCameras">
                             <Icon Name="IconName.Redo" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
@@ -61,8 +59,7 @@
                 </StepPanel>
                 <StepPanel Name="step_printer" Class="step_container">
 
-                    <StepItem Header="Connected Printers" Title="Printer Selection" Description="Select the desired printer.
-                                If the printer is not available check the wiring and power setup of the printer and press update." IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+                    <StepItem Header=@localizer["home.step_printer.header"] Title=@localizer["home.step_printer.title"] Description=@localizer["home.step_printer.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                         <Button class="btn btn-secondary" @onclick="ListPrinters">
                             <Icon Name="IconName.Redo" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
@@ -81,7 +78,7 @@
                 </StepPanel>
                 <StepPanel Name="step_capture" Class="step_container">
 
-                    <StepItem Header="Test Capture" Title="Capture" Description=" Trigger a camera image." IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+                    <StepItem Header=@localizer["home.step_capture.header"] Title=@localizer["home.step_capture.title"] Description=@localizer["home.step_capture.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                         @if (IsSpinnerVisible)
                         {
@@ -93,7 +90,7 @@
                                 <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
                             }
 
-                            <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.capture_image"]</Button>
+                            <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.step_capture.capture"]</Button>
                             <br />
                         }
 
@@ -103,15 +100,15 @@
                 <StepPanel Name="step_print" Class="step_container">
 
                     
-                    <StepItem Header="Test Print" Title="Print" Description="Print the camera image." IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+                    <StepItem Header=@localizer["home.step_print.header"] Title=@localizer["home.step_print.title"] Description=@localizer["home.step_print.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                         @if (IsReviewImageVisible)
                         {
                             <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
                         }
 
-                        <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.print_image"]</Button>
-                        <Button class="btn btn-secondary" @onclick="CompleteSetup">@localizer["home.complete_setup"]</Button>
+                        <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.step_print.print_image"]</Button>
+                        <Button class="btn btn-secondary" @onclick="CompleteSetup">@localizer["home.step_print.complete_setup"]</Button>
 
                     </StepItem>
 

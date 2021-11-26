@@ -177,6 +177,63 @@
   <data name="home.lets_go" xml:space="preserve">
     <value>Yes, Let's go</value>
   </data>
+  <data name="home.step_camera.description" xml:space="preserve">
+    <value>Select the desired camera. If the camera is not available check the wiring and power setup of the camera and press update.</value>
+  </data>
+  <data name="home.step_camera.header" xml:space="preserve">
+    <value>Available Cameras</value>
+  </data>
+  <data name="home.step_camera.title" xml:space="preserve">
+    <value>Camera Selection</value>
+  </data>
+  <data name="home.step_capture.capture" xml:space="preserve">
+    <value>Trigger Image</value>
+  </data>
+  <data name="home.step_capture.description" xml:space="preserve">
+    <value>Trigger a camera image to verify the capture funcionality.</value>
+  </data>
+  <data name="home.step_capture.header" xml:space="preserve">
+    <value>Test Trigger Capture</value>
+  </data>
+  <data name="home.step_capture.title" xml:space="preserve">
+    <value>Capture</value>
+  </data>
+  <data name="home.step_devices.available_devices" xml:space="preserve">
+    <value>Available Devices</value>
+  </data>
+  <data name="home.step_devices.description" xml:space="preserve">
+    <value>The printer and the camera have to be listed in the usb device list. If the printer or camera is not available check the wiring and power setup of the printer or camera and press update.</value>
+  </data>
+  <data name="home.step_devices.header" xml:space="preserve">
+    <value>Connected USB Devices</value>
+  </data>
+  <data name="home.step_devices.title" xml:space="preserve">
+    <value>USB Devices</value>
+  </data>
+  <data name="home.step_print.complete_setup" xml:space="preserve">
+    <value>Complete Setup</value>
+  </data>
+  <data name="home.step_print.description" xml:space="preserve">
+    <value>Print the image to verify the printer functionality.</value>
+  </data>
+  <data name="home.step_print.header" xml:space="preserve">
+    <value>Test Printer</value>
+  </data>
+  <data name="home.step_print.print_image" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="home.step_print.title" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="home.step_printer.description" xml:space="preserve">
+    <value>Select the desired printer. If the printer is not available check the wiring and power setup of the printer and press update.</value>
+  </data>
+  <data name="home.step_printer.header" xml:space="preserve">
+    <value>Available Printers</value>
+  </data>
+  <data name="home.step_printer.title" xml:space="preserve">
+    <value>Printer Selection</value>
+  </data>
   <data name="home.title.welcome" xml:space="preserve">
     <value>Welcome to Photo Boot .Net</value>
   </data>

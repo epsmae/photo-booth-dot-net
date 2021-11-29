@@ -169,13 +169,19 @@
     <value>OK</value>
   </data>
   <data name="home.check_settings" xml:space="preserve">
-    <value>Check</value>
+    <value>Check general settings</value>
   </data>
   <data name="home.intro.camera_connected" xml:space="preserve">
     <value>Camera and Printer Connected?</value>
   </data>
   <data name="home.lets_go" xml:space="preserve">
-    <value>Yes, Let's go</value>
+    <value>Let's go</value>
+  </data>
+  <data name="home.setup_intro" xml:space="preserve">
+    <value>You can use the below setup wizard to setup or test the camera and printer. If you have already completed the setup before and belive that every thing is ok. You can directly start using your Photobox.</value>
+  </data>
+  <data name="home.setup_title" xml:space="preserve">
+    <value>Photobox camera and printer setup</value>
   </data>
   <data name="home.step_camera.description" xml:space="preserve">
     <value>Select the desired camera. If the camera is not available check the wiring and power setup of the camera and press update.</value>

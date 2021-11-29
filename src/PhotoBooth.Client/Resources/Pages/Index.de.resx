@@ -169,13 +169,19 @@
     <value>OK</value>
   </data>
   <data name="home.check_settings" xml:space="preserve">
-    <value>Einstellungen prüfen</value>
+    <value>Allgemeine Einstellungen prüfen</value>
   </data>
   <data name="home.intro.camera_connected" xml:space="preserve">
     <value>Kamera und Drucker verbunden?</value>
   </data>
   <data name="home.lets_go" xml:space="preserve">
-    <value>Ja, Loslegen</value>
+    <value>Loslegen</value>
+  </data>
+  <data name="home.setup_intro" xml:space="preserve">
+    <value>Die untenstehende Setup Routine kann gebraucht werden um die Kamera und den Drucker zu definieren oder auch nur um das Setup zu testen. Wenn das aktuelle Setup so passt kann die Fotobox direkt benutzt werden.</value>
+  </data>
+  <data name="home.setup_title" xml:space="preserve">
+    <value>Fotobox Kamer und Drucker Setup</value>
   </data>
   <data name="home.step_camera.description" xml:space="preserve">
     <value>Selektion der gewüschten Kamera. Ist diese nicht verfügbar sollte die Stromversorgung sowie die Verkabelung überprüft werden.</value>

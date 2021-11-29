@@ -1,19 +1,23 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 
 namespace PhotoBooth.Server
 {
     public class CaptureHub : Hub
     {
+        private ILogger<CaptureHub> _logger;
         private readonly ICameraService _cameraService;
         private readonly IPrinterService _printerService;
         private readonly IFileService _fileService;
         private readonly IImageResizer _imageResizer;
 
-        public CaptureHub(ICameraService cameraService, IPrinterService printerService, IFileService fileService, IImageResizer imageResizer)
+        public CaptureHub(ILogger<CaptureHub> logger, ICameraService cameraService, IPrinterService printerService, IFileService fileService, IImageResizer imageResizer)
         {
+            _logger = logger;
             _cameraService = cameraService;
             _printerService = printerService;
             _fileService = fileService;
@@ -58,6 +62,24 @@ namespace PhotoBooth.Server
 
         public async Task<PreviewCaptureResult> CaptureImageData(string camera)
         {
+            try
+            {
+                await _cameraService.Initialize();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize, ignore");
+            }
+
+            try
+            {
+                await _cameraService.Configure();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to configure, ignore");
+            }
+                        
             PreviewCaptureResult previewCaptureResult = new PreviewCaptureResult();
 
             CaptureResult result = await _cameraService.CaptureImage(_fileService.PhotoDirectory, camera);

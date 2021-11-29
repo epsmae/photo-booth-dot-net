@@ -36,7 +36,7 @@ namespace PhotoBooth.Client.Pages
             {StepState.Capture, "step_capture"},
             {StepState.Print, "step_print"},
         };
-
+        private bool _setupInProgress;
 
         [Inject]
         protected HttpClient HttpClient
@@ -98,9 +98,19 @@ namespace PhotoBooth.Client.Pages
                 return ! string.IsNullOrEmpty(SelectedCamera);
             }
 
-            if (state == StepState.Printer || state == StepState.Capture)
+            if (state == StepState.Printer)
             {
                 return ! string.IsNullOrEmpty(SelectedPrinter) && !string.IsNullOrEmpty(SelectedCamera);
+            }
+
+            if (state == StepState.Capture)
+            {
+                return !string.IsNullOrEmpty(SelectedPrinter) && !string.IsNullOrEmpty(SelectedCamera) && ! string.IsNullOrEmpty(_capturedImageName);
+            }
+
+            if (state == StepState.Print)
+            {
+                return false;
             }
 
             return true;
@@ -297,6 +307,13 @@ namespace PhotoBooth.Client.Pages
             return Task.CompletedTask;
         }
 
+        private Task StartSetup()
+        {
+            _setupInProgress = true;
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
+
         private Task GoToPreviousStep()
         {
 
@@ -318,6 +335,13 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
+        public bool SetupInProgress
+        {
+            get
+            {
+                return _setupInProgress;
+            }
+        }
 
         private async Task ListPrinters()
         {
@@ -352,6 +376,7 @@ namespace PhotoBooth.Client.Pages
                 dto.SelectedCamera = SelectedCamera;
                 dto.SelectedPrinter = SelectedPrinter;
                 await HttpClient.PostAsJsonAsync("api/Settings/SetSettings", dto);
+                Navigator.NavigateTo(Navigator.ToAbsoluteUri("capture").ToString(), false);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
 .step_container {
-    padding: 20px;
+    padding: 0px;
     background-color: white;
-    margin: 20px;
+    margin: 0px;
     height: 400px;
     display: flex;
     justify-content: center;

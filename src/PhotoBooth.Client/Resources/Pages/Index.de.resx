@@ -169,13 +169,76 @@
     <value>OK</value>
   </data>
   <data name="home.check_settings" xml:space="preserve">
-    <value>Einstellungen prüfen</value>
+    <value>Allgemeine Einstellungen prüfen</value>
   </data>
   <data name="home.intro.camera_connected" xml:space="preserve">
     <value>Kamera und Drucker verbunden?</value>
   </data>
   <data name="home.lets_go" xml:space="preserve">
-    <value>Ja, Loslegen</value>
+    <value>Loslegen</value>
+  </data>
+  <data name="home.setup_intro" xml:space="preserve">
+    <value>Die untenstehende Setup Routine kann gebraucht werden um die Kamera und den Drucker zu definieren oder auch nur um das Setup zu testen. Wenn das aktuelle Setup so passt kann die Fotobox direkt benutzt werden.</value>
+  </data>
+  <data name="home.setup_title" xml:space="preserve">
+    <value>Fotobox Kamer und Drucker Setup</value>
+  </data>
+  <data name="home.step_camera.description" xml:space="preserve">
+    <value>Selektion der gewüschten Kamera. Ist diese nicht verfügbar sollte die Stromversorgung sowie die Verkabelung überprüft werden.</value>
+  </data>
+  <data name="home.step_camera.header" xml:space="preserve">
+    <value>Verfügbare Kameras</value>
+  </data>
+  <data name="home.step_camera.title" xml:space="preserve">
+    <value>Selektierte Kamera</value>
+  </data>
+  <data name="home.step_capture.capture" xml:space="preserve">
+    <value>Bild auslösen</value>
+  </data>
+  <data name="home.step_capture.description" xml:space="preserve">
+    <value>Bild aufnehmen um die Funkion der Kamera zu verifizieren.</value>
+  </data>
+  <data name="home.step_capture.header" xml:space="preserve">
+    <value>Bildaufnahme Test</value>
+  </data>
+  <data name="home.step_capture.title" xml:space="preserve">
+    <value>Auslösen</value>
+  </data>
+  <data name="home.step_devices.available_devices" xml:space="preserve">
+    <value>Verfügbare Geräte</value>
+  </data>
+  <data name="home.step_devices.description" xml:space="preserve">
+    <value>Der Drucker und die Kamera müssen in der Geräte Liste erscheinen. Falls die Geräte nicht sichtbar sind sollte die Stromversorgung sowie die Verkabelung überprüft werden.</value>
+  </data>
+  <data name="home.step_devices.header" xml:space="preserve">
+    <value>Verbundene USB Geräte</value>
+  </data>
+  <data name="home.step_devices.title" xml:space="preserve">
+    <value>USB Geräte</value>
+  </data>
+  <data name="home.step_print.complete_setup" xml:space="preserve">
+    <value>Setup abschliessen</value>
+  </data>
+  <data name="home.step_print.description" xml:space="preserve">
+    <value>Bild drucken um die Funktion des Druckers zu verifizieren.</value>
+  </data>
+  <data name="home.step_print.header" xml:space="preserve">
+    <value>Drucker Test</value>
+  </data>
+  <data name="home.step_print.print_image" xml:space="preserve">
+    <value>Drucken</value>
+  </data>
+  <data name="home.step_print.title" xml:space="preserve">
+    <value>Drucken</value>
+  </data>
+  <data name="home.step_printer.description" xml:space="preserve">
+    <value>Selektion des gewüschten Druckers. Ist dieser nicht verfügbar sollte die Stromversorgung sowie die Verkabelung überprüft werden.</value>
+  </data>
+  <data name="home.step_printer.header" xml:space="preserve">
+    <value>Verfügbare Drukter</value>
+  </data>
+  <data name="home.step_printer.title" xml:space="preserve">
+    <value>Selektierter Drucker</value>
   </data>
   <data name="home.title.welcome" xml:space="preserve">
     <value>Wilkommen bei Photo Boot .Net</value>

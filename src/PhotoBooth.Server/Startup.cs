@@ -36,10 +36,12 @@ namespace PhotoBooth.Server
             services.AddSingleton<ICameraAdapter, CameraAdapterSimulator>();
             services.AddSingleton<IPrinterAdapter, PrinterAdapterSimulator>();
             services.AddSingleton<IFileService, SampleFileService>();
+            services.AddSingleton<IUsbService, UsbServiceStub>();
 #else
             services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
             services.AddSingleton<IPrinterAdapter, CupsPrinterAdapter>();
             services.AddSingleton<IFileService, FileService>();
+            services.AddSingleton<IUsbService, UsbService>();
 #endif
 
             services.AddSingleton<ICameraService, CameraService>();

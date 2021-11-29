@@ -1,23 +1,163 @@
 @page "/home"
 @inject IStringLocalizer<Index> localizer
 
+    @if(!SetupInProgress)
+    {       
+        <div style="padding: 20px;">
 
-<div style="padding: 20px;">
-    <h3>@localizer["home.title.welcome"]</h3>
+            <h3>@localizer["home.title.welcome"]</h3>
+
+            <Alert Color="Color.Warning" Visible="true">
+            <AlertMessage></AlertMessage>
+                <AlertDescription>
+                    @localizer["home.setup_intro"]
+                </AlertDescription>
+            </Alert>
+
+            <div style="display: flex;">
+
+                <Button class="btn btn-primary" Clicked=@StartSetup>setup</Button>
 
 
-    @localizer["home.intro.camera_connected"]
+                <NavLink class="nav-link" href="settings">
+                    <Button class="btn btn-secondary">@localizer["home.check_settings"]</Button>
+                </NavLink>
 
-    <NavLink class="nav-link" href="settings">
+                <NavLink class="nav-link" href="capture">
 
-        <Button class="btn btn-secondary">@localizer["home.check_settings"]</Button>
-    </NavLink>
+                    <Button class="btn btn-primary">@localizer["home.lets_go"]</Button>
+                </NavLink>
+            </div>
+        
+        </div>
+    }
 
-    <NavLink class="nav-link" href="capture">
+    @if(SetupInProgress)
+    {
+        <div style="padding: 5px;background-color: white;">
 
-        <Button class="btn btn-primary">@localizer["home.lets_go"]</Button>
-    </NavLink>
+            <Steps SelectedStep="@SelectedStep" SelectedStepChanged="@OnSelectedStepChanged">
+                <Content >
+                    <StepPanel Name="step_usb_device" >
 
-</div>
+                        <StepItem Header=@localizer["home.step_devices.header"] Title=@localizer["home.step_devices.title"] Description=@localizer["home.step_devices.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+
+                            <Table Striped="true" Narrow="true" Bordered="true">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHeaderCell>
+                                            @localizer["home.step_devices.available_devices"]
+
+                                            <Button @onclick="UpdateUsbDevice" Style="background-color:white">
+                                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
+                                            </Button>
+                                        </TableHeaderCell>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody Style="max-height: 200px;display: block;overflow-y: auto;">
+                                    @foreach (var device in UsbDevices)
+                                    {
+                                        <TableRow>
+                                            <TableRowCell>@device</TableRowCell>
+                                        </TableRow>
+                                    }
+                                </TableBody>
+                            </Table>
+
+                        </StepItem>
+
+                    </StepPanel>
+
+                    <StepPanel Name="step_camera" Class="step_container">
+
+                        <StepItem Header=@localizer["home.step_camera.header"] Title=@localizer["home.step_camera.title"] Description=@localizer["home.step_camera.description"]  IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+
+                            <Button @onclick="ListCameras" Style="background-color:none">
+                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
+                            </Button>
+
+                            <select class="form-control" @bind="SelectedCamera">
+                                @foreach (var langCode in Cameras)
+                                {
+                                    <option value="@langCode.CameraModel">@langCode.CameraModel</option>
+                                }
+                            </select>
+
+                        </StepItem>
+
+                    </StepPanel>
+                    <StepPanel Name="step_printer" Class="step_container">
+
+                        <StepItem Header=@localizer["home.step_printer.header"] Title=@localizer["home.step_printer.title"] Description=@localizer["home.step_printer.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+
+                            <Button @onclick="ListPrinters" Style="background-color:none">
+                                  <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
+                            </Button>
+
+                            <select class="form-control" @bind="SelectedPrinter">
+                                @foreach (var langCode in Printers)
+                                {
+                                    <option value="@langCode.Name">@langCode.Name</option>
+                                }
+                            </select>
+
+                        </StepItem>
+
+                    </StepPanel>
+                    <StepPanel Name="step_capture" Class="step_container">
+
+                        <StepItem Header=@localizer["home.step_capture.header"] Title=@localizer["home.step_capture.title"] Description=@localizer["home.step_capture.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+
+                            @if (IsSpinnerVisible)
+                            {
+                                <div class="spinner"/>
+                            }else{
+
+                                @if (IsReviewImageVisible)
+                                {
+                                    <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+                                }
+
+                                <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.step_capture.capture"]</Button>
+                                <br />
+                            }
+
+                        </StepItem>
+
+                    </StepPanel>
+                    <StepPanel Name="step_print" Class="step_container">
+
+                    
+                        <StepItem Header=@localizer["home.step_print.header"] Title=@localizer["home.step_print.title"] Description=@localizer["home.step_print.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+
+                            @if (IsReviewImageVisible)
+                            {
+                                <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+                            }
+
+                            <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.step_print.print_image"]</Button>
+                            <Button class="btn btn-secondary" @onclick="CompleteSetup">@localizer["home.step_print.complete_setup"]</Button>
+
+                        </StepItem>
+
+                    </StepPanel>
+                </Content>
+
+                <Items>
+                    <Step Name="step_usb_device">USB Devices</Step>
+                    <Step Name="step_camera">Camera</Step>
+                    <Step Name="step_printer">Printer</Step>
+                    <Step Name="step_capture">Capture</Step>
+                    <Step Name="step_print">Print</Step>
+                </Items>
+            </Steps>
+        </div>
+
+    }
+
+
+
+
+
 
 

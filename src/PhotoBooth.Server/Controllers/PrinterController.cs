@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

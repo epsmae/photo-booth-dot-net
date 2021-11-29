@@ -1,0 +1,9 @@
+.step_container {
+    display: flex;
+    justify-content: center;
+}
+
+.header_container {
+    display: flex;
+    justify-content: space-between;
+}

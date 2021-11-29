@@ -12,6 +12,7 @@
         <Field ColumnSize="ColumnSize.IsFull">
 
             <FieldLabel>@localizer["settings.selected_language"]</FieldLabel>
+
             <select class="form-control" @bind="SelectedLanguage">
                 @foreach (var langCode in langCodes)
                 {
@@ -22,35 +23,19 @@
 
         <Field ColumnSize="ColumnSize.IsFull">
             <FieldLabel>@localizer["settings.selected_camera"]</FieldLabel>
-
-            <select class="form-control" @bind="SelectedCamera">
-                @foreach (var langCode in Cameras)
-                {
-                <option value="@langCode.CameraModel">@langCode.CameraModel</option>
-                }
-            </select>
+            <TextEdit Disabled Text=@SelectedCamera/>
         </Field>
 
 
         <Field ColumnSize="ColumnSize.IsFull">
             <FieldLabel>@localizer["settings.selected_printer"]</FieldLabel>
-            
-            <p><a href=@PrintServerUrl target="_blank" class="ml-md-auto">Cups-Print-Server</a></p>
-
-            <select class="form-control" @bind="SelectedPrinter">
-                @foreach (var langCode in Printers)
-                {
-                <option value="@langCode.Name">@langCode.Name</option>
-                }
-            </select>
+            <TextEdit Disabled Text=@SelectedPrinter/>
         </Field>
 
 
         <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.printer_queue"]</FieldLabel>
-            <p>
-                <button class="btn btn-secondary" @onclick="() => ShowPrintQueue()">@localizer["settings.show_printer_queue"]</button>
-            </p>
+            <FieldLabel>@localizer["settings.printer_queue"]</FieldLabel> 
+            <p><a href=@PrintServerUrl target="_blank" class="ml-md-auto">Cups-Print-Server</a></p>
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">

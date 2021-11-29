@@ -13,8 +13,8 @@ namespace PhotoBooth.Printer
 
         public async Task<CommandLineResult> ListPrinters()
         {
-            await Task.Delay(5000);
-            return CreateSuccessResult();
+            await Task.Delay(200);
+            return CreateSuccessResult($"Canon_SELPHY_CP1300");
         }
 
         public async Task<CommandLineResult> ListPrintQueue()
@@ -36,10 +36,15 @@ namespace PhotoBooth.Printer
 
         private static CommandLineResult CreateSuccessResult()
         {
+            return CreateSuccessResult(string.Empty);
+        }
+
+        private static CommandLineResult CreateSuccessResult(string output)
+        {
             return new CommandLineResult
             {
                 StandardError = string.Empty,
-                StandardOutput = string.Empty,
+                StandardOutput = output,
                 ExitCode = 0
             };
         }

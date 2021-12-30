@@ -18,11 +18,29 @@ namespace PhotoBooth.Service
 
             _workflowController.StateChanged += OnStateChanged;
             _gpioInterface.PrimaryButtonChanged += OnPrimaryButtonChanged;
+            _gpioInterface.SecondaryButtonChanged += OnSecondaryButtonChanged;
         }
+
+
 
         public void Initialize()
         {
             SetPrimaryButtonBlinkState();
+        }
+
+        private async void OnSecondaryButtonChanged(object sender, bool value)
+        {
+            try
+            {
+                if (value)
+                {
+                    await _workflowController.ConfirmError();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to confirm error");
+            }
         }
 
 
@@ -55,6 +73,15 @@ namespace PhotoBooth.Service
             else
             {
                 _gpioInterface.StopBlinkingPrimaryButton();
+            }
+
+            if (_workflowController.State == CaptureProcessState.Error)
+            {
+                _gpioInterface.StartBlinkingSecondaryButton();
+            }
+            else
+            {
+                _gpioInterface.StopBlinkingSecondaryButton();
             }
         }
     }

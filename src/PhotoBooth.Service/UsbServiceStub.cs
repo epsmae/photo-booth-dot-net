@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CliWrap;
-using CliWrap.Buffered;
-using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 
 namespace PhotoBooth.Service

@@ -13,7 +13,7 @@ namespace PhotoBooth.Gpio
         public event EventHandler<bool> PrimaryButtonChanged;
         public event EventHandler<bool> SecondaryButtonChanged;
 
-        private const int DebounceTime = 50;
+        private const int DebounceTime = 100;
 
         private const int PinRelay1 = 37;
         private const int PinRelay2 = 38;
@@ -35,8 +35,8 @@ namespace PhotoBooth.Gpio
             gpioController.OpenPin(PinButton2, PinMode.InputPullUp);
 
 
-            _blinkControllerPrimary = new BlinkController(gpioController, PinRelay1, 1000, false);
-            _blinkControllerSecondary = new BlinkController(gpioController, PinRelay2, 1000, false);
+            _blinkControllerPrimary = new BlinkController(gpioController, PinRelay1, 1000, true);
+            _blinkControllerSecondary = new BlinkController(gpioController, PinRelay2, 1000, true);
 
             new InputDebouncer(gpioController, PinButton1, DebounceTime, value =>
             {
@@ -75,13 +75,13 @@ namespace PhotoBooth.Gpio
 
         public void StartBlinkingSecondaryButton()
         {
-            _logger.LogInformation($"Start blinking for primary button");
+            _logger.LogInformation($"Start blinking for secondary button");
             _blinkControllerSecondary.Start();
         }
 
         public void StopBlinkingSecondaryButton()
         {
-            _logger.LogInformation($"Stop blinking for primary button");
+            _logger.LogInformation($"Stop blinking for secondary button");
             _blinkControllerSecondary.Stop();
         }
     }

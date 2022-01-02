@@ -49,46 +49,47 @@ $ ifconfig -a
 
 ### .Net sdk and runtime
 
-Download the latest [dotnet core 5 SDK and runtime](https://dotnet.microsoft.com/download/dotnet/5.0).
+Download the latest [dotnet core 6 SDK and runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 The links should look similar as below.
+I use a Rasperry 4 with the arm64 raspberry pi desktop. If you do not use the arm64 image you should select the arm32 binaries.
 ```
 $ mkdir tmp
-$ wget https://download.visualstudio.microsoft.com/download/pr/70bdb5a9-34cc-4f28-aa33-15535f73b593/7d31d53187c8937206bcc3b117b88978/dotnet-sdk-5.0.400-linux-arm.tar.gz
-$ wget https://download.visualstudio.microsoft.com/download/pr/08f79414-91fe-4072-a75b-7b7c21d0fced/46c49c781f43901eb7c27c465c448b0a/aspnetcore-runtime-5.0.9-linux-arm.tar.gz
+$ wget https://download.visualstudio.microsoft.com/download/pr/d43345e2-f0d7-4866-b56e-419071f30ebe/68debcece0276e9b25a65ec5798cf07b/dotnet-sdk-6.0.101-linux-arm64.tar.gz
+$ wget https://download.visualstudio.microsoft.com/download/pr/01f8a4af-9d6c-40ff-b834-a1d73105a9d5/aba0525a8b8cb745ac70ecd671acf0e0/aspnetcore-runtime-6.0.1-linux-arm64.tar.gz
 ```
 
 Now we have to move it depending on the version the downled archive may have different names.
 ```
 $ sudo mkdir /opt/dotnet
-$ sudo tar -xvf dotnet-sdk-5.0.400-linux-arm.tar.gz -C /opt/dotnet/
-$ sudo tar -xvf aspnetcore-runtime-5.0.9-linux-arm.tar.gz -C /opt/dotnet/
+$ sudo tar -xvf dotnet-sdk-6.0.101-linux-arm64.tar.gz -C /opt/dotnet/
+$ sudo tar -xvf aspnetcore-runtime-6.0.1-linux-arm64.tar.gz -C /opt/dotnet/
 $ sudo ln -s /opt/dotnet/dotnet /usr/local/bin
 ```
 
-Check if dotnet is correctly installed.
+Check if dotnet is correctly installed (output shows arm64).
 ```
 $ dotnet --info
 .NET SDK (reflecting any global.json):
- Version:   5.0.301
- Commit:    ef17233f86
+ Version:   6.0.101
+ Commit:    ef49f6213a
 
 Runtime Environment:
- OS Name:     raspbian
- OS Version:  10
+ OS Name:     debian
+ OS Version:  11
  OS Platform: Linux
- RID:         linux-arm
- Base Path:   /opt/dotnet/sdk/5.0.301/
+ RID:         debian.11-arm64
+ Base Path:   /opt/dotnet/sdk/6.0.101/
 
 Host (useful for support):
-  Version: 5.0.7
-  Commit:  556582d964
+  Version: 6.0.1
+  Commit:  3a25a7f1cc
 
 .NET SDKs installed:
-  5.0.301 [/opt/dotnet/sdk]
+  6.0.101 [/opt/dotnet/sdk]
 
 .NET runtimes installed:
-  Microsoft.AspNetCore.App 5.0.7 [/opt/dotnet/shared/Microsoft.AspNetCore.App]
-  Microsoft.NETCore.App 5.0.7 [/opt/dotnet/shared/Microsoft.NETCore.App]
+  Microsoft.AspNetCore.App 6.0.1 [/opt/dotnet/shared/Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 6.0.1 [/opt/dotnet/shared/Microsoft.NETCore.App]
 ```
 
 ### gphoto2
@@ -251,17 +252,9 @@ Swap:        102396           0      102396
 
 ```
 
-### Display GPU Temperature
+### Display Temperature
 
 ```
-$vcgencmd measure_temp
-temp=51.1'C
+watch -n1 vcgencmd measure_temp
 
 ```
-
-### Display CPU temperature
-
-```
-cpu=$(</sys/class/thermal/thermal_zone0/temp) echo "CPU Temperature: $((cpu/1000)) °C"
-```
-cpu=$(</sys/class/thermal/thermal_zone0/temp) echo "$((cpu/1000)) c"

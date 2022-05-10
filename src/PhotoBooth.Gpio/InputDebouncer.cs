@@ -9,7 +9,6 @@ namespace PhotoBooth.Gpio
         private readonly System.Device.Gpio.GpioController _controller;
         private readonly int _inputPinNumber;
         private readonly Action<bool> _action;
-        //private Timer _timer; 
 
         public InputDebouncer(System.Device.Gpio.GpioController controller, int inputPinNumber, int debounceMs, Action<bool> action)
         {

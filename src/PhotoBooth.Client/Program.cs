@@ -26,7 +26,7 @@ namespace PhotoBooth.Client
 
             builder.Services.AddBlazorise(options =>
             {
-                options.ChangeTextOnKeyPress = true;
+                //options.ChangeTextOnKeyPress = true;
             })
             .AddMaterialProviders()
             .AddMaterialIcons();

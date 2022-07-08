@@ -12,6 +12,7 @@ using Blazorise;
 using Blazorise.Icons.Material;
 using Blazorise.Material;
 using Microsoft.JSInterop;
+using MudBlazor.Services;
 
 namespace PhotoBooth.Client
 {
@@ -30,6 +31,8 @@ namespace PhotoBooth.Client
             })
             .AddMaterialProviders()
             .AddMaterialIcons();
+
+            builder.Services.AddMudServices();
 
             builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
             //builder.Services.Configure<Request>(options =>

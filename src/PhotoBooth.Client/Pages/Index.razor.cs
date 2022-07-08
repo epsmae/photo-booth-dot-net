@@ -37,6 +37,7 @@ namespace PhotoBooth.Client.Pages
             {StepState.Print, "step_print"},
         };
         private bool _setupInProgress;
+        private int _selectedMudIndex;
 
         [Inject]
         protected HttpClient HttpClient
@@ -67,6 +68,16 @@ namespace PhotoBooth.Client.Pages
             get
             {
                 return ! IsNextEnabled(SelectedStep);
+            }
+        }
+
+        public bool IsPreviousDisabled
+        {
+            get
+            {
+                StepState state = _stepDictionary.First(e => e.Value == SelectedStep).Key;
+
+                return state == StepState.UsbDevices;
             }
         }
 
@@ -127,6 +138,9 @@ namespace PhotoBooth.Client.Pages
                 if (_selectedStep != value)
                 {
                     _selectedStep = value;
+
+                    MudSelectedIndex = (int) _stepDictionary.First(e => e.Value == SelectedStep).Key;
+
                     StepState state = _stepDictionary.First(e => e.Value == _selectedStep).Key;
                     if (state == StepState.Camera)
                     {
@@ -343,6 +357,18 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
+        public int MudSelectedIndex
+        {
+            get
+            {
+                return _selectedMudIndex;
+            }
+            set
+            {
+                _selectedMudIndex = value;
+            }
+        }
+
         private async Task ListPrinters()
         {
             try
@@ -382,6 +408,11 @@ namespace PhotoBooth.Client.Pages
             {
                 Logger.LogError(ex, "Failed to save settings");
             }
+        }
+
+        private void OnMudSelectedStepChanged(int index)
+        {
+            SelectedStep = _stepDictionary[(StepState) index];
         }
     }
 }

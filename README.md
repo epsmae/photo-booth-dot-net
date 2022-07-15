@@ -8,7 +8,7 @@
 
 ## Technology
 
-The photobooth application is implemented in .Net 5 and uses blazor for the frontent (PWA).
+The photobooth application is implemented in .Net 6 and uses blazor webassembly for the frontent (PWA).
 This means the frontent can be used in any browser which has access to the raspberry.
 Personally I use the Raspberry Pi touch panel and run the chromium browser directly in raspian.
 

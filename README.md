@@ -53,14 +53,14 @@ Version 1.0
 
 Version 2.0
 
-- [ ] Wizard to check printer, camera
-- [ ] Trigger image by raspberry input
+- [x] .Net 6 aot
+- [x] Wizard to check printer, camera
+- [x] Trigger image by raspberry input
 - [ ] Skip review count down
 - [ ] Capture collage
 
 Version 3.0
 
-- [ ] .Net 6
 - [ ] Preview
 - [ ] Display capture images
 - [ ] Reprint captured images

@@ -10,6 +10,8 @@ namespace PhotoBooth.Gpio
         private readonly ILogger<GpioController> _logger;
         private readonly BlinkController _blinkControllerPrimary;
         private readonly BlinkController _blinkControllerSecondary;
+        private readonly InputDebouncer _primaryDebouncer;
+        private readonly InputDebouncer _secondaryDebouner;
         public event EventHandler<bool> PrimaryButtonChanged;
         public event EventHandler<bool> SecondaryButtonChanged;
 
@@ -38,7 +40,7 @@ namespace PhotoBooth.Gpio
             _blinkControllerPrimary = new BlinkController(gpioController, PinRelay1, 1000, true);
             _blinkControllerSecondary = new BlinkController(gpioController, PinRelay2, 1000, true);
 
-            new InputDebouncer(gpioController, PinButton1, DebounceTime, value =>
+            _primaryDebouncer = new InputDebouncer(gpioController, PinButton1, DebounceTime, value =>
             {
                 _logger.LogInformation($"Primary button changed value={value}");
 
@@ -49,7 +51,7 @@ namespace PhotoBooth.Gpio
             });
 
 
-            new InputDebouncer(gpioController, PinButton2, DebounceTime, value =>
+            _secondaryDebouner = new InputDebouncer(gpioController, PinButton2, DebounceTime, value =>
             {
                 _logger.LogInformation($"Secondary button changed value={value}");
 

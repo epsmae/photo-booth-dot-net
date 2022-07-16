@@ -1,7 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +8,10 @@ using Microsoft.Extensions.Hosting;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Camera;
 using System.Linq;
-using Microsoft.AspNetCore.SignalR;
 using PhotoBooth.Abstraction.Configuration;
+using PhotoBooth.Gpio;
 using PhotoBooth.Printer;
 using PhotoBooth.Service;
-using IConfigurationProvider = Microsoft.Extensions.Configuration.IConfigurationProvider;
 
 namespace PhotoBooth.Server
 {
@@ -37,11 +35,15 @@ namespace PhotoBooth.Server
             services.AddSingleton<IPrinterAdapter, PrinterAdapterSimulator>();
             services.AddSingleton<IFileService, SampleFileService>();
             services.AddSingleton<IUsbService, UsbServiceStub>();
+            services.AddSingleton<IGpioInterface, GpioControllerStub>();
+            services.AddSingleton<IHardwareController, HardwareController>();
 #else
             services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
             services.AddSingleton<IPrinterAdapter, CupsPrinterAdapter>();
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<IUsbService, UsbService>();
+            services.AddSingleton<IGpioInterface, GpioController>();
+            services.AddSingleton<IHardwareController, HardwareController>();
 #endif
 
             services.AddSingleton<ICameraService, CameraService>();
@@ -64,7 +66,7 @@ namespace PhotoBooth.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, NotificationService notificationService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, NotificationService notificationService, IHardwareController hardwareController)
         {
             if (env.IsDevelopment())
             {
@@ -95,9 +97,7 @@ namespace PhotoBooth.Server
 
             notificationService.SendStateUpdate();
 
-
-
-
+            hardwareController.Initialize();
         }
     }
 }

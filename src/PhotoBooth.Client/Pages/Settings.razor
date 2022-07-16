@@ -41,7 +41,7 @@
         <Field ColumnSize="ColumnSize.IsFull">
             <FieldLabel>@localizer["settings.captured_images"]</FieldLabel>
             <p>
-                <button class="btn btn-secondary" @onclick="() => ShowAvailableImages()">@localizer["settings.show_captured_images"]</button>
+                <Blazorise.button class="btn btn-secondary" @onclick="() => ShowAvailableImages()">@localizer["settings.show_captured_images"]</Blazorise.button>
             </p>
         </Field>
 
@@ -73,7 +73,7 @@
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">
-            <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
+            <Blazorise.button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</Blazorise.button>
         </Field>
 
     </Fields>

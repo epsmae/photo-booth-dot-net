@@ -24,6 +24,12 @@ namespace PhotoBooth.Client.Shared
         }
 
         [Parameter]
+        public bool IsPreviousDisabled
+        {
+            get; set;
+        }
+
+        [Parameter]
         public string Header
         {
             get; set;

@@ -1,14 +1,18 @@
 @page "/home"
+@using Size = MudBlazor.Size
 @inject IStringLocalizer<Index> localizer
 
-    @if(!SetupInProgress)
-    {       
+
+<div style="padding: 5px;">
+
+    @if (!SetupInProgress)
+    {
         <div style="padding: 20px;">
 
             <h3>@localizer["home.title.welcome"]</h3>
 
-            <Alert Color="Color.Warning" Visible="true">
-            <AlertMessage></AlertMessage>
+            <Alert Color="Blazorise.Color.Warning" Visible="true">
+                <AlertMessage></AlertMessage>
                 <AlertDescription>
                     @localizer["home.setup_intro"]
                 </AlertDescription>
@@ -16,31 +20,31 @@
 
             <div style="display: flex;">
 
-                <Button class="btn btn-primary" Clicked=@StartSetup>setup</Button>
-
+                <Blazorise.Button class="btn btn-primary" style="margin: 8px 16px;" Clicked=@StartSetup>setup</Blazorise.Button>
 
                 <NavLink class="nav-link" href="settings">
-                    <Button class="btn btn-secondary">@localizer["home.check_settings"]</Button>
+                    <Blazorise.Button class="btn btn-secondary">@localizer["home.check_settings"]</Blazorise.Button>
                 </NavLink>
 
                 <NavLink class="nav-link" href="capture">
-
-                    <Button class="btn btn-primary">@localizer["home.lets_go"]</Button>
+                    <Blazorise.Button class="btn btn-primary">@localizer["home.lets_go"]</Blazorise.Button>
                 </NavLink>
             </div>
-        
+
         </div>
     }
 
-    @if(SetupInProgress)
+    @if (SetupInProgress)
     {
-        <div style="padding: 5px;background-color: white;">
 
-            <Steps SelectedStep="@SelectedStep" SelectedStepChanged="@OnSelectedStepChanged">
-                <Content >
-                    <StepPanel Name="step_usb_device" >
+        <MudContainer MaxWidth="MaxWidth.Medium" Height="400px">
 
-                        <StepItem Header=@localizer["home.step_devices.header"] Title=@localizer["home.step_devices.title"] Description=@localizer["home.step_devices.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
+
+            <MudCarousel Class="mud-width-full" ShowArrows="false" style="height: 500px" ShowBullets="false" AutoCycle="false" TData="object" SelectedIndex="@MudSelectedIndex" SelectedIndexChanged="@OnMudSelectedStepChanged">
+                <MudCarouselItem Transition="Transition.Fade">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+
+                        <StepItem Header=@localizer["home.step_devices.header"] Title=@localizer["home.step_devices.title"] Description=@localizer["home.step_devices.description"] IsPreviousDisabled=@IsPreviousDisabled IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                             <Table Striped="true" Narrow="true" Bordered="true">
                                 <TableHeader>
@@ -48,16 +52,16 @@
                                         <TableHeaderCell>
                                             @localizer["home.step_devices.available_devices"]
 
-                                            <Button @onclick="UpdateUsbDevice" Style="background-color:white">
+                                            <Blazorise.Button @onclick="UpdateUsbDevice" Style="background-color: white; margin: 5px;">
                                                 <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                                            </Button>
+                                            </Blazorise.Button>
                                         </TableHeaderCell>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody Style="max-height: 200px;display: block;overflow-y: auto;">
+                                <TableBody Style="max-height: 200px; overflow-y: auto;">
                                     @foreach (var device in UsbDevices)
                                     {
-                                        <TableRow>
+                                        <TableRow style="width: 100%">
                                             <TableRowCell>@device</TableRowCell>
                                         </TableRow>
                                     }
@@ -66,98 +70,124 @@
 
                         </StepItem>
 
-                    </StepPanel>
+                    </MudPaper>
+                </MudCarouselItem>
+                <MudCarouselItem Transition="Transition.Fade">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+                        <StepItem Header=@localizer["home.step_camera.header"] Title=@localizer["home.step_camera.title"] Description=@localizer["home.step_camera.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                    <StepPanel Name="step_camera" Class="step_container">
-
-                        <StepItem Header=@localizer["home.step_camera.header"] Title=@localizer["home.step_camera.title"] Description=@localizer["home.step_camera.description"]  IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
-
-                            <Button @onclick="ListCameras" Style="background-color:none">
-                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                            </Button>
-
-                            <select class="form-control" @bind="SelectedCamera">
+                            <select class="form-control" @bind="SelectedCamera" style="max-width: 300px; margin:10px">
                                 @foreach (var langCode in Cameras)
                                 {
                                     <option value="@langCode.CameraModel">@langCode.CameraModel</option>
                                 }
                             </select>
 
+                            <Blazorise.Button @onclick="ListCameras" Style="background-color: none; margin:10px">
+                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
+                            </Blazorise.Button>
+
                         </StepItem>
-
-                    </StepPanel>
-                    <StepPanel Name="step_printer" Class="step_container">
-
+                    </MudPaper>
+                </MudCarouselItem>
+                <MudCarouselItem Transition="Transition.Fade">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
                         <StepItem Header=@localizer["home.step_printer.header"] Title=@localizer["home.step_printer.title"] Description=@localizer["home.step_printer.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                            <Button @onclick="ListPrinters" Style="background-color:none">
-                                  <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                            </Button>
-
-                            <select class="form-control" @bind="SelectedPrinter">
+                            <select class="form-control" @bind="SelectedPrinter" style="max-width: 300px; margin:10px">
                                 @foreach (var langCode in Printers)
                                 {
                                     <option value="@langCode.Name">@langCode.Name</option>
                                 }
                             </select>
 
+                            <Blazorise.Button @onclick="ListPrinters" Style="background-color: none; margin:10px">
+                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
+                            </Blazorise.Button>
+
                         </StepItem>
-
-                    </StepPanel>
-                    <StepPanel Name="step_capture" Class="step_container">
-
+                    </MudPaper>
+                </MudCarouselItem>
+                <MudCarouselItem Transition="Transition.Fade">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
                         <StepItem Header=@localizer["home.step_capture.header"] Title=@localizer["home.step_capture.title"] Description=@localizer["home.step_capture.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                             @if (IsSpinnerVisible)
                             {
-                                <div class="spinner"/>
-                            }else{
+                                <div class="spinner" style="margin: auto;"/>
+                            }
+                            else
+                            {
+                                <div style="margin: auto;">
 
-                                @if (IsReviewImageVisible)
-                                {
-                                    <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
-                                }
+                                    <div style="margin: 0 auto;">
+                                        <Blazorise.Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.step_capture.capture"]</Blazorise.Button>
+                                    </div>
 
-                                <Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.step_capture.capture"]</Button>
-                                <br />
+                                    @if (IsReviewImageVisible)
+                                    {
+                                        <div style="margin: 20px;">
+                                            <img src="@String.Format("data:_image/jpg;base64,{0}", Image)"/>
+                                        </div>
+                                    }
+                                </div>
                             }
 
                         </StepItem>
+                    </MudPaper>
+                </MudCarouselItem>
 
-                    </StepPanel>
-                    <StepPanel Name="step_print" Class="step_container">
 
-                    
+                <MudCarouselItem Transition="Transition.Fade">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
                         <StepItem Header=@localizer["home.step_print.header"] Title=@localizer["home.step_print.title"] Description=@localizer["home.step_print.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                            @if (IsReviewImageVisible)
-                            {
-                                <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
-                            }
+                            <div style="margin: auto;">
+                                @if (IsReviewImageVisible)
+                                {
+                                    <div style="margin: 20px;">
 
-                            <Button class="btn btn-secondary" @onclick="PrintImage">@localizer["home.step_print.print_image"]</Button>
-                            <Button class="btn btn-secondary" @onclick="CompleteSetup">@localizer["home.step_print.complete_setup"]</Button>
+                                        <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+                                    </div>
+                                }
 
+                                <Blazorise.Button class="btn btn-secondary" @onclick="PrintImage" style="margin: 20px;">@localizer["home.step_print.print_image"]</Blazorise.Button>
+                                <Blazorise.Button class="btn btn-secondary" @onclick="CompleteSetup" style="margin: 20px;">@localizer["home.step_print.complete_setup"]</Blazorise.Button>
+
+                            </div>
+
+
+                        
                         </StepItem>
+                    </MudPaper>
+                </MudCarouselItem>
 
-                    </StepPanel>
-                </Content>
+            </MudCarousel>
 
-                <Items>
-                    <Step Name="step_usb_device">USB Devices</Step>
-                    <Step Name="step_camera">Camera</Step>
-                    <Step Name="step_printer">Printer</Step>
-                    <Step Name="step_capture">Capture</Step>
-                    <Step Name="step_print">Print</Step>
-                </Items>
-            </Steps>
-        </div>
 
+            <MudTimeline Reverse="false" TimelineOrientation="TimelineOrientation.Horizontal">
+
+                @for (int i = 0; i < 4; i++)
+                {
+                    @if (i < MudSelectedIndex)
+                    {
+                        <MudTimelineItem Color=MudBlazor.Color.Tertiary Size="Size.Small" Variant="Variant.Filled" Elevation="1" HideDot="false">
+
+                            <ItemDot>
+                                <MudIcon Size="Size.Small" Icon="@Icons.Outlined.Check" Color="@MudBlazor.Color.Dark" />
+                            </ItemDot>
+                        </MudTimelineItem>
+                    }
+                    else
+                    {
+                        <MudTimelineItem Color="MudBlazor.Color.Default" Size="Size.Small" Variant="Variant.Filled" Elevation="1" HideDot="false" />
+                    }
+                }
+
+            </MudTimeline>
+
+
+        </MudContainer>
     }
 
-
-
-
-
-
-
+</div>

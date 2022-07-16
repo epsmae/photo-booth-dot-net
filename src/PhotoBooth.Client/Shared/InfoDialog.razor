@@ -5,10 +5,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">@Title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    <Blazorise.button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             @onclick="() => OnConfirmationChange(false)">
                         <span aria-hidden="true">&times;</span>
-                    </button>
+                    </Blazorise.button>
                 </div>
                 <div class="modal-body">
                     @Description
@@ -17,16 +17,16 @@
 
                     @if (ShowNegativeButton)
                     {
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    <Blazorise.button type="button" class="btn btn-secondary" data-dismiss="modal"
                             @onclick="() => OnConfirmationChange(false)">
                             @NegativeButtonText
-                    </button>
+                    </Blazorise.button>
                     }
 
-                <button type="button" class="btn btn-danger"
+                <Blazorise.button type="button" class="btn btn-danger"
                         @onclick="() => OnConfirmationChange(true)">
                         @PositiveButtonText
-                </button>
+                </Blazorise.button>
                 </div>
             </div>
         </div>

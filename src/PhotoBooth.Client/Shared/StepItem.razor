@@ -1,27 +1,37 @@
 @inject IStringLocalizer<Index> localizer
 
-<div Class="step_container" >
 
-    <div>
 
-        <div Class="header_container">
-            <Button class="btn btn-secondary" @onclick="GoToPreviousStep">
+
+<div Class="step_container" style="width: 100%">
+
+    <div style="width: 100%">
+
+        <div Class="header_container" style="width: 100%; padding: 10px">
+            <Blazorise.Button class="btn btn-secondary" @onclick="GoToPreviousStep" Disabled="@IsPreviousDisabled">
                 <Icon Name="IconName.ArrowLeft" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
-            </Button>
+            </Blazorise.Button>
             <p>@Header</p>
-            <Button class="btn btn-primary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">
+            <Blazorise.Button class="btn btn-primary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">
                 <Icon Name="IconName.ArrowRight" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
-            </Button>
+            </Blazorise.Button>
         </div>
-                     
-        <Alert Color="Color.Success" Visible="true">
-            <AlertMessage>@Title</AlertMessage>
-            <AlertDescription>
-                @Description
-            </AlertDescription>
-        </Alert>
 
-        @ChildContent
+        <div style="padding: 10px">
 
+            <Alert Color="Blazorise.Color.Success" Visible="true">
+                <AlertMessage>@Title</AlertMessage>
+                <AlertDescription>
+                    @Description
+                </AlertDescription>
+            </Alert>
+        </div>
+
+        <div Class="d-flex align-center flex-grow-1 gap-4" Elevation="0" Style="width: 100%">
+            <div Class="d-flex" Style="width: 80%; margin: auto;">
+                @ChildContent
+            </div>
+
+        </div>
     </div>
 </div>

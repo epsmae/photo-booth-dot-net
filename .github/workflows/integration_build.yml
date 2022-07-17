@@ -46,6 +46,9 @@ jobs:
           echo "AssemblySemVer: ${{ env.GitVersion_AssemblySemVer }}"
           echo "AssemblySemFileVer: ${{ env.GitVersion_AssemblySemFileVer }}"
 
+      - name: install wasm-tools
+        run:  dotnet workload install wasm-tools
+
       - name: dotnet restore
         run:  dotnet restore ./src/PhotoBooth.sln
 
@@ -71,7 +74,7 @@ jobs:
           dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Publish application
-        run: dotnet publish ./src/PhotoBooth.Server/PhotoBooth.Server.csproj -p:Version=${{ env.GitVersion_AssemblySemVer }} -r linux-arm -c Release -o publish
+        run: dotnet publish ./src/PhotoBooth.Server/PhotoBooth.Server.csproj --configuration Release --framework net6.0 -p:Version=${{ env.GitVersion_AssemblySemVer }} -o publish
 
       - name: Upload artefact
         uses: actions/upload-artifact@v2

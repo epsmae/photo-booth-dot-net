@@ -1,40 +1,39 @@
-using System.Collections.Generic;
-
 namespace PhotoBooth.Abstraction.Configuration
 {
     public interface IConfigurationProvider
     {
         /// <summary>
-        /// Register a configuration with a default value.
-        /// If the entry is already existing nothing happens.
+        /// Deletes all the settings
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <param name="defaultValue"></param>
-        void RegisterEntry<T>(string key, T defaultValue);
+        void DeleteAll();
 
         /// <summary>
-        /// Adds or updates a configuration entry
+        /// Save a generic configuration entry
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
+        /// <param name="configurationId"></param>
         /// <param name="value"></param>
-        void AddOrUpdateEntry<T>(string key, T value);
+        void SaveConfiguration<T>(string configurationId, ConfigurationEntry<T> value);
 
         /// <summary>
-        /// Load an entry.
-        /// Throws exception when the key is not available
-        /// or the type is different.
+        /// Load a generic configuration entry
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
+        /// <param name="configurationId"></param>
         /// <returns></returns>
-        T LoadEntry<T>(string key);
+        T LoadConfiguration<T>(string configurationId) where T : ConfigurationEntry;
 
         /// <summary>
-        /// Loads all saved keys.
+        /// Load a configuration entry
         /// </summary>
+        /// <param name="configurationId"></param>
         /// <returns></returns>
-        List<string> LoadAvailableKeys();
+        ConfigurationEntry LoadConfiguration(string configurationId);
+
+        /// <summary>
+        /// Delete the specified configuration
+        /// </summary>
+        /// <param name="configurationId"></param>
+        void Delete(string configurationId);
     }
 }

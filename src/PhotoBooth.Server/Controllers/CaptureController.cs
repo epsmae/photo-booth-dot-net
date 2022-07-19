@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using PhotoBooth.Abstraction.Exceptions;
 
@@ -122,6 +123,14 @@ namespace PhotoBooth.Server.Controllers
             _logger.LogInformation($"Getting image data length={_workflowController.ImageData?.Length}");
 
             return _workflowController?.ImageData;
+        }
+
+        [HttpGet]
+        [ActionName(nameof(ImageDataStream))]
+        public MemoryStream ImageDataStream()
+        {
+            _logger.LogInformation($"Getting image data length={_workflowController.ImageData?.Length}");
+            return new MemoryStream(_workflowController?.ImageData);
         }
     }
 }

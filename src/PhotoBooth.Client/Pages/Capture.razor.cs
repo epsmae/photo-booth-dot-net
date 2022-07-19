@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Components;
 using PhotoBooth.Client.Shared;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Exceptions;
 using PhotoBooth.Client.Models;
@@ -18,6 +20,7 @@ namespace PhotoBooth.Client.Pages
         private string _lastError;
         private HubConnection _hubConnection;
         private const string ServerNotReachableError = "Server not reachable!";
+        private string _imageObjectBlobUrl;
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -26,6 +29,13 @@ namespace PhotoBooth.Client.Pages
         protected NavigationManager Navigator
         {
             get; set;
+        }
+
+        [Inject]
+        protected IJSRuntime JsRuntime
+        {
+            get;
+            set;
         }
 
         [Inject]
@@ -64,13 +74,7 @@ namespace PhotoBooth.Client.Pages
             get;
             set;
         }
-
-        protected string Image
-        {
-            get;
-            set;
-        }
-
+        
         protected InfoDialog InfoDialog { get; set; }
 
         protected string LastError
@@ -93,7 +97,7 @@ namespace PhotoBooth.Client.Pages
         {
             get
             {
-                return State == CaptureProcessState.Review && ! string.IsNullOrEmpty(Image);
+                return State == CaptureProcessState.Review && !string.IsNullOrEmpty(_imageObjectBlobUrl);
             }
         }
 
@@ -113,20 +117,11 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
-
-        protected bool IsReviewImageVisible
-        {
-            get
-            {
-                return State == CaptureProcessState.Review && ! string.IsNullOrEmpty(Image);
-            }
-        }
-
         protected bool IsSpinnerVisible
         {
             get
             {
-                return State == CaptureProcessState.Capture || State ==CaptureProcessState.Print || (State == CaptureProcessState.Review && string.IsNullOrEmpty(Image));
+                return State == CaptureProcessState.Capture || State ==CaptureProcessState.Print || (State == CaptureProcessState.Review && string.IsNullOrEmpty(_imageObjectBlobUrl));
             }
         }
 
@@ -134,6 +129,8 @@ namespace PhotoBooth.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             Logger.LogInformation("Setup hub connection");
+
+            _imageObjectBlobUrl = string.Empty;
 
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(Navigator.ToAbsoluteUri("capturehub"))
@@ -165,7 +162,6 @@ namespace PhotoBooth.Client.Pages
                 var a = _hubConnection.State;
                 Logger.LogInformation($"State: {a}");
 
-
                 var b = _hubConnection.HandshakeTimeout;
                 Logger.LogInformation($"THandshake: {b.TotalMilliseconds}ms");
                 var c = _hubConnection.ServerTimeout;
@@ -179,7 +175,6 @@ namespace PhotoBooth.Client.Pages
                 {
                     throw new Exception("Initial connect failed");
                 }
-
 
                 await UpdateServerState();
             }
@@ -196,15 +191,25 @@ namespace PhotoBooth.Client.Pages
         {
             if (State == CaptureProcessState.Review)
             {
-                Task.Run(async () =>
+                if (string.IsNullOrEmpty(_imageObjectBlobUrl))
                 {
-                    await UpdateImage();
-                    StateHasChanged();
-                });
+                    Task.Run(async () =>
+                    {
+                        await UpdateImage();
+                        StateHasChanged();
+                    });
+                }
             }
             else
             {
-                Image = string.Empty;
+                if (!string.IsNullOrEmpty(_imageObjectBlobUrl))
+                {
+                    Task.Run(async () =>
+                    {
+                        await ResetReviewImage();
+                        StateHasChanged();
+                    });
+                }
             }
 
             if (State == CaptureProcessState.Error)
@@ -327,7 +332,6 @@ namespace PhotoBooth.Client.Pages
                 return Localizer.GetString("capture.error.camera_claim_failed");
             }
 
-
             return error != null ? error.ErrorMessage :  string.Empty;
         }
 
@@ -349,23 +353,40 @@ namespace PhotoBooth.Client.Pages
             try
             {
                 Logger.LogInformation("Loading image from server");
-                byte[] imageData = await HttpClient.GetFromJsonAsync<byte[]>("api/Capture/ImageData");
 
-                if (imageData == null)
+                using (MemoryStream stream = await HttpClient.GetStreamAsync("api/Capture/ImageDataStream") as MemoryStream)
                 {
-                    Image = string.Empty;
+                    if (stream == null)
+                    {
+                        await ResetReviewImage();
+                    }
+                    else
+                    {
+                        using (DotNetStreamReference dotnetImageStream = new DotNetStreamReference(stream))
+                        {
+                            _imageObjectBlobUrl = await JsRuntime.InvokeAsync<string>("setStreamImage", "capture_image", dotnetImageStream);
+                        }
+                    }
                 }
-                else
-                {
-                    Image = Convert.ToBase64String(imageData);
-                }
-                Logger.LogInformation($"Loaded image length={Image?.Length}");
             }
 
             catch (Exception ex)
             {
-                Image = string.Empty;
+                await ResetReviewImage();
                 Logger.LogError(ex, $"Failed to load image");
+            }
+        }
+
+        private async Task ResetReviewImage()
+        {
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("resetCaptureImage", "capture_image", _imageObjectBlobUrl);
+                _imageObjectBlobUrl = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to reset image");
             }
         }
     }

@@ -21,6 +21,7 @@ namespace PhotoBooth.Client.Pages
         private HubConnection _hubConnection;
         private const string ServerNotReachableError = "Server not reachable!";
         private string _imageObjectBlobUrl;
+        private IJSInProcessRuntime _jsInProcessRuntime;
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -129,6 +130,7 @@ namespace PhotoBooth.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             Logger.LogInformation("Setup hub connection");
+            _jsInProcessRuntime = (IJSInProcessRuntime) JsRuntime;
 
             _imageObjectBlobUrl = string.Empty;
 
@@ -202,14 +204,7 @@ namespace PhotoBooth.Client.Pages
             }
             else
             {
-                if (!string.IsNullOrEmpty(_imageObjectBlobUrl))
-                {
-                    Task.Run(async () =>
-                    {
-                        await ResetReviewImage();
-                        StateHasChanged();
-                    });
-                }
+                ResetReviewImage();
             }
 
             if (State == CaptureProcessState.Error)
@@ -358,7 +353,7 @@ namespace PhotoBooth.Client.Pages
                 {
                     if (stream == null)
                     {
-                        await ResetReviewImage();
+                        ResetReviewImage();
                     }
                     else
                     {
@@ -372,21 +367,24 @@ namespace PhotoBooth.Client.Pages
 
             catch (Exception ex)
             {
-                await ResetReviewImage();
+                ResetReviewImage();
                 Logger.LogError(ex, $"Failed to load image");
             }
         }
 
-        private async Task ResetReviewImage()
+        private void ResetReviewImage()
         {
-            try
+            if (!string.IsNullOrEmpty(_imageObjectBlobUrl))
             {
-                await JsRuntime.InvokeVoidAsync("resetCaptureImage", "capture_image", _imageObjectBlobUrl);
-                _imageObjectBlobUrl = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed to reset image");
+                try
+                {
+                    _jsInProcessRuntime.InvokeVoid("resetCaptureImage", "capture_image", _imageObjectBlobUrl);
+                    _imageObjectBlobUrl = string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Failed to reset image");
+                }
             }
         }
     }

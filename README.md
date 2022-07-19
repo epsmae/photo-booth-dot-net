@@ -56,7 +56,7 @@ Version 2.0
 - [x] .Net 6 aot
 - [x] Wizard to check printer, camera
 - [x] Trigger image by raspberry input
-- [ ] Skip review count down
+- [x] Skip review count down
 - [ ] Capture collage
 
 Version 3.0

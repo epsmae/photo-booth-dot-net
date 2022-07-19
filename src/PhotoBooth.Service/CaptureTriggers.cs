@@ -8,6 +8,7 @@ namespace PhotoBooth.Service
         CountdownElapsed,
         CaptureCompleted,
         ReviewCountDownElapsed,
+        Skip,
         Print,
         PrintCompleted,
         Error

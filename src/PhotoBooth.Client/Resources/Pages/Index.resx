@@ -156,6 +156,9 @@
   <data name="capture.print" xml:space="preserve">
     <value>PRINT</value>
   </data>
+  <data name="capture.skip" xml:space="preserve">
+    <value>SKIP</value>
+  </data>
   <data name="capture.start" xml:space="preserve">
     <value>START</value>
   </data>

@@ -275,6 +275,18 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
+        protected async Task Skip()
+        {
+            try
+            {
+                await HttpClient.PostAsJsonAsync("api/Capture/Skip", string.Empty);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to print image");
+            }
+        }
+
         private async Task UpdateErrorState()
         {
 

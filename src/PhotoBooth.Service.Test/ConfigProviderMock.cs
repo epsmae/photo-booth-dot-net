@@ -1,4 +1,5 @@
 using Moq;
+using PhotoBooth.Abstraction.Configuration;
 
 namespace PhotoBooth.Service.Test
 {
@@ -11,17 +12,17 @@ namespace PhotoBooth.Service.Test
         public ConfigProviderMock()
         {
             _mock = new Mock<Abstraction.Configuration.IConfigurationProvider>();
-            _mock.Setup(m => m.LoadEntry<string>(It.IsAny<string>())).Returns((string key) => LoadEntry(key));
-            _mock.Setup(m => m.AddOrUpdateEntry<string>(It.IsAny<string>(), It.IsAny<string>())).Callback((string key, string value) => SaveEntry(key, value));
+            _mock.Setup(m => m.LoadConfiguration<ConfigurationEntry<string>>(It.IsAny<string>())).Returns((string key) => LoadEntry(key));
+            _mock.Setup(m => m.SaveConfiguration(It.IsAny<string>(), It.IsAny<ConfigurationEntry<string>>())).Callback((string key, ConfigurationEntry<string> value) => SaveEntry(key, value));
         }
 
-        private void SaveEntry(string key, string value)
+        private void SaveEntry(string key, ConfigurationEntry<string> value)
         {
             _saveAccessCount++;
         }
 
 
-        public Abstraction.Configuration.IConfigurationProvider Object
+        public IConfigurationProvider Object
         {
             get
             {
@@ -53,11 +54,14 @@ namespace PhotoBooth.Service.Test
             }
         }
 
-        private string LoadEntry(string key)
+        private ConfigurationEntry<string> LoadEntry(string key)
         {
             _getAccessCount++;
 
-            return "Value";
+            return new ConfigurationEntry<string>()
+            {
+                Value = "Value"
+            };
         }
     }
 }

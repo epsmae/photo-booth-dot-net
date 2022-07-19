@@ -52,7 +52,7 @@ namespace PhotoBooth.Server
             services.AddSingleton<NotificationService>();
             services.AddSingleton<IPrinterService, PrinterService>();
             services.AddSingleton<IFilePathProvider, FilePathProvider>();
-            services.AddSingleton<Abstraction.Configuration.IConfigurationProvider, JsonConfigurationProviderProvider>();
+            services.AddSingleton<Abstraction.Configuration.IConfigurationProvider, JsonConfigurationProvider>();
             services.AddSingleton<IConfigurationService, ConfigurationService>();
             services.AddSingleton<IWorkflowController, WorkflowController>();
             services.AddControllersWithViews();

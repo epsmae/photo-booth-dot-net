@@ -6,7 +6,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.5" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PhotoBooth.Abstraction\PhotoBooth.Abstraction.csproj" />

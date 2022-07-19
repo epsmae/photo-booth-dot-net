@@ -2,21 +2,16 @@
 @page "/capture"
 @inject IStringLocalizer<Index> localizer
 
+
 <div class="capture_container">
 
     <InfoDialog @ref="InfoDialog" ConfirmationChanged="ConfirmDelete_Click"
                 Description=@LastError PositiveButtonText=@localizer["capture.error_dialog.ok"] Title=@localizer["capture.error_dialog.error"]>
     </InfoDialog>
-
+    
     <div class="center-div">
-
-        @if (IsReviewImageVisible)
-        {
-            <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
-        }
-
+        <img id="capture_image" style="margin: auto;" />
     </div>
-
 
     <div class="header">
 
@@ -28,8 +23,6 @@
     </div>
 
     <div class="center-div">
-
-
 
         @if (IsCaptureButtonVisible)
         {

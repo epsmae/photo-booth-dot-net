@@ -22,26 +22,26 @@ namespace PhotoBooth.Service.Test
             _service.SelectedCamera = "initial value";
             
             Assert.AreEqual(1, _mock.SaveAccessCount);
-            Assert.AreEqual(0, _mock.GetAccessCount);
+            Assert.AreEqual(1, _mock.GetAccessCount);
 
             string value1 = _service.SelectedCamera;
 
             Assert.AreEqual(1, _mock.SaveAccessCount);
-            Assert.AreEqual(0, _mock.GetAccessCount);
+            Assert.AreEqual(1, _mock.GetAccessCount);
 
             string value2 = _service.SelectedCamera;
             Assert.AreEqual(1, _mock.SaveAccessCount);
-            Assert.AreEqual(0, _mock.GetAccessCount);
+            Assert.AreEqual(1, _mock.GetAccessCount);
 
 
             _service.SelectedCamera = expectedValue;
             Assert.AreEqual(2, _mock.SaveAccessCount);
-            Assert.AreEqual(1, _mock.GetAccessCount);
+            Assert.AreEqual(2, _mock.GetAccessCount);
 
             string value3 = _service.SelectedCamera;
             Assert.AreEqual(expectedValue, value3);
             Assert.AreEqual(2, _mock.SaveAccessCount);
-            Assert.AreEqual(1, _mock.GetAccessCount);
+            Assert.AreEqual(2, _mock.GetAccessCount);
 
         }
     }

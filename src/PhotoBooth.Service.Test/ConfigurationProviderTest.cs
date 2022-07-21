@@ -53,6 +53,7 @@ namespace PhotoBooth.Service.Test
 
             string userName = "MyUserName";
             string userNameKey = "user_name";
+            _service.Register(userNameKey, string.Empty);
             _service.SetValue(userNameKey, userName);
             Assert.AreEqual(userName, _service.GetValue<string>(userNameKey));
 
@@ -70,10 +71,12 @@ namespace PhotoBooth.Service.Test
 
             string userName = "MyUserName";
             string userNameKey = "user_name";
+            _service.Register(userNameKey, string.Empty);
             _service.SetValue(userNameKey, userName);
 
             int userAge = 25;
             string userAgeKey = "user_age";
+            _service.Register(userAgeKey, 0);
             _service.SetValue(userAgeKey, userAge);
 
             Assert.AreEqual(2, _service.GetAllConfigurationIds().Count);
@@ -89,6 +92,7 @@ namespace PhotoBooth.Service.Test
 
             string userName = "MyUserName";
             string userNameKey = "user_name";
+            _service.Register(userNameKey, string.Empty);
             _service.SetValue(userNameKey, userName);
 
             Assert.AreEqual(1, _service.GetAllConfigurationIds().Count);
@@ -106,8 +110,10 @@ namespace PhotoBooth.Service.Test
         {
             Assert.AreEqual(0, _service.GetAllConfigurationIds().Count);
 
+
             double exposure = 1.8;
             string exposureKey = "exposure";
+            _service.Register(exposureKey, 1.0);
             _service.SetValue(exposureKey, exposure);
 
             Assert.AreEqual(1, _service.GetAllConfigurationIds().Count);
@@ -122,6 +128,7 @@ namespace PhotoBooth.Service.Test
 
             TestObject testObject = new TestObject {Age = 19, Name = "John"};
             string testObjectKey = "test_object";
+            _service.Register(testObjectKey, new TestObject());
             _service.SetValue(testObjectKey, testObject);
 
             Assert.AreEqual(1, _service.GetAllConfigurationIds().Count);

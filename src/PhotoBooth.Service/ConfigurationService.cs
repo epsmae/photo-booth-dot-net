@@ -144,15 +144,24 @@ namespace PhotoBooth.Service
         {
             lock (_updateLock)
             {
-                if (!_cache.ContainsKey(configurationId))
+                if (!TryGetValue(configurationId, out ConfigurationEntry<T> entry))
                 {
-                    _provider.SaveConfiguration(configurationId, new ConfigurationEntry<T>
+                    ConfigurationEntry<T> registerEntry = new ConfigurationEntry<T>
                     {
                         Id = configurationId,
                         DefaultValue = defaultValue,
                         Value = defaultValue,
                         LastModified = DateTime.MinValue,
-                    });
+                    };
+
+                    _provider.SaveConfiguration(configurationId, registerEntry);
+                    UpdateCache(configurationId, registerEntry.Value);
+                }
+                else
+                {
+                    entry.DefaultValue = defaultValue;
+                    _provider.SaveConfiguration(configurationId, entry);
+                    UpdateCache(configurationId, entry.Value);
                 }
 
                 if (!_keys.Contains(configurationId))
@@ -167,7 +176,6 @@ namespace PhotoBooth.Service
         {
             lock (_updateLock)
             {
-
                 if (_cache.ContainsKey(settingsId))
                 {
                     return (T) _cache[settingsId];
@@ -186,21 +194,13 @@ namespace PhotoBooth.Service
         {
             lock (_updateLock)
             {
-                if (!_keys.Contains(configurationId))
-                {
-                    Register(configurationId, value);
-                    UpdateCache(configurationId, value);
-                }
-                else
-                {
-                    ConfigurationEntry<T> entry = LoadConfiguration<T>(configurationId);
+                ConfigurationEntry<T> entry = LoadConfiguration<T>(configurationId);
 
-                    entry.Value = value;
-                    entry.LastModified = DateTime.Now;
+                entry.Value = value;
+                entry.LastModified = DateTime.Now;
 
-                    _provider.SaveConfiguration(configurationId, entry);
-                    UpdateCache(configurationId, entry.Value);
-                }
+                _provider.SaveConfiguration(configurationId, entry);
+                UpdateCache(configurationId, entry.Value);
             }
         }
         
@@ -230,7 +230,7 @@ namespace PhotoBooth.Service
                 return false;
             }
         }
-        
+
         private void UpdateCache<T>(string key, T value)
         {
             if (_cache.ContainsKey(key))

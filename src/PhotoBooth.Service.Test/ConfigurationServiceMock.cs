@@ -5,7 +5,7 @@ namespace PhotoBooth.Service.Test
 {
     public class ConfigurationServiceMock
     {
-        public const double StepCountDownDurationMs = 0.05;
+        public const double StepCountDownDurationS = 0.5;
         public const int CountDownStepCount = 3;
         public const int ReviewStepCount = 5;
         public const int ImageWidth = 1024;
@@ -20,7 +20,7 @@ namespace PhotoBooth.Service.Test
             _mock = new Mock<IConfigurationService>();
             _mock.SetupGet(m => m.CaptureCountDownStepCount).Returns(CountDownStepCount);
             _mock.SetupGet(m => m.ReviewCountDownStepCount).Returns(ReviewStepCount);
-            _mock.SetupGet(m => m.StepDownDurationInSeconds).Returns(StepCountDownDurationMs);
+            _mock.SetupGet(m => m.StepDownDurationInSeconds).Returns(StepCountDownDurationS);
             _mock.SetupGet(m => m.ReviewImageWidth).Returns(ImageWidth);
             _mock.SetupGet(m => m.SelectedPrinter).Returns(Printer);
             _mock.SetupGet(m => m.SelectedCamera).Returns(Camera);

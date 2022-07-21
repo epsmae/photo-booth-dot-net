@@ -47,7 +47,8 @@
 
         @if (IsPrintButtonVisible)
         {
-            <div class="round-button-small"><div class="round-button-circle"><div class="round-button-text" style="font-size: 1.8em" @onclick="() => PrintImage()">@localizer["capture.print"]</div></div></div>
+            <div class="round-button-small"><div class="round-button-circle-print"><div class="round-button-text" style="font-size: 1.8em" @onclick="() => PrintImage()">@localizer["capture.print"]</div></div></div>
+            <div class="round-button-mini"><div class="round-button-circle-skip"><div class="round-button-text" style="font-size: 1.2em" @onclick="() => Skip()">@localizer["capture.skip"]</div></div></div>
         }
     </div>
 

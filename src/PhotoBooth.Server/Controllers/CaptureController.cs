@@ -66,16 +66,16 @@ namespace PhotoBooth.Server.Controllers
 
 
         [HttpPost]
-        [ActionName(nameof(Next))]
-        public async Task Next()
+        [ActionName(nameof(Skip))]
+        public async Task Skip()
         {
             try
             {
-                await _workflowController.Capture();
+                await _workflowController.Skip();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to trigger next");
+                _logger.LogError(ex, "Failed to trigger skip");
             }
         }
 

@@ -150,7 +150,7 @@ namespace PhotoBooth.Service.Test
 
 
         [Test]
-        public async Task TestWorkflowSuccessfulWithProceed()
+        public async Task TestWorkflowSuccessfulWithSkip()
         {
             await WaitForState(CaptureProcessState.Ready, 5);
 
@@ -162,9 +162,9 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.Review, 5);
 
-            await _controller.Capture();
+            await _controller.Skip();
 
-            await WaitForState(CaptureProcessState.Ready, 5);
+            await WaitForState(CaptureProcessState.Ready, 1);
 
             AssertTraversedStates(new List<CaptureProcessState>
             {

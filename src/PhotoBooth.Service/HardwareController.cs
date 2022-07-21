@@ -21,8 +21,6 @@ namespace PhotoBooth.Service
             _gpioInterface.SecondaryButtonChanged += OnSecondaryButtonChanged;
         }
 
-
-
         public void Initialize()
         {
             SetPrimaryButtonBlinkState();
@@ -34,12 +32,19 @@ namespace PhotoBooth.Service
             {
                 if (value)
                 {
-                    await _workflowController.ConfirmError();
+                    if (_workflowController.State == CaptureProcessState.Review)
+                    {
+                        await _workflowController.Skip();
+                    }
+                    else if (_workflowController.State == CaptureProcessState.Error)
+                    {
+                        await _workflowController.ConfirmError();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to confirm error");
+                _logger.LogError(ex, "Failed to handle secondary button");
             }
         }
 
@@ -50,12 +55,19 @@ namespace PhotoBooth.Service
             {
                 if (value)
                 {
-                    await _workflowController.Capture();
+                    if (_workflowController.State == CaptureProcessState.Ready)
+                    {
+                        await _workflowController.Capture();
+                    }
+                    else if (_workflowController.State == CaptureProcessState.Error)
+                    {
+                        await _workflowController.ConfirmError();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to capture");
+                _logger.LogError(ex, "Failed to handle primary button");
             }
         }
 

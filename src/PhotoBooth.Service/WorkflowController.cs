@@ -115,7 +115,7 @@ namespace PhotoBooth.Service
                 .OnExit(()=> StopReviewTimer())
                 .Permit(CaptureTriggers.ReviewCountDownElapsed, CaptureStates.Ready)
                 .Permit(CaptureTriggers.Print, CaptureStates.Print)
-                .Permit(CaptureTriggers.Capture, CaptureStates.Ready);
+                .Permit(CaptureTriggers.Skip, CaptureStates.Ready);
 
             _machine.Configure(CaptureStates.Print)
                 .SubstateOf(CaptureStates.Processing)
@@ -142,6 +142,83 @@ namespace PhotoBooth.Service
             _machine.Activate();
         }
 
+        public CaptureProcessState State
+        {
+            get
+            {
+                switch (_state)
+                {
+                    case CaptureStates.Initializing:
+                        return CaptureProcessState.Initializing;
+                    case CaptureStates.CountDown:
+                        return CaptureProcessState.CountDown;
+                    case CaptureStates.Error:
+                        return CaptureProcessState.Error;
+                    case CaptureStates.Capture:
+                        return CaptureProcessState.Capture;
+                    case CaptureStates.Review:
+                        return CaptureProcessState.Review;
+                    case CaptureStates.Print:
+                        return CaptureProcessState.Print;
+                    default:
+                        return CaptureProcessState.Ready;
+                }
+            }
+        }
+
+        public int CurrentCountDownStep
+        {
+            get
+            {
+                return _currentCaptureCountDownStep;
+            }
+        }
+
+        public Exception LastException
+        {
+            get
+            {
+                return _lastException;
+            }
+        }
+
+        public int CurrentReviewCountDown
+        {
+            get
+            {
+                return _currentReviewCountDownStep;
+            }
+        }
+
+        public Task Capture()
+        {
+            _countDownStepDuration = TimeSpan.FromSeconds(_configurationService.StepDownDurationInSeconds);
+            _currentCaptureCountDownStep = _configurationService.CaptureCountDownStepCount;
+            _currentReviewCountDownStep = _configurationService.ReviewCountDownStepCount;
+            return _machine.FireAsync(CaptureTriggers.Capture);
+        }
+
+        public Task Print()
+        {
+            return _machine.FireAsync(CaptureTriggers.Print);
+        }
+
+        public Task Skip()
+        {
+            return _machine.FireAsync(CaptureTriggers.Skip);
+        }
+
+
+        public Task ConfirmError()
+        {
+            return _machine.FireAsync(CaptureTriggers.ConfirmError);
+        }
+
+        public string GenerateUmlDiagram()
+        {
+            return UmlDotGraph.Format(_machine.GetInfo());
+        }
+
         private void StartInitialization()
         {
             Task.Run(async () =>
@@ -154,16 +231,9 @@ namespace PhotoBooth.Service
             });
         }
 
-        
-
         private void StopReviewTimer()
         {
             _reviewTimer.Change(Timeout.Infinite, Timeout.Infinite);
-        }
-
-        public Task ConfirmError()
-        {
-            return _machine.FireAsync(CaptureTriggers.ConfirmError);
         }
 
         private void StartPrint()
@@ -232,73 +302,6 @@ namespace PhotoBooth.Service
                     await _machine.FireAsync(CaptureTriggers.Error);
                 }
             });
-        }
-
-        public CaptureProcessState State
-        {
-            get
-            {
-                switch (_state)
-                {
-                    case CaptureStates.Initializing:
-                        return CaptureProcessState.Initializing;
-                    case CaptureStates.CountDown:
-                        return CaptureProcessState.CountDown;
-                    case CaptureStates.Error:
-                        return CaptureProcessState.Error;
-                    case CaptureStates.Capture:
-                        return CaptureProcessState.Capture;
-                    case CaptureStates.Review:
-                        return CaptureProcessState.Review;
-                    case CaptureStates.Print:
-                        return CaptureProcessState.Print;
-                    default:
-                        return CaptureProcessState.Ready;
-                }
-            }
-        }
-
-        public int CurrentCountDownStep
-        {
-            get
-            {
-                return _currentCaptureCountDownStep;
-            }
-        }
-
-        public Exception LastException
-        {
-            get
-            {
-                return _lastException;
-            }
-        }
-
-        public int CurrentReviewCountDown
-        {
-            get
-            {
-                return _currentReviewCountDownStep;
-            }
-        }
-
-        public Task Capture()
-        {
-            _countDownStepDuration = TimeSpan.FromSeconds(_configurationService.StepDownDurationInSeconds);
-            _currentCaptureCountDownStep = _configurationService.CaptureCountDownStepCount;
-            _currentReviewCountDownStep = _configurationService.ReviewCountDownStepCount;
-            return _machine.FireAsync(CaptureTriggers.Capture);
-        }
-
-        public Task Print()
-        {
-            return _machine.FireAsync(CaptureTriggers.Print);
-        }
-
-
-        public string GenerateUmlDiagram()
-        {
-            return UmlDotGraph.Format(_machine.GetInfo());
         }
 
         private void OnCountDownTimerElapsed(object state)
@@ -458,7 +461,6 @@ namespace PhotoBooth.Service
                 _configurationService.Register(ConfigurationKeys.SelectedCamera, string.Empty);
             }
         }
-
 
         private async Task<bool> TrySetDefaultPrinter()
         {

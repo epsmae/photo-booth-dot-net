@@ -32,11 +32,7 @@ namespace PhotoBooth.Service
             {
                 if (value)
                 {
-                    if (_workflowController.State == CaptureProcessState.Review)
-                    {
-                        await _workflowController.Skip();
-                    }
-                    else if (_workflowController.State == CaptureProcessState.Error)
+                    if (_workflowController.State == CaptureProcessState.Error)
                     {
                         await _workflowController.ConfirmError();
                     }
@@ -58,6 +54,10 @@ namespace PhotoBooth.Service
                     if (_workflowController.State == CaptureProcessState.Ready)
                     {
                         await _workflowController.Capture();
+                    }
+                    else if (_workflowController.State == CaptureProcessState.Review)
+                    {
+                        await _workflowController.Skip();
                     }
                     else if (_workflowController.State == CaptureProcessState.Error)
                     {

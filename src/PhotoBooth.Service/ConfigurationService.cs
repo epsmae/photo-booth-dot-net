@@ -71,7 +71,17 @@ namespace PhotoBooth.Service
             }
         }
 
-
+        public bool BlinkingEnabled
+        {
+            get
+            {
+                return GetValue<bool>(ConfigurationKeys.BlinkingEnabled);
+            }
+            set
+            {
+                SetValue(ConfigurationKeys.BlinkingEnabled, value);
+            }
+        }
 
         public double StepDownDurationInSeconds
         {

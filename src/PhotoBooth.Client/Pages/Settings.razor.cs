@@ -95,6 +95,7 @@ namespace PhotoBooth.Client.Pages
                 ReviewImageQuality = dto.ReviewImageQuality;
                 SelectedCamera = dto.SelectedCamera;
                 SelectedPrinter = dto.SelectedPrinter;
+                BlinkingEnabled = dto.BlinkingEnabled;
                 StateHasChanged();
             }
             catch (Exception ex)
@@ -128,6 +129,12 @@ namespace PhotoBooth.Client.Pages
         }
 
         public int ReviewImageQuality
+        {
+            get;
+            set;
+        }
+
+        public bool BlinkingEnabled
         {
             get;
             set;
@@ -204,7 +211,7 @@ namespace PhotoBooth.Client.Pages
         {
             try
             {
-                SettingsDto dto = new SettingsDto()
+                SettingsDto dto = new SettingsDto
                 {
                     CaptureCountDownStepCount = CaptureCountDownStepCount,
                     ReviewCountDownStepCount = ReviewCountDownStepCount,
@@ -212,7 +219,8 @@ namespace PhotoBooth.Client.Pages
                     ReviewImageWidth = ReviewImageWidth,
                     ReviewImageQuality = ReviewImageQuality,
                     SelectedCamera = SelectedCamera,
-                    SelectedPrinter = SelectedPrinter
+                    SelectedPrinter = SelectedPrinter,
+                    BlinkingEnabled = BlinkingEnabled
                 };
 
                 await HttpClient.PostAsJsonAsync("api/Settings/SetSettings", dto);

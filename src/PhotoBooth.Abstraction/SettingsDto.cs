@@ -43,5 +43,11 @@ namespace PhotoBooth.Abstraction
             get;
             set;
         }
+
+        public bool BlinkingEnabled
+        {
+            get;
+            set;
+        }
     }
 }

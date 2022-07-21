@@ -255,6 +255,9 @@
   <data name="printer_queue_dialog.printer_queue" xml:space="preserve">
     <value>Printer queue</value>
   </data>
+  <data name="settings.blinking_enabled" xml:space="preserve">
+    <value>Use status led</value>
+  </data>
   <data name="settings.captured_images" xml:space="preserve">
     <value>Captured Images</value>
   </data>

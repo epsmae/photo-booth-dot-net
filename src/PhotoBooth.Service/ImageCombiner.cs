@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using PhotoBooth.Abstraction;
 using SkiaSharp;
 
@@ -9,17 +10,25 @@ namespace PhotoBooth.Service
     public class ImageCombiner : IImageCombiner
     {
         private readonly IImageGalleryOffsetCalculator _offsetCalculator;
+        private readonly IFileService _fileService;
 
-        public ImageCombiner(IImageGalleryOffsetCalculator offsetCalculator)
+        public ImageCombiner(IImageGalleryOffsetCalculator offsetCalculator, IFileService fileService)
         {
             _offsetCalculator = offsetCalculator;
+            _fileService = fileService;
         }
 
-        public void Combine(IList<string> imageFilePaths,  string destinationPath)
+        public void Combine(IList<string> imageFilePaths, string destinationPath)
         {
             if (imageFilePaths.Count != _offsetCalculator.RequiredImageCount)
             {
                 throw new ArgumentException($"imageFilePathCount expected={_offsetCalculator.RequiredImageCount}, actual={imageFilePaths.Count}");
+            }
+
+            if (imageFilePaths.Count == 1)
+            {
+                // nothing to do
+                return;
             }
 
             using (SKSurface tempSurface = SKSurface.Create(new SKImageInfo(2464, 1632)))
@@ -30,13 +39,16 @@ namespace PhotoBooth.Service
                 
                 for (int i = 0; i < imageFilePaths.Count; i++)
                 {
-                    using (SKBitmap bitmap = SKBitmap.Decode(imageFilePaths[i]))
+                    using (Stream stream = _fileService.OpenFile(imageFilePaths[i]))
                     {
-                        ImageOffsetInfo info = _offsetCalculator.GetOffset(i, bitmap.Width, bitmap.Height);
-                        
-                        using (SKBitmap resizedBitmap = bitmap.Resize(new SKSizeI((int) info.Width, (int) info.Height), SKFilterQuality.Low))
+                        using (SKBitmap bitmap = SKBitmap.Decode(stream))
                         {
-                            canvas.DrawBitmap(resizedBitmap, SKRect.Create((int) info.LeftOffset, (int) info.TopOffset, (int) info.Width, (int) info.Height));
+                            ImageOffsetInfo info = _offsetCalculator.GetOffset(i, bitmap.Width, bitmap.Height);
+
+                            using (SKBitmap resizedBitmap = bitmap.Resize(new SKSizeI((int) info.Width, (int) info.Height), SKFilterQuality.Low))
+                            {
+                                canvas.DrawBitmap(resizedBitmap, SKRect.Create((int) info.LeftOffset, (int) info.TopOffset, (int) info.Width, (int) info.Height));
+                            }
                         }
                     }
                 }

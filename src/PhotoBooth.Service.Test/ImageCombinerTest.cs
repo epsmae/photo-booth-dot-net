@@ -27,17 +27,17 @@ namespace PhotoBooth.Service.Test
         [SetUp]
         public void Setup()
         {
-            _combiner = new ImageCombiner(new FourImageGalleryCalculator());
+            _combiner = new ImageCombiner(new FourImageGalleryCalculator(), new FileServiceMock());
         }
 
         [Test]
         public void TestCombine()
         {
             IList<string> items = new List<string>();
-            items.Add(SourceImagePath);
-            items.Add(SourceImagePath);
-            items.Add(SourceImagePath);
-            items.Add(SourceImagePath);
+            items.Add("file1.png");
+            items.Add("file2.png");
+            items.Add("file3.png");
+            items.Add("file4.png");
 
             _combiner.Combine(items, DestinationImagePath);
         }

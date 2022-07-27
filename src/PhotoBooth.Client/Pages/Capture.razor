@@ -1,5 +1,8 @@
 @page "/"
 @page "/capture"
+@using Size = MudBlazor.Size
+@using Color = MudBlazor.Color
+@using PhotoBooth.Abstraction
 @inject IStringLocalizer<Index> localizer
 
 
@@ -9,8 +12,25 @@
                 Description=@LastError PositiveButtonText=@localizer["capture.error_dialog.ok"] Title=@localizer["capture.error_dialog.error"]>
     </InfoDialog>
     
+    <div class="center-top-div">
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Large" style="margin: auto;">
+
+            @if (CaptureLayout == CaptureLayouts.SingleImage)
+            {
+                <MudIconButton Icon="@Icons.Filled.Filter1" Disabled="true" Size="Size.Large" Color="Color.Default" Style="background-color: #AED581" OnClick="@OnSingleImageClicked"/>
+                <MudIconButton Icon="@Icons.Filled.Filter4" Size="Size.Large" Color="Color.Default" OnClick="@OnMultiImageClicked"/>
+            }
+            else
+            {
+                <MudIconButton Icon="@Icons.Filled.Filter1" Size="Size.Large" Color="Color.Default" OnClick="@OnSingleImageClicked"/>
+                <MudIconButton Icon="@Icons.Filled.Filter4" Disabled="true" Size="Size.Large" Color="Color.Default" Style="background-color: #AED581" OnClick="@OnMultiImageClicked"/>
+            }
+        </MudButtonGroup>
+    </div>
+
+    
     <div class="center-div">
-        <img id="capture_image" style="margin: auto;" />
+        <img id="capture_image" style="margin: auto;"/>
     </div>
 
     <div class="header">
@@ -23,7 +43,7 @@
     </div>
 
     <div class="center-div">
-
+        
         @if (IsCaptureButtonVisible)
         {
             <div class="round-button">

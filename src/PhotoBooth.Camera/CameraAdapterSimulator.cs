@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using PhotoBooth.Abstraction;
 
@@ -6,11 +7,11 @@ namespace PhotoBooth.Camera
 {
     public class CameraAdapterSimulator : ICameraAdapter
     {
-        public async Task<CommandLineResult> Capture(string selectedCamera, string fileName)
+        public Task<CommandLineResult> Capture(string selectedCamera, string fileName)
         {
-            await Task.Delay(5000);
+            File.Copy("SampleImage.jpg", fileName);
 
-            return CreateSuccessResult();
+            return Task.FromResult(CreateSuccessResult());
         }
 
         public async Task<CommandLineResult> ListCameras()

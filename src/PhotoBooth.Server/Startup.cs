@@ -33,19 +33,19 @@ namespace PhotoBooth.Server
 #if DEBUG
             services.AddSingleton<ICameraAdapter, CameraAdapterSimulator>();
             services.AddSingleton<IPrinterAdapter, PrinterAdapterSimulator>();
-            services.AddSingleton<IFileService, SampleFileService>();
             services.AddSingleton<IUsbService, UsbServiceStub>();
             services.AddSingleton<IGpioInterface, GpioControllerStub>();
             services.AddSingleton<IHardwareController, HardwareController>();
 #else
             services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
             services.AddSingleton<IPrinterAdapter, CupsPrinterAdapter>();
-            services.AddSingleton<IFileService, FileService>();
+            
             services.AddSingleton<IUsbService, UsbService>();
             services.AddSingleton<IGpioInterface, GpioController>();
             services.AddSingleton<IHardwareController, HardwareController>();
 #endif
 
+            services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<ICameraService, CameraService>();
             services.AddSingleton<IImageResizer, ImageResizer>();
             services.AddSingleton<CaptureHub>();

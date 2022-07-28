@@ -33,4 +33,10 @@
     <ProjectReference Include="..\PhotoBooth.Service\PhotoBooth.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SampleImage.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -153,6 +153,12 @@
   <data name="capture.error_dialog.ok" xml:space="preserve">
     <value>Ok</value>
   </data>
+  <data name="capture.layout.gallery" xml:space="preserve">
+    <value>Serienbild (4 Bilder pro Ausdruck)</value>
+  </data>
+  <data name="capture.layout.single" xml:space="preserve">
+    <value>Einzelbild (1 Bild pro Auszdruck)</value>
+  </data>
   <data name="capture.print" xml:space="preserve">
     <value>DRUCKEN</value>
   </data>

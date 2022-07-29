@@ -58,7 +58,6 @@
     display: flex; /* establish flex container */
     justify-content: center; /* align items vertically, in this case */
     align-items: center; /* align items horizontally, in this case */
-    margin: 30;
 }
 
 .spinner {

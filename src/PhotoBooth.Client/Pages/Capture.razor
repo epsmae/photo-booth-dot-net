@@ -12,7 +12,20 @@
                 Description=@LastError PositiveButtonText=@localizer["capture.error_dialog.ok"] Title=@localizer["capture.error_dialog.error"]>
     </InfoDialog>
     
-    <div class="center-top-div">
+    <div class="center-div">
+        <img id="capture_image" style="margin: auto;"/>
+    </div>
+
+    <div class="header">
+
+        @if (IsReviewCountDownVisible)
+        {
+            <p class="p-overlay">@ReviewCountDownStep s</p>
+        }
+
+    </div>
+
+    <div class="center-top-div" style="margin-top: 20px;">
         <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Large" style="margin: auto;">
 
             @if (CaptureLayout == CaptureLayouts.SingleImage)
@@ -28,18 +41,18 @@
         </MudButtonGroup>
     </div>
 
-    
-    <div class="center-div">
-        <img id="capture_image" style="margin: auto;"/>
-    </div>
+    <div class="center-top-div">
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Large" style="margin: auto;">
 
-    <div class="header">
-
-        @if (IsReviewCountDownVisible)
-        {
-        <p class="p-overlay">@ReviewCountDownStep s</p>
-        }
-
+            @if (CaptureLayout == CaptureLayouts.SingleImage)
+            {
+                <MudText Typo="Typo.body1">@localizer["capture.layout.single"]</MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.body1">@localizer["capture.layout.gallery"]</MudText>
+            }
+        </MudButtonGroup>
     </div>
 
     <div class="center-div">

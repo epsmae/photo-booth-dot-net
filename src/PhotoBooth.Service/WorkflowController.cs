@@ -325,22 +325,13 @@ namespace PhotoBooth.Service
                     _captureResult = await _cameraService.CaptureImage(_fileService.PhotoDirectory, _configurationService.SelectedCamera);
                     _capturedImagePaths.Add(_captureResult.FileName);
 
-                    if (_galleryCalculator.RequiredImageCount == 1)
-                    {
-                        using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
-                        {
-                            _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth, _configurationService.ReviewImageQuality);
-                        }
-
-                        await _machine.FireAsync(CaptureTriggers.CaptureCompleted);
-                    }
-                    else if (_capturedImagePaths.Count == _galleryCalculator.RequiredImageCount)
+                    if (_capturedImagePaths.Count == _galleryCalculator.RequiredImageCount)
                     {
                         IImageCombiner imageCombiner = new ImageCombiner(_galleryCalculator,_fileService);
 
-                        _captureResult.FileName = Path.Combine(_fileService.PhotoDirectory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
+                        string newImageFilePath = Path.Combine(_fileService.PhotoDirectory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
 
-                        imageCombiner.Combine(_capturedImagePaths, _captureResult.FileName);
+                        _captureResult.FileName = imageCombiner.Combine(_capturedImagePaths, newImageFilePath);
 
                         using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
                         {

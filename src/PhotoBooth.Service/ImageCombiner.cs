@@ -18,7 +18,7 @@ namespace PhotoBooth.Service
             _fileService = fileService;
         }
 
-        public void Combine(IList<string> imageFilePaths, string destinationPath)
+        public string Combine(IList<string> imageFilePaths, string destinationPath)
         {
             if (imageFilePaths.Count != _offsetCalculator.RequiredImageCount)
             {
@@ -28,7 +28,7 @@ namespace PhotoBooth.Service
             if (imageFilePaths.Count == 1)
             {
                 // nothing to do
-                return;
+                return imageFilePaths.First();
             }
 
             using (SKSurface tempSurface = SKSurface.Create(new SKImageInfo(2464, 1632)))
@@ -64,6 +64,8 @@ namespace PhotoBooth.Service
                     }
                 }
             }
+
+            return destinationPath;
         }
     }
 }

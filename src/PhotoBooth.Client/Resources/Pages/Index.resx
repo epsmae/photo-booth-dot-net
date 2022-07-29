@@ -153,6 +153,12 @@
   <data name="capture.error_dialog.ok" xml:space="preserve">
     <value>Ok</value>
   </data>
+  <data name="capture.layout.gallery" xml:space="preserve">
+    <value>Imagen Series (4 Images / Print)</value>
+  </data>
+  <data name="capture.layout.single" xml:space="preserve">
+    <value>Single Image(1 Image / Print)</value>
+  </data>
   <data name="capture.print" xml:space="preserve">
     <value>PRINT</value>
   </data>

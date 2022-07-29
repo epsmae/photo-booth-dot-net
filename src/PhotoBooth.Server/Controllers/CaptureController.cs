@@ -4,6 +4,7 @@ using PhotoBooth.Abstraction;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using MudBlazor;
 using PhotoBooth.Abstraction.Exceptions;
 
 namespace PhotoBooth.Server.Controllers
@@ -79,11 +80,32 @@ namespace PhotoBooth.Server.Controllers
             }
         }
 
+        [HttpPost]
+        [ActionName(nameof(SetCaptureLayout))]
+        public void SetCaptureLayout([FromBody] CaptureLayouts captureLayout)
+        {
+            try
+            {
+                _workflowController.SetCaptureLayout(captureLayout);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to set capture layout");
+            }
+        }
+
+        [HttpGet]
+        [ActionName(nameof(CaptureLayout))]
+        public CaptureLayouts CaptureLayout()
+        {
+            return _workflowController.ActiveCaptureLayout;
+        }
+
+
         [HttpGet]
         [ActionName(nameof(State))]
         public CaptureProcessState State()
         {
-
             return _workflowController.State;
         }
 

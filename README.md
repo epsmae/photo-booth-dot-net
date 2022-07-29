@@ -1,10 +1,9 @@
 # Photoboot .Net
 
-|Description      |Link        |
-|-----------------|------------|
-|Sonarcloud       |[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=alert_status)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=coverage)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net)|
-|Build            |[![Build](https://github.com/epsmae/photo-booth-dot-net/actions/workflows/integration_build.yml/badge.svg?branch=master)](https://github.com/epsmae/photo-booth-dot-net/actions/workflows/integration_build.yml)|
-
+| Description | Link                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sonarcloud  | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=alert_status)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=epsmae_photo-booth-dot-net&metric=coverage)](https://sonarcloud.io/dashboard?id=epsmae_photo-booth-dot-net) |
+| Build       | [![Build](https://github.com/epsmae/photo-booth-dot-net/actions/workflows/integration_build.yml/badge.svg?branch=master)](https://github.com/epsmae/photo-booth-dot-net/actions/workflows/integration_build.yml)                                                                                                                                                                                                                                                                                                                                                       |
 
 ## Technology
 
@@ -25,13 +24,12 @@ In my Setup I use:
 
 ## Screenshots
 
-|Test    |Screenshot 1|Screenshot 2|Screenshot 3|
----------|------------|------------|------------|
-|Capture |![Ready](doc/screenshot_capture_ready.JPG)|![CountDown](doc/screenshot_count_down.JPG)|![Review](doc/screenshot_review.JPG)|
-|Settings|![Settings](doc/screenshot_settings.JPG)|
-|Error   |![Error](doc/screenshot_error.JPG)|
-|Progress|![Progress](doc/screenshot_in_progress.JPG)|
-
+| Test     | Screenshot 1                                | Screenshot 2                                | Screenshot 3                         |
+| -------- | ------------------------------------------- | ------------------------------------------- | ------------------------------------ |
+| Capture  | ![Ready](doc/screenshot_capture_ready.JPG)  | ![CountDown](doc/screenshot_count_down.JPG) | ![Review](doc/screenshot_review.JPG) |
+| Settings | ![Settings](doc/screenshot_settings.JPG)    |                                             |                                      |
+| Error    | ![Error](doc/screenshot_error.JPG)          |                                             |                                      |
+| Progress | ![Progress](doc/screenshot_in_progress.JPG) |                                             |                                      |
 
 ## Features
 
@@ -57,7 +55,7 @@ Version 2.0
 - [x] Wizard to check printer, camera
 - [x] Trigger image by raspberry input
 - [x] Skip review count down
-- [ ] Capture collage
+- [x] Capture collage
 
 Version 3.0
 

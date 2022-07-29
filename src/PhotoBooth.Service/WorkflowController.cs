@@ -69,7 +69,10 @@ namespace PhotoBooth.Service
         private Exception _lastException;
         private CaptureResult _captureResult;
         private byte[] _currentImageData;
-        
+        private readonly List<string> _capturedImagePaths;
+        private IImageGalleryOffsetCalculator _galleryCalculator;
+        private CaptureLayouts _captureLayout;
+
         public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
         {
             _logger = logger;
@@ -78,6 +81,9 @@ namespace PhotoBooth.Service
             _imageResizer = imageResizer;
             _fileService = fileService;
             _configurationService = configurationService;
+            _capturedImagePaths = new List<string>();
+
+            SetCaptureLayout(CaptureLayouts.SingleImage);
 
             _countDownTimer = new Timer(OnCountDownTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
             _reviewTimer = new Timer(OnReviewCountDownTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
@@ -107,7 +113,8 @@ namespace PhotoBooth.Service
             _machine.Configure(CaptureStates.Capture)
                 .SubstateOf(CaptureStates.Processing)
                 .OnEntry(()=> StartCaptureImage())
-                .Permit(CaptureTriggers.CaptureCompleted, CaptureStates.Review);
+                .Permit(CaptureTriggers.CaptureCompleted, CaptureStates.Review)
+                .Permit(CaptureTriggers.IntermediateCaptureCompleted, CaptureStates.CountDown);
 
             _machine.Configure(CaptureStates.Review)
                 .SubstateOf(CaptureStates.Processing)
@@ -190,10 +197,31 @@ namespace PhotoBooth.Service
             }
         }
 
+        public IImageGalleryOffsetCalculator GalleryCalculator
+        {
+            get
+            {
+                return _galleryCalculator;
+            }
+            set
+            {
+                _galleryCalculator = value;
+            }
+        }
+        
+        public CaptureLayouts ActiveCaptureLayout
+        {
+            get
+            {
+                return _captureLayout;
+            }
+        }
+
         public Task Capture()
         {
+            _capturedImagePaths.Clear();
+            
             _countDownStepDuration = TimeSpan.FromSeconds(_configurationService.StepDownDurationInSeconds);
-            _currentCaptureCountDownStep = _configurationService.CaptureCountDownStepCount;
             _currentReviewCountDownStep = _configurationService.ReviewCountDownStepCount;
             return _machine.FireAsync(CaptureTriggers.Capture);
         }
@@ -217,6 +245,20 @@ namespace PhotoBooth.Service
         public string GenerateUmlDiagram()
         {
             return UmlDotGraph.Format(_machine.GetInfo());
+        }
+
+        public void SetCaptureLayout(CaptureLayouts captureLayout)
+        {
+            _captureLayout = captureLayout;
+
+            if (captureLayout == CaptureLayouts.FourImageLandscape)
+            {
+                _galleryCalculator = new FourImageGalleryCalculator();
+            }
+            else
+            {
+                _galleryCalculator = new SingleGalleryCalculator();
+            }
         }
 
         private void StartInitialization()
@@ -281,13 +323,27 @@ namespace PhotoBooth.Service
                     }
 
                     _captureResult = await _cameraService.CaptureImage(_fileService.PhotoDirectory, _configurationService.SelectedCamera);
+                    _capturedImagePaths.Add(_captureResult.FileName);
 
-                   using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
-                   {
-                       _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth, _configurationService.ReviewImageQuality);
-                   }
+                    if (_capturedImagePaths.Count == _galleryCalculator.RequiredImageCount)
+                    {
+                        IImageCombiner imageCombiner = new ImageCombiner(_galleryCalculator,_fileService);
 
-                   await _machine.FireAsync(CaptureTriggers.CaptureCompleted);
+                        string newImageFilePath = Path.Combine(_fileService.PhotoDirectory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
+
+                        _captureResult.FileName = imageCombiner.Combine(_capturedImagePaths, newImageFilePath);
+
+                        using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
+                        {
+                            _currentImageData = _imageResizer.ResizeImage(stream, _configurationService.ReviewImageWidth, _configurationService.ReviewImageQuality);
+                        }
+
+                        await _machine.FireAsync(CaptureTriggers.CaptureCompleted);
+                    }
+                    else
+                    {
+                        await _machine.FireAsync(CaptureTriggers.IntermediateCaptureCompleted);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -382,6 +438,7 @@ namespace PhotoBooth.Service
 
         private void StartCountDownTimer()
         {
+            _currentCaptureCountDownStep = _configurationService.CaptureCountDownStepCount;
             NotifyCountDownChanged();
             _countDownTimer.Change((int)_countDownStepDuration.TotalMilliseconds, Timeout.Infinite);
         }

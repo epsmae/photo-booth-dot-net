@@ -316,6 +316,11 @@ namespace PhotoBooth.Client.Pages
 
         private string TryGetLocalizedErrorMessage(CaptureError error)
         {
+            if (error.Exception == PhotoBoothExceptions.CameraSdCardIssue)
+            {
+                return Localizer.GetString("capture.error.no_camera_sd_card_available");
+            }
+
             if (error.Exception == PhotoBoothExceptions.NoPrinterAvailable)
             {
                 return Localizer.GetString("capture.error.no_camera_available");

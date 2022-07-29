@@ -141,6 +141,9 @@
   <data name="capture.error.no_camera_available" xml:space="preserve">
     <value>Keine Kamera verfügbar</value>
   </data>
+  <data name="capture.error.no_camera_sd_card_available" xml:space="preserve">
+    <value>Datentransfer Fehlgeschlagen, Kamera SD-Karte vorhanden?</value>
+  </data>
   <data name="capture.error.no_printer_available" xml:space="preserve">
     <value>Kein Drucker verfügbar</value>
   </data>

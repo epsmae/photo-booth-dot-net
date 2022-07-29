@@ -9,6 +9,11 @@ namespace PhotoBooth.Abstraction.Exceptions
         {
             if (ex is CameraException)
             {
+                if (ex is PtpStoreException)
+                {
+                    return PhotoBoothExceptions.CameraSdCardIssue;
+                }
+
                 if (ex is CameraNotAvailableException)
                 {
                     return PhotoBoothExceptions.NoCameraAvailable;

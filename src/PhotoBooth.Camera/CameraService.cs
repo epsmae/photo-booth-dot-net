@@ -118,6 +118,11 @@ namespace PhotoBooth.Camera
 
         private void EvaluateResult(CommandLineResult result)
         {
+            if (ContainsError(result, "PTP Store Not Available"))
+            {
+                throw new PtpStoreException();
+            }
+
             if (ContainsError(result, "Out of Focus"))
             {
                 throw new CameraOutOfFocusException("Camera Out of Focus");

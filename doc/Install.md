@@ -85,26 +85,30 @@ Check if dotnet is correctly installed (output shows arm64).
 ```
 $ dotnet --info
 .NET SDK (reflecting any global.json):
- Version:   6.0.101
- Commit:    ef49f6213a
+ Version:   6.0.302
+ Commit:    c857713418
 
 Runtime Environment:
  OS Name:     debian
  OS Version:  11
  OS Platform: Linux
  RID:         debian.11-arm64
- Base Path:   /opt/dotnet/sdk/6.0.101/
+ Base Path:   /opt/dotnet/sdk/6.0.302/
 
-Host (useful for support):
-  Version: 6.0.1
-  Commit:  3a25a7f1cc
+global.json file:
+  Not found
+
+Host:
+  Version:      6.0.7
+  Architecture: arm64
+  Commit:       0ec02c8c96
 
 .NET SDKs installed:
-  6.0.101 [/opt/dotnet/sdk]
+  6.0.302 [/opt/dotnet/sdk]
 
 .NET runtimes installed:
-  Microsoft.AspNetCore.App 6.0.1 [/opt/dotnet/shared/Microsoft.AspNetCore.App]
-  Microsoft.NETCore.App 6.0.1 [/opt/dotnet/shared/Microsoft.NETCore.App]
+  Microsoft.AspNetCore.App 6.0.7 [/opt/dotnet/shared/Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 6.0.7 [/opt/dotnet/shared/Microsoft.NETCore.App]
 ```
 
 ### gphoto2

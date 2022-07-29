@@ -22,6 +22,7 @@ namespace PhotoBooth.Client.Pages
         private const string ServerNotReachableError = "Server not reachable!";
         private string _imageObjectBlobUrl;
         private IJSInProcessRuntime _jsInProcessRuntime;
+        
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -56,6 +57,12 @@ namespace PhotoBooth.Client.Pages
         protected NavigationManager NavigationManager
         {
             get; set;
+        }
+
+        protected CaptureLayouts CaptureLayout
+        {
+            get;
+            set;
         }
 
         protected CaptureProcessState State
@@ -353,6 +360,8 @@ namespace PhotoBooth.Client.Pages
             {
                 Logger.LogError(ex, "Failed to update server state");
             }
+
+            await FetchCaptureLayout();
         }
 
         private async Task UpdateImage()
@@ -397,6 +406,42 @@ namespace PhotoBooth.Client.Pages
                 {
                     Logger.LogError(ex, "Failed to reset image");
                 }
+            }
+        }
+
+        private Task OnSingleImageClicked()
+        {
+            return SetCaptureLayout(CaptureLayouts.SingleImage);
+        }
+        
+        private Task OnMultiImageClicked()
+        {
+            return SetCaptureLayout(CaptureLayouts.FourImageLandscape);
+        }
+        private async Task SetCaptureLayout(CaptureLayouts layout)
+        {
+            try
+            {
+                await HttpClient.PostAsJsonAsync("api/Capture/SetCaptureLayout", layout);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to set capture layout");
+            }
+
+            await FetchCaptureLayout();
+        }
+
+        private async Task FetchCaptureLayout()
+        {
+            try
+            {
+                CaptureLayout = await HttpClient.GetFromJsonAsync<CaptureLayouts>("api/Capture/CaptureLayout");
+                HandleStateUpdate();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to get capture layout");
             }
         }
     }

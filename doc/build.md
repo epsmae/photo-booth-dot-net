@@ -22,3 +22,5 @@ Run the application:
 ```
 dotnet PhotoBooth.Server.dll
 ```
+
+You can now access the application over localshost:5050 directly on the raspberry or external ofer hostnameOrIp:8080

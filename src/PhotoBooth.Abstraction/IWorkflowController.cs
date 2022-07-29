@@ -71,6 +71,13 @@ namespace PhotoBooth.Abstraction
             get;
         }
 
+        IImageGalleryOffsetCalculator GalleryCalculator { get; set; }
+
+        CaptureLayouts ActiveCaptureLayout
+        {
+            get;
+        }
+
         /// <summary>
         /// Trigger a capture command
         /// </summary>
@@ -100,5 +107,7 @@ namespace PhotoBooth.Abstraction
         /// </summary>
         /// <returns></returns>
         string GenerateUmlDiagram();
+
+        void SetCaptureLayout(CaptureLayouts captureLayout);
     }
 }

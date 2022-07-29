@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -86,6 +87,32 @@ namespace PhotoBooth.Service.Test
 
             await WaitForState(CaptureProcessState.Ready, 5);
         }
+
+        [Test]
+        public async Task TestGalleryWorkflowSuccessfulWithPrint()
+        {
+            _controller.GalleryCalculator = new FourImageGalleryCalculator();
+
+            await _controller.Capture();
+
+            for (int i = 0; i < 4; i++)
+            {
+                _traversedStates.Clear();
+
+                await WaitForState(CaptureProcessState.CountDown, 5);
+
+                await WaitForTraversedState(CaptureProcessState.Capture, 5);
+            }
+
+            await WaitForState(CaptureProcessState.Review, 5);
+
+            await _controller.Print();
+
+            await WaitForTraversedState(CaptureProcessState.Print, 5);
+
+            await WaitForState(CaptureProcessState.Ready, 5);
+        }
+
 
         [Test]
         public async Task TestCameraError()

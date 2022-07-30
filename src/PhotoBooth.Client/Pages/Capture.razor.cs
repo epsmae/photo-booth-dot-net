@@ -323,7 +323,7 @@ namespace PhotoBooth.Client.Pages
 
             if (error.Exception == PhotoBoothExceptions.NoPrinterAvailable)
             {
-                return Localizer.GetString("capture.error.no_camera_available");
+                return Localizer.GetString("capture.error.no_printer_available");
             }
 
             if (error.Exception == PhotoBoothExceptions.GeneralPrinterError)
@@ -333,7 +333,7 @@ namespace PhotoBooth.Client.Pages
 
             if (error.Exception == PhotoBoothExceptions.NoCameraAvailable)
             {
-                return Localizer.GetString("capture.error.no_printer_available");
+                return Localizer.GetString("capture.error.no_camera_available");
             }
 
             if (error.Exception == PhotoBoothExceptions.CameraOutOfFocus)

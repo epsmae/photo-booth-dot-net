@@ -138,7 +138,7 @@ namespace PhotoBooth.Camera
                 throw new CameraClaimException("Failed to claim camera");
             }
 
-            if (result.ExitCode != 0)
+            if (result.ExitCode != 0 || !string.IsNullOrEmpty(result.StandardError))
             {
                 throw new CameraException($"{result.StandardOutput}{result.StandardError}");
             }

@@ -22,7 +22,7 @@ namespace PhotoBooth.Service
             _workflowController.StateChanged += OnStateChanged;
             _gpioInterface.PrimaryButtonChanged += OnPrimaryButtonChanged;
             _gpioInterface.SecondaryButtonChanged += OnSecondaryButtonChanged;
-            _configService.Register(ConfigurationKeys.BlinkingEnabled, true);
+            _configService.Register(ConfigurationKeys.BlinkingEnabled, false);
         }
 
         public void Initialize()

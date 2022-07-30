@@ -6,6 +6,7 @@ namespace PhotoBooth.Abstraction
     {
         ImageDimensions LoadImageInfo(Stream fileStream);
 
+        ImageDimensions LoadImageInfo(string imageFilePath);
 
         byte[] ResizeImage(Stream fileStream, int expectedWidth, int expectedQuality);
     }

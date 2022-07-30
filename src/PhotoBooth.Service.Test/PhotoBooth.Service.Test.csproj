@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="SampleImage.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\SampleImage.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

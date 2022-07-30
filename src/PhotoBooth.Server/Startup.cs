@@ -44,7 +44,7 @@ namespace PhotoBooth.Server
             services.AddSingleton<IGpioInterface, GpioController>();
             services.AddSingleton<IHardwareController, HardwareController>();
 #endif
-
+            services.AddSingleton<IImageCombiner, ImageCombiner>();
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<ICameraService, CameraService>();
             services.AddSingleton<IImageResizer, ImageResizer>();

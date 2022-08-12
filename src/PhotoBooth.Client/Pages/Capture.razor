@@ -58,6 +58,13 @@
         </div>
     }
 
+    @if (IsCaptureInProgress)
+    {
+        <div class="center-top-div">
+            <p style="font-size: 5em;">@CaptureStepInfo</p>
+        </div>
+    }
+
     <div class="center-div">
         
         @if (IsReadyForCapture)

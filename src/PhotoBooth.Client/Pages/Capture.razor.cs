@@ -89,6 +89,16 @@ namespace PhotoBooth.Client.Pages
             set;
         }
 
+
+        protected string CaptureStepInfo
+        {
+            get
+            {
+                return $"{CaptureState.CurrentImageIndex + 1}/{CaptureState.RequiredImageCount}";
+            }
+        }
+
+
         protected int ReviewCountDownStep
         {
             get;
@@ -113,6 +123,13 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
+        protected bool IsCaptureInProgress
+        {
+            get
+            {
+                return State == CaptureProcessState.CountDown || State == CaptureProcessState.Capture;
+            }
+        }
         protected bool IsPrintButtonVisible
         {
             get

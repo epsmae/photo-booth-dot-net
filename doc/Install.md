@@ -134,8 +134,25 @@ sudo systemctl restart cups
 
 Now you should be able to acess it over your raspberry hostname.
 
+`https://rasp-photo-m2:631/admin/`
+
+You need to accept the non truseted page and then navigate to Administration add printer. A popup will occur where you have to log in with your raspberry pi user.
+
+##### Troubleshoot printer not shown
+
+Check that printer is visible with
+
+`lsusb`
+
+Check that printer is visible with
+
+`lpstat -p`
+
+Check the cups conf:
+
 ```
-http://raspberrypi:631/
+sudo nano /etc/cups/printers.conf
+sudo nano /etc/cups/cups.conf
 ```
 
 ### unclutter
@@ -160,11 +177,7 @@ It should look similar:
 
 ### Disable screen saver
 
-```
-sudo apt-get install xscreensaver
-```
-
-Openn Settings/Screensaver and select 'disable screensaver' in the dropdown menu.
+Openn Raspberry Pi Configuration, switch to the display tab and disable screen blanking
 
 ### Set photobooth as service
 

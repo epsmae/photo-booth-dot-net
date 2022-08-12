@@ -35,7 +35,13 @@ namespace PhotoBooth.Server
 
         public Task SendStateUpdate()
         {
-            return _hub.SendStateChanged(_workflowController.State);
+            return _hub.SendStateChanged(new CaptureState
+            {
+                ProcessState = _workflowController.State,
+                RequiredImageCount = _workflowController.RequiredImageCount,
+                CaptureLayout = _workflowController.ActiveCaptureLayout,
+                CurrentImageIndex = _workflowController.CurrentImageIndex
+            });
         }
     }
 }

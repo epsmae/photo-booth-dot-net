@@ -30,7 +30,7 @@ namespace PhotoBooth.Server
             await Clients?.All.SendAsync("ReceiveMessage", user, message);
         }
 
-        public async Task SendStateChanged(CaptureProcessState state)
+        public async Task SendStateChanged(CaptureState state)
         {
             if (Clients != null && Clients.All  != null)
             {

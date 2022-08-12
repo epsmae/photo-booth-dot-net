@@ -15,27 +15,6 @@ namespace PhotoBooth.Service
 {
     public class WorkflowController : IWorkflowController
     {
-        public string CurrentImageFileName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_captureResult?.FileName))
-                {
-                    return _captureResult.FileName;
-                }
-
-                return string.Empty;
-            }
-        }
-
-        public byte[] ImageData
-        {
-            get
-            {
-                return _currentImageData;
-            }
-        }
-
         public event EventHandler StateChanged;
         public event EventHandler CountDownChanged;
         public event EventHandler ReviewCountDownChanged;
@@ -55,22 +34,18 @@ namespace PhotoBooth.Service
         private readonly IImageResizer _imageResizer;
         private readonly IFileService _fileService;
         private readonly IConfigurationService _configurationService;
-        private CaptureStates _state = CaptureStates.Initializing;
-
-
-
+        private readonly Timer _countDownTimer;
+        private readonly Timer _reviewTimer;
         private readonly StateMachine<CaptureStates, CaptureTriggers> _machine;
+        private readonly List<string> _capturedImagePaths;
 
+        private CaptureStates _state = CaptureStates.Initializing;
         private TimeSpan _countDownStepDuration;
         private int _currentCaptureCountDownStep;
         private int _currentReviewCountDownStep;
-
-        private readonly Timer _countDownTimer;
-        private readonly Timer _reviewTimer;
         private Exception _lastException;
         private CaptureResult _captureResult;
         private byte[] _currentImageData;
-        private readonly List<string> _capturedImagePaths;
         private IImageGalleryOffsetCalculator _galleryCalculator;
         private CaptureLayouts _captureLayout;
 
@@ -137,10 +112,7 @@ namespace PhotoBooth.Service
 
                 try
                 {
-                    if (StateChanged != null)
-                    {
-                        StateChanged(this, EventArgs.Empty);
-                    }
+                    StateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 catch (Exception ex)
                 {
@@ -149,6 +121,27 @@ namespace PhotoBooth.Service
             });
 
             _machine.Activate();
+        }
+
+        public string CurrentImageFileName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_captureResult?.FileName))
+                {
+                    return _captureResult.FileName;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public byte[] ImageData
+        {
+            get
+            {
+                return _currentImageData;
+            }
         }
 
         public CaptureProcessState State
@@ -216,6 +209,22 @@ namespace PhotoBooth.Service
             get
             {
                 return _captureLayout;
+            }
+        }
+
+        public int CurrentImageIndex
+        {
+            get
+            {
+                return _capturedImagePaths.Count;
+            }
+        }
+
+        public int RequiredImageCount
+        {
+            get
+            {
+                return _galleryCalculator.RequiredImageCount;
             }
         }
 

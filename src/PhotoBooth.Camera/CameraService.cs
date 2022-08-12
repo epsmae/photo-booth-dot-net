@@ -66,7 +66,6 @@ namespace PhotoBooth.Camera
             LogResult(result);
             EvaluateResult(result);
 
-
             string[] lines =
                 result.StandardOutput.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
 
@@ -89,7 +88,6 @@ namespace PhotoBooth.Camera
             
             return cameras;
         }
-
 
         public async Task<StorageInfo> FetchStorageInfo()
         {
@@ -118,6 +116,11 @@ namespace PhotoBooth.Camera
 
         private void EvaluateResult(CommandLineResult result)
         {
+            if (ContainsError(result, "Could not find file"))
+            {
+                throw new CameraFileNotFoundException("Could not find image file");
+            }
+
             if (ContainsError(result, "PTP Store Not Available"))
             {
                 throw new PtpStoreException();
@@ -144,12 +147,10 @@ namespace PhotoBooth.Camera
             }
         }
 
-
         private bool ContainsError(CommandLineResult result, string errorMessage)
         {
             return result.StandardOutput.ToLower().Contains(errorMessage.ToLower()) ||
                    result.StandardError.ToLower().Contains(errorMessage.ToLower());
-
         }
     }
 }

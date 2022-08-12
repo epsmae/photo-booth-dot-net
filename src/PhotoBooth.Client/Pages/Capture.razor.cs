@@ -22,9 +22,6 @@ namespace PhotoBooth.Client.Pages
         private const string ServerNotReachableError = "Server not reachable!";
         private string _imageObjectBlobUrl;
         private IJSInProcessRuntime _jsInProcessRuntime;
-        private int _activeCaptureIndex;
-        private int _maxCaptureIndex;
-
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -162,31 +159,6 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
-        public int MaxCaptureIndex
-        {
-            get
-            {
-                return _maxCaptureIndex;
-            }
-            set
-            {
-                _maxCaptureIndex = value;
-            }
-        }
-
-        public int ActiveCaptureIndex
-        {
-            get
-            {
-                return _activeCaptureIndex;
-            }
-            set
-            {
-                _activeCaptureIndex = value;
-            }
-        }
-
-
         protected override async Task OnInitializedAsync()
         {
             Logger.LogInformation("Setup hub connection");
@@ -252,6 +224,11 @@ namespace PhotoBooth.Client.Pages
 
         private void HandleStateUpdate()
         {
+            if (State != CaptureProcessState.Error)
+            {
+                _lastError = string.Empty;
+            }
+
             if (State == CaptureProcessState.Review)
             {
                 if (string.IsNullOrEmpty(_imageObjectBlobUrl))
@@ -411,7 +388,6 @@ namespace PhotoBooth.Client.Pages
         {
             try
             {
-
                 CaptureState = await HttpClient.GetFromJsonAsync<CaptureState>("api/Capture/CaptureState");
                 HandleStateUpdate();
             }
@@ -475,6 +451,7 @@ namespace PhotoBooth.Client.Pages
         {
             return SetCaptureLayout(CaptureLayouts.FourImageLandscape);
         }
+
         private async Task SetCaptureLayout(CaptureLayouts layout)
         {
             try

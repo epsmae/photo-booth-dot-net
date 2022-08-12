@@ -4,7 +4,6 @@ namespace PhotoBooth.Abstraction.Exceptions
 {
     public static class ExceptionHelper
     {
-
         public static PhotoBoothExceptions Convert(Exception ex)
         {
             if (ex is CameraException)
@@ -44,7 +43,6 @@ namespace PhotoBooth.Abstraction.Exceptions
             }
 
             return PhotoBoothExceptions.UnknownError;
-
         }
     }
 }

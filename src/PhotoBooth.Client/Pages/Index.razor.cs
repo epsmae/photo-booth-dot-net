@@ -195,7 +195,6 @@ namespace PhotoBooth.Client.Pages
                 return Task.CompletedTask;
             }
 
-
             int index = (int) _stepDictionary.First(e => e.Value == selectedStep).Key;
 
             if (index > 0)

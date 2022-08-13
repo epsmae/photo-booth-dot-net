@@ -68,7 +68,7 @@ namespace PhotoBooth.Client.Pages
                 if (value != _selectedLanguage)
                 {
                     _selectedLanguage = value;
-                    Task.Run(ChangeLanguage);
+                    ChangeLanguage();
                 }
             }
         }
@@ -195,15 +195,16 @@ namespace PhotoBooth.Client.Pages
         }
 
 
-        protected async Task ChangeLanguage()
+        protected void ChangeLanguage()
         {
-            await JsRuntime.InvokeAsync<string>("setLanguage", _selectedLanguage);
+            IJSInProcessRuntime runtime = (IJSInProcessRuntime) JsRuntime;
+            runtime.InvokeVoid("setCulture", _selectedLanguage);
             NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
         }
 
         private async Task FetchCurrentLanguage()
         {
-            _selectedLanguage = await JsRuntime.InvokeAsync<string>("getLanguage");
+            _selectedLanguage = await JsRuntime.InvokeAsync<string>("getCulture");
             StateHasChanged();
         }
 

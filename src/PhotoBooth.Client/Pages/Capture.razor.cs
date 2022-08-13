@@ -226,7 +226,11 @@ namespace PhotoBooth.Client.Pages
         {
             if (State != CaptureProcessState.Error)
             {
-                _lastError = string.Empty;
+                if (!string.IsNullOrEmpty(_lastError))
+                {
+                    _lastError = string.Empty;
+                    InfoDialog.Hide();
+                }
             }
 
             if (State == CaptureProcessState.Review)

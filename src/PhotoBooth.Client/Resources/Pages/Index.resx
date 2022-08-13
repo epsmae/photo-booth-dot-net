@@ -121,7 +121,7 @@
     <value>Client Version:</value>
   </data>
   <data name="about.project" xml:space="preserve">
-    <value>Projekt:</value>
+    <value>Project:</value>
   </data>
   <data name="about.server_version" xml:space="preserve">
     <value>Server Version:</value>

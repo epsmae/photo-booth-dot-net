@@ -48,6 +48,8 @@ namespace PhotoBooth.Service
         private byte[] _currentImageData;
         private IImageGalleryOffsetCalculator _galleryCalculator;
         private CaptureLayouts _captureLayout;
+        private string _usedPrinter;
+        private int _printerQueueCount;
 
         public WorkflowController(IImageCombiner imageCombiner, ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
         {
@@ -228,6 +230,22 @@ namespace PhotoBooth.Service
             }
         }
 
+        public string PrinterName
+        {
+            get
+            {
+                return _usedPrinter;
+            }
+        }
+
+        public int PrinterQueueCount
+        {
+            get
+            {
+                return _printerQueueCount;
+            }
+        }
+
         public Task Capture()
         {
             _capturedImagePaths.Clear();
@@ -301,8 +319,11 @@ namespace PhotoBooth.Service
                     {
                         throw new PrinterNotAvailableException("No printer found");
                     }
-                    
+
+                    _usedPrinter = _configurationService.SelectedPrinter;
                     await _printerService.Print(_configurationService.SelectedPrinter, _captureResult.FileName);
+
+                    _printerQueueCount = (await _printerService.ListPrintQueue()).Count;
 
                     await _machine.FireAsync(CaptureTriggers.PrintCompleted);
                 }

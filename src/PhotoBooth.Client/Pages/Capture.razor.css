@@ -12,6 +12,14 @@
     margin: 0;
 }
 
+.header_right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0px;
+    padding: 0px;
+}
+
 .footer_right {
     position: absolute;
     right: 0;

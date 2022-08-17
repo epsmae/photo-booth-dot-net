@@ -89,6 +89,16 @@ namespace PhotoBooth.Abstraction
         int RequiredImageCount { get; }
 
         /// <summary>
+        /// Active printer name
+        /// </summary>
+        string PrinterName { get; }
+
+        /// <summary>
+        /// Active printer queue count
+        /// </summary>
+        int PrinterQueueCount { get; }
+
+        /// <summary>
         /// Trigger a capture command
         /// </summary>
         /// <returns></returns>

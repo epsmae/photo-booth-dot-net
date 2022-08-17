@@ -74,6 +74,19 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
+        protected string PrinterState
+        {
+            get
+            {
+                if (CaptureState != null)
+                {
+                    return $"{CaptureState.PrinterName} [{CaptureState.PrinterQueueCount}]";
+                }
+
+                return string.Empty;
+            }
+        }
+
         protected CaptureState CaptureState
         {
             get;

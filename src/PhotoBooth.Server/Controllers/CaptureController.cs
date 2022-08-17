@@ -103,7 +103,9 @@ namespace PhotoBooth.Server.Controllers
                 ProcessState = _workflowController.State,
                 RequiredImageCount = _workflowController.RequiredImageCount,
                 CaptureLayout = _workflowController.ActiveCaptureLayout,
-                CurrentImageIndex = _workflowController.CurrentImageIndex
+                CurrentImageIndex = _workflowController.CurrentImageIndex,
+                PrinterQueueCount = _workflowController.PrinterQueueCount,
+                PrinterName = _workflowController.PrinterName
             };
         }
 

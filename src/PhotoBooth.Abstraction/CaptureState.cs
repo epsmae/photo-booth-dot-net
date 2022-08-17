@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace PhotoBooth.Abstraction
 {
     public class CaptureState
@@ -14,5 +16,16 @@ namespace PhotoBooth.Abstraction
             set;
         }
 
+        public int PrinterQueueCount
+        {
+            get;
+            set;
+        }
+
+        public string PrinterName
+        {
+            get;
+            set;
+        }
     }
 }

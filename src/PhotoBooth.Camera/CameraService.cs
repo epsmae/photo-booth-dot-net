@@ -131,7 +131,7 @@ namespace PhotoBooth.Camera
                 throw new CameraOutOfFocusException("Camera Out of Focus");
             }
 
-            if (ContainsError(result, "no camera found"))
+            if (ContainsError(result, "no camera found") || ContainsError(result, "Could not detect any camera"))
             {
                 throw new CameraNotAvailableException("No camera found");
             }

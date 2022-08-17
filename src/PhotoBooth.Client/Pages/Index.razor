@@ -37,43 +37,43 @@
     @if (SetupInProgress)
     {
 
-        <MudContainer MaxWidth="MaxWidth.Medium" Height="400px">
+        <MudContainer MaxWidth="MaxWidth.Medium">
 
-
-            <MudCarousel Class="mud-width-full" ShowArrows="false" style="height: 500px" ShowBullets="false" AutoCycle="false" TData="object" SelectedIndex="@MudSelectedIndex" SelectedIndexChanged="@OnMudSelectedStepChanged">
+            <MudCarousel Class="mud-width-full" ShowArrows="false" style="height: 400px" ShowBullets="false" AutoCycle="false" TData="object" SelectedIndex="@MudSelectedIndex" SelectedIndexChanged="@OnMudSelectedStepChanged">
                 <MudCarouselItem Transition="Transition.Fade">
-                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
 
                         <StepItem Header=@localizer["home.step_devices.header"] Title=@localizer["home.step_devices.title"] Description=@localizer["home.step_devices.description"] IsPreviousDisabled=@IsPreviousDisabled IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                            <Table Striped="true" Narrow="true" Bordered="true">
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHeaderCell>
-                                            @localizer["home.step_devices.available_devices"]
+                            <div style="height: 250px;">
+                                <Table Striped="true" Narrow="true" Bordered="true" style="height: 250px;">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHeaderCell>
+                                                @localizer["home.step_devices.available_devices"]
 
-                                            <Blazorise.Button @onclick="UpdateUsbDevice" Style="background-color: white; margin: 5px;">
-                                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                                            </Blazorise.Button>
-                                        </TableHeaderCell>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody Style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var device in UsbDevices)
-                                    {
-                                        <TableRow style="width: 100%">
-                                            <TableRowCell>@device</TableRowCell>
+                                                <Blazorise.Button @onclick="UpdateUsbDevice" Style="background-color: white; margin: 0px;">
+                                                    <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
+                                                </Blazorise.Button>
+                                            </TableHeaderCell>
                                         </TableRow>
-                                    }
-                                </TableBody>
-                            </Table>
-
+                                    </TableHeader>
+                                    <TableBody Style="height: 100%; overflow-y: scroll; display: block;">
+                                        @foreach (var device in UsbDevices)
+                                        {
+                                            <TableRow style="width: 100%">
+                                                <TableRowCell>@device</TableRowCell>
+                                            </TableRow>
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </div>
                         </StepItem>
 
                     </MudPaper>
                 </MudCarouselItem>
                 <MudCarouselItem Transition="Transition.Fade">
-                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
                         <StepItem Header=@localizer["home.step_camera.header"] Title=@localizer["home.step_camera.title"] Description=@localizer["home.step_camera.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                             <select class="form-control" @bind="SelectedCamera" style="max-width: 300px; margin:10px">
@@ -91,7 +91,7 @@
                     </MudPaper>
                 </MudCarouselItem>
                 <MudCarouselItem Transition="Transition.Fade">
-                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
                         <StepItem Header=@localizer["home.step_printer.header"] Title=@localizer["home.step_printer.title"] Description=@localizer["home.step_printer.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                             <select class="form-control" @bind="SelectedPrinter" style="max-width: 300px; margin:10px">
@@ -100,7 +100,7 @@
                                     <option value="@langCode.Name">@langCode.Name</option>
                                 }
                             </select>
-
+                            
                             <Blazorise.Button @onclick="ListPrinters" Style="background-color: none; margin:10px">
                                 <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
                             </Blazorise.Button>
@@ -109,27 +109,37 @@
                     </MudPaper>
                 </MudCarouselItem>
                 <MudCarouselItem Transition="Transition.Fade">
-                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
                         <StepItem Header=@localizer["home.step_capture.header"] Title=@localizer["home.step_capture.title"] Description=@localizer["home.step_capture.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                             @if (IsSpinnerVisible)
                             {
-                                <div class="spinner" style="margin: auto;"/>
+                                <div class="content">
+                                    <div class="left-center">
+                                        <div class="spinner">   </div>
+                                    </div>
+                                </div>
                             }
                             else
                             {
-                                <div style="margin: auto;">
+                                <div class="content">
+                                    <div class="left-center">
+                                       @if (IsReviewImageVisible)
+                                        {
+                                            <div style="margin: 20px;">
+                                                <img src="@String.Format("data:_image/jpg;base64,{0}", Image)"/>
+                                            </div>
+                                        }
+                                   </div>
 
-                                    <div style="margin: 0 auto;">
-                                        <Blazorise.Button class="btn btn-secondary" @onclick="CaptureImage">@localizer["home.step_capture.capture"]</Blazorise.Button>
-                                    </div>
-
-                                    @if (IsReviewImageVisible)
-                                    {
-                                        <div style="margin: 20px;">
-                                            <img src="@String.Format("data:_image/jpg;base64,{0}", Image)"/>
+                                    <div class="right-center">
+                                        <div class="round-button-mini">
+                                            <div class="round-button-circle">
+                                                <div class="round-button-text" style="font-size: 1.0em" @onclick="() => CaptureImage()">@localizer["home.step_capture.capture"]
+                                                </div>
+                                            </div>
                                         </div>
-                                    }
+                                    </div >
                                 </div>
                             }
 
@@ -139,25 +149,39 @@
 
 
                 <MudCarouselItem Transition="Transition.Fade">
-                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:20px">
+                    <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
                         <StepItem Header=@localizer["home.step_print.header"] Title=@localizer["home.step_print.title"] Description=@localizer["home.step_print.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                            <div style="margin: auto;">
-                                @if (IsReviewImageVisible)
-                                {
-                                    <div style="margin: 20px;">
 
-                                        <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+
+                            <div class="content">
+                                <div class="left-center">
+                                    @if (IsReviewImageVisible)
+                                    {
+                                        <div style="margin: 20px;">
+                                            <img src="@String.Format("data:_image/jpg;base64,{0}", Image)" style="margin: auto;" />
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="right-center">
+                                    <div class="round-button-mini">
+                                        <div class="round-button-circle">
+                                            <div class="round-button-text" style="font-size: 1.0em" @onclick="() => PrintImage()">
+                                                @localizer["home.step_print.print_image"]
+                                            </div>
+                                        </div>
                                     </div>
-                                }
-
-                                <Blazorise.Button class="btn btn-secondary" @onclick="PrintImage" style="margin: 20px;">@localizer["home.step_print.print_image"]</Blazorise.Button>
-                                <Blazorise.Button class="btn btn-secondary" @onclick="CompleteSetup" style="margin: 20px;">@localizer["home.step_print.complete_setup"]</Blazorise.Button>
-
+                                    <div class="round-button-mini">
+                                        <div class="round-button-circle">
+                                            <div class="round-button-text" style="font-size: 1.0em" @onclick="() => CompleteSetup()">
+                                                @localizer["home.step_print.complete_setup"]
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div >
                             </div>
 
-
-                        
                         </StepItem>
                     </MudPaper>
                 </MudCarouselItem>

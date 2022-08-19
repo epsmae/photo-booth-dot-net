@@ -134,7 +134,7 @@ sudo systemctl restart cups
 
 Now you should be able to acess it over your raspberry hostname.
 
-`https://rasp-photo-m2:631/admin/`
+`https://<HostNameOrIP>:631/admin/`
 
 You need to accept the non truseted page and then navigate to Administration add printer. A popup will occur where you have to log in with your raspberry pi user.
 

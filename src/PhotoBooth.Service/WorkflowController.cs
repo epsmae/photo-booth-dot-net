@@ -323,7 +323,7 @@ namespace PhotoBooth.Service
                     _usedPrinter = _configurationService.SelectedPrinter;
                     await _printerService.Print(_configurationService.SelectedPrinter, _captureResult.FileName);
 
-                    _printerQueueCount = (await _printerService.ListPrintQueue()).Count;
+                    _printerQueueCount = await TryGetPrinterCount();
 
                     await _machine.FireAsync(CaptureTriggers.PrintCompleted);
                 }
@@ -334,6 +334,18 @@ namespace PhotoBooth.Service
                     await _machine.FireAsync(CaptureTriggers.Error);
                 }
             });
+        }
+
+        private async Task<int> TryGetPrinterCount()
+        {
+            try
+            {
+                return (await _printerService.ListPrintQueue()).Count;
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         private void StartCaptureImage()

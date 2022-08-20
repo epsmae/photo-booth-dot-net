@@ -24,6 +24,7 @@ namespace PhotoBooth.Service.Test
             _mock.SetupGet(m => m.ReviewImageWidth).Returns(ImageWidth);
             _mock.SetupGet(m => m.SelectedPrinter).Returns(Printer);
             _mock.SetupGet(m => m.SelectedCamera).Returns(Camera);
+            _mock.SetupGet(m => m.BlinkingEnabled).Returns(false);
         }
 
         public IConfigurationService Object

@@ -7,6 +7,7 @@ Note build takes at least 10 times longer!
 
 ```
 git clean -dxf
+
 dotnet publish --configuration Release --framework net6.0 src/PhotoBooth.Server/PhotoBooth.Server.csproj
 ```
 

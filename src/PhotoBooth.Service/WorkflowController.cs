@@ -15,27 +15,6 @@ namespace PhotoBooth.Service
 {
     public class WorkflowController : IWorkflowController
     {
-        public string CurrentImageFileName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_captureResult?.FileName))
-                {
-                    return _captureResult.FileName;
-                }
-
-                return string.Empty;
-            }
-        }
-
-        public byte[] ImageData
-        {
-            get
-            {
-                return _currentImageData;
-            }
-        }
-
         public event EventHandler StateChanged;
         public event EventHandler CountDownChanged;
         public event EventHandler ReviewCountDownChanged;
@@ -48,33 +27,33 @@ namespace PhotoBooth.Service
         private const int DefaultReviewImageQuality = 50;
 
 
+        private readonly IImageCombiner _imageCombiner;
         private readonly ILogger<WorkflowController> _logger;
         private readonly ICameraService _cameraService;
         private readonly IPrinterService _printerService;
         private readonly IImageResizer _imageResizer;
         private readonly IFileService _fileService;
         private readonly IConfigurationService _configurationService;
-        private CaptureStates _state = CaptureStates.Initializing;
-
-
-
+        private readonly Timer _countDownTimer;
+        private readonly Timer _reviewTimer;
         private readonly StateMachine<CaptureStates, CaptureTriggers> _machine;
+        private readonly List<string> _capturedImagePaths;
 
+        private CaptureStates _state = CaptureStates.Initializing;
         private TimeSpan _countDownStepDuration;
         private int _currentCaptureCountDownStep;
         private int _currentReviewCountDownStep;
-
-        private readonly Timer _countDownTimer;
-        private readonly Timer _reviewTimer;
         private Exception _lastException;
         private CaptureResult _captureResult;
         private byte[] _currentImageData;
-        private readonly List<string> _capturedImagePaths;
         private IImageGalleryOffsetCalculator _galleryCalculator;
         private CaptureLayouts _captureLayout;
+        private string _usedPrinter;
+        private int _printerQueueCount;
 
-        public WorkflowController(ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
+        public WorkflowController(IImageCombiner imageCombiner, ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
         {
+            _imageCombiner = imageCombiner;
             _logger = logger;
             _cameraService = cameraService;
             _printerService = printerService;
@@ -135,10 +114,7 @@ namespace PhotoBooth.Service
 
                 try
                 {
-                    if (StateChanged != null)
-                    {
-                        StateChanged(this, EventArgs.Empty);
-                    }
+                    StateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 catch (Exception ex)
                 {
@@ -147,6 +123,27 @@ namespace PhotoBooth.Service
             });
 
             _machine.Activate();
+        }
+
+        public string CurrentImageFileName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_captureResult?.FileName))
+                {
+                    return _captureResult.FileName;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public byte[] ImageData
+        {
+            get
+            {
+                return _currentImageData;
+            }
         }
 
         public CaptureProcessState State
@@ -214,6 +211,38 @@ namespace PhotoBooth.Service
             get
             {
                 return _captureLayout;
+            }
+        }
+
+        public int CurrentImageIndex
+        {
+            get
+            {
+                return _capturedImagePaths.Count;
+            }
+        }
+
+        public int RequiredImageCount
+        {
+            get
+            {
+                return _galleryCalculator.RequiredImageCount;
+            }
+        }
+
+        public string PrinterName
+        {
+            get
+            {
+                return _usedPrinter;
+            }
+        }
+
+        public int PrinterQueueCount
+        {
+            get
+            {
+                return _printerQueueCount;
             }
         }
 
@@ -290,8 +319,11 @@ namespace PhotoBooth.Service
                     {
                         throw new PrinterNotAvailableException("No printer found");
                     }
-                    
+
+                    _usedPrinter = _configurationService.SelectedPrinter;
                     await _printerService.Print(_configurationService.SelectedPrinter, _captureResult.FileName);
+
+                    _printerQueueCount = await TryGetPrinterCount();
 
                     await _machine.FireAsync(CaptureTriggers.PrintCompleted);
                 }
@@ -302,6 +334,18 @@ namespace PhotoBooth.Service
                     await _machine.FireAsync(CaptureTriggers.Error);
                 }
             });
+        }
+
+        private async Task<int> TryGetPrinterCount()
+        {
+            try
+            {
+                return (await _printerService.ListPrintQueue()).Count;
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         private void StartCaptureImage()
@@ -327,11 +371,9 @@ namespace PhotoBooth.Service
 
                     if (_capturedImagePaths.Count == _galleryCalculator.RequiredImageCount)
                     {
-                        IImageCombiner imageCombiner = new ImageCombiner(_galleryCalculator,_fileService);
-
                         string newImageFilePath = Path.Combine(_fileService.PhotoDirectory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
 
-                        _captureResult.FileName = imageCombiner.Combine(_capturedImagePaths, newImageFilePath);
+                        _captureResult.FileName = _imageCombiner.Combine(_galleryCalculator, _capturedImagePaths, newImageFilePath);
 
                         using (Stream stream = _fileService.OpenFile(_captureResult.FileName))
                         {

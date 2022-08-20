@@ -73,6 +73,12 @@
         </Field>
 
         <Field ColumnSize="ColumnSize.IsFull">
+            <FieldLabel>@localizer["settings.blinking_enabled"]</FieldLabel>
+            <Check TValue="bool" @bind-Checked="@BlinkingEnabled"  />
+        </Field>
+
+
+        <Field ColumnSize="ColumnSize.IsFull">
             <Blazorise.button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</Blazorise.button>
         </Field>
 

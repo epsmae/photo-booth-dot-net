@@ -4,11 +4,15 @@ namespace PhotoBooth.Abstraction.Exceptions
 {
     public static class ExceptionHelper
     {
-
         public static PhotoBoothExceptions Convert(Exception ex)
         {
             if (ex is CameraException)
             {
+                if (ex is PtpStoreException || ex is CameraFileNotFoundException)
+                {
+                    return PhotoBoothExceptions.CameraSdCardIssue;
+                }
+
                 if (ex is CameraNotAvailableException)
                 {
                     return PhotoBoothExceptions.NoCameraAvailable;
@@ -39,7 +43,6 @@ namespace PhotoBooth.Abstraction.Exceptions
             }
 
             return PhotoBoothExceptions.UnknownError;
-
         }
     }
 }

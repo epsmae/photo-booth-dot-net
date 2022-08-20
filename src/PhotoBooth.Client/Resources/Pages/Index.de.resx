@@ -121,7 +121,7 @@
     <value>Client Version:</value>
   </data>
   <data name="about.project" xml:space="preserve">
-    <value>Project:</value>
+    <value>Projekt:</value>
   </data>
   <data name="about.server_version" xml:space="preserve">
     <value>Server Version:</value>
@@ -130,7 +130,7 @@
     <value>Über Photo Booth .Net</value>
   </data>
   <data name="capture.error.camera_claim_failed" xml:space="preserve">
-    <value>Fehler Kamer wird von einer anderen Applikation verwendet. Versuchen Sie es nochmals.</value>
+    <value>Fehler Kamera wird von einer anderen Applikation verwendet. Versuchen Sie es nochmals.</value>
   </data>
   <data name="capture.error.camera_out_of_focus" xml:space="preserve">
     <value>Kamera Fokus-Fehler</value>
@@ -140,6 +140,9 @@
   </data>
   <data name="capture.error.no_camera_available" xml:space="preserve">
     <value>Keine Kamera verfügbar</value>
+  </data>
+  <data name="capture.error.no_camera_sd_card_available" xml:space="preserve">
+    <value>Datentransfer Fehlgeschlagen, Kamera SD-Karte vorhanden?</value>
   </data>
   <data name="capture.error.no_printer_available" xml:space="preserve">
     <value>Kein Drucker verfügbar</value>
@@ -157,7 +160,7 @@
     <value>Serienbild (4 Bilder pro Ausdruck)</value>
   </data>
   <data name="capture.layout.single" xml:space="preserve">
-    <value>Einzelbild (1 Bild pro Auszdruck)</value>
+    <value>Einzelbild (1 Bild pro Ausdruck)</value>
   </data>
   <data name="capture.print" xml:space="preserve">
     <value>DRUCKEN</value>
@@ -190,7 +193,7 @@
     <value>Die untenstehende Setup Routine kann gebraucht werden um die Kamera und den Drucker zu definieren oder auch nur um das Setup zu testen. Wenn das aktuelle Setup so passt kann die Fotobox direkt benutzt werden.</value>
   </data>
   <data name="home.setup_title" xml:space="preserve">
-    <value>Fotobox Kamer und Drucker Setup</value>
+    <value>Fotobox Kamera und Drucker Setup</value>
   </data>
   <data name="home.step_camera.description" xml:space="preserve">
     <value>Selektion der gewüschten Kamera. Ist diese nicht verfügbar sollte die Stromversorgung sowie die Verkabelung überprüft werden.</value>
@@ -244,7 +247,7 @@
     <value>Selektion des gewüschten Druckers. Ist dieser nicht verfügbar sollte die Stromversorgung sowie die Verkabelung überprüft werden.</value>
   </data>
   <data name="home.step_printer.header" xml:space="preserve">
-    <value>Verfügbare Drukter</value>
+    <value>Verfügbare Drucker</value>
   </data>
   <data name="home.step_printer.title" xml:space="preserve">
     <value>Selektierter Drucker</value>
@@ -260,6 +263,9 @@
   </data>
   <data name="printer_queue_dialog.printer_queue" xml:space="preserve">
     <value>Warteschlange</value>
+  </data>
+  <data name="settings.blinking_enabled" xml:space="preserve">
+    <value>Status LED benutzen </value>
   </data>
   <data name="settings.captured_images" xml:space="preserve">
     <value>Aufgenommene Bilder</value>

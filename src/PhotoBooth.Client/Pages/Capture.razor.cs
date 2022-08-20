@@ -22,7 +22,6 @@ namespace PhotoBooth.Client.Pages
         private const string ServerNotReachableError = "Server not reachable!";
         private string _imageObjectBlobUrl;
         private IJSInProcessRuntime _jsInProcessRuntime;
-        
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -61,11 +60,34 @@ namespace PhotoBooth.Client.Pages
 
         protected CaptureLayouts CaptureLayout
         {
-            get;
-            set;
+            get
+            {
+                return CaptureState?.CaptureLayout ?? CaptureLayouts.SingleImage;
+            }
         }
 
         protected CaptureProcessState State
+        {
+            get
+            {
+                return CaptureState?.ProcessState ?? CaptureProcessState.Error;
+            }
+        }
+
+        protected string PrinterState
+        {
+            get
+            {
+                if (CaptureState != null)
+                {
+                    return $"{CaptureState.PrinterName} [{CaptureState.PrinterQueueCount}]";
+                }
+
+                return string.Empty;
+            }
+        }
+
+        protected CaptureState CaptureState
         {
             get;
             set;
@@ -76,6 +98,16 @@ namespace PhotoBooth.Client.Pages
             get;
             set;
         }
+
+
+        protected string CaptureStepInfo
+        {
+            get
+            {
+                return $"{CaptureState.CurrentImageIndex + 1}/{CaptureState.RequiredImageCount}";
+            }
+        }
+
 
         protected int ReviewCountDownStep
         {
@@ -93,7 +125,7 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
-        protected bool IsCaptureButtonVisible
+        protected bool IsReadyForCapture
         {
             get
             {
@@ -101,6 +133,13 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
+        protected bool IsCaptureInProgress
+        {
+            get
+            {
+                return State == CaptureProcessState.CountDown || State == CaptureProcessState.Capture;
+            }
+        }
         protected bool IsPrintButtonVisible
         {
             get
@@ -133,7 +172,6 @@ namespace PhotoBooth.Client.Pages
             }
         }
 
-
         protected override async Task OnInitializedAsync()
         {
             Logger.LogInformation("Setup hub connection");
@@ -146,9 +184,9 @@ namespace PhotoBooth.Client.Pages
                 .WithAutomaticReconnect(new CustomRetryPolicy())
                 .Build();
 
-            _hubConnection.On<CaptureProcessState>("ReceiveStateChanged", (state) =>
+            _hubConnection.On<CaptureState>("ReceiveStateChanged", (state) =>
             {
-                State = state;
+                CaptureState = state;
                 HandleStateUpdate();
             });
 
@@ -190,7 +228,8 @@ namespace PhotoBooth.Client.Pages
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Unable to connect to server");
-                State = CaptureProcessState.Error;
+
+                CaptureState = null;
                 _lastError = ServerNotReachableError;
                 InfoDialog.Show();
             }
@@ -198,6 +237,15 @@ namespace PhotoBooth.Client.Pages
 
         private void HandleStateUpdate()
         {
+            if (State != CaptureProcessState.Error)
+            {
+                if (!string.IsNullOrEmpty(_lastError))
+                {
+                    _lastError = string.Empty;
+                    InfoDialog.Hide();
+                }
+            }
+
             if (State == CaptureProcessState.Review)
             {
                 if (string.IsNullOrEmpty(_imageObjectBlobUrl))
@@ -240,7 +288,7 @@ namespace PhotoBooth.Client.Pages
             if (_lastError == ServerNotReachableError)
             {
                 _lastError = string.Empty;
-                State = default;
+                CaptureState = null;
 
                 NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
@@ -296,7 +344,6 @@ namespace PhotoBooth.Client.Pages
 
         private async Task UpdateErrorState()
         {
-
             try
             {
                 CaptureError lastErrorException = await HttpClient.GetFromJsonAsync<CaptureError>("api/Capture/LastException");
@@ -316,9 +363,14 @@ namespace PhotoBooth.Client.Pages
 
         private string TryGetLocalizedErrorMessage(CaptureError error)
         {
+            if (error.Exception == PhotoBoothExceptions.CameraSdCardIssue)
+            {
+                return Localizer.GetString("capture.error.no_camera_sd_card_available");
+            }
+
             if (error.Exception == PhotoBoothExceptions.NoPrinterAvailable)
             {
-                return Localizer.GetString("capture.error.no_camera_available");
+                return Localizer.GetString("capture.error.no_printer_available");
             }
 
             if (error.Exception == PhotoBoothExceptions.GeneralPrinterError)
@@ -328,7 +380,7 @@ namespace PhotoBooth.Client.Pages
 
             if (error.Exception == PhotoBoothExceptions.NoCameraAvailable)
             {
-                return Localizer.GetString("capture.error.no_printer_available");
+                return Localizer.GetString("capture.error.no_camera_available");
             }
 
             if (error.Exception == PhotoBoothExceptions.CameraOutOfFocus)
@@ -353,15 +405,13 @@ namespace PhotoBooth.Client.Pages
         {
             try
             {
-                State = await HttpClient.GetFromJsonAsync<CaptureProcessState>("api/Capture/State");
+                CaptureState = await HttpClient.GetFromJsonAsync<CaptureState>("api/Capture/CaptureState");
                 HandleStateUpdate();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Failed to update server state");
             }
-
-            await FetchCaptureLayout();
         }
 
         private async Task UpdateImage()
@@ -418,30 +468,17 @@ namespace PhotoBooth.Client.Pages
         {
             return SetCaptureLayout(CaptureLayouts.FourImageLandscape);
         }
+
         private async Task SetCaptureLayout(CaptureLayouts layout)
         {
             try
             {
                 await HttpClient.PostAsJsonAsync("api/Capture/SetCaptureLayout", layout);
+                await UpdateServerState();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Failed to set capture layout");
-            }
-
-            await FetchCaptureLayout();
-        }
-
-        private async Task FetchCaptureLayout()
-        {
-            try
-            {
-                CaptureLayout = await HttpClient.GetFromJsonAsync<CaptureLayouts>("api/Capture/CaptureLayout");
-                HandleStateUpdate();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Failed to get capture layout");
             }
         }
     }

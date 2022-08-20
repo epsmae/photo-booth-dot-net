@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
+using PhotoBooth.Abstraction.Configuration;
 
 namespace PhotoBooth.Service
 {
@@ -9,16 +10,19 @@ namespace PhotoBooth.Service
         private readonly ILogger<HardwareController> _logger;
         private readonly IWorkflowController _workflowController;
         private readonly IGpioInterface _gpioInterface;
+        private readonly IConfigurationService _configService;
 
-        public HardwareController(ILogger<HardwareController> logger, IWorkflowController workflowController, IGpioInterface gpioInterface)
+        public HardwareController(ILogger<HardwareController> logger, IWorkflowController workflowController, IGpioInterface gpioInterface, IConfigurationService configService)
         {
             _logger = logger;
             _workflowController = workflowController;
             _gpioInterface = gpioInterface;
+            _configService = configService;
 
             _workflowController.StateChanged += OnStateChanged;
             _gpioInterface.PrimaryButtonChanged += OnPrimaryButtonChanged;
             _gpioInterface.SecondaryButtonChanged += OnSecondaryButtonChanged;
+            _configService.Register(ConfigurationKeys.BlinkingEnabled, false);
         }
 
         public void Initialize()
@@ -32,13 +36,13 @@ namespace PhotoBooth.Service
             {
                 if (value)
                 {
-                    if (_workflowController.State == CaptureProcessState.Review)
-                    {
-                        await _workflowController.Skip();
-                    }
-                    else if (_workflowController.State == CaptureProcessState.Error)
+                    if (_workflowController.State == CaptureProcessState.Error)
                     {
                         await _workflowController.ConfirmError();
+                    }
+                    else if (_workflowController.State == CaptureProcessState.Review)
+                    {
+                        await _workflowController.Skip();
                     }
                 }
             }
@@ -58,6 +62,10 @@ namespace PhotoBooth.Service
                     if (_workflowController.State == CaptureProcessState.Ready)
                     {
                         await _workflowController.Capture();
+                    }
+                    else if (_workflowController.State == CaptureProcessState.Review)
+                    {
+                        await _workflowController.Print();
                     }
                     else if (_workflowController.State == CaptureProcessState.Error)
                     {
@@ -80,7 +88,10 @@ namespace PhotoBooth.Service
         {
             if (_workflowController.State == CaptureProcessState.Ready)
             {
-                _gpioInterface.StartBlinkingPrimaryButton();
+                if (_configService.BlinkingEnabled)
+                {
+                    _gpioInterface.StartBlinkingPrimaryButton();
+                }
             }
             else
             {
@@ -89,7 +100,10 @@ namespace PhotoBooth.Service
 
             if (_workflowController.State == CaptureProcessState.Error)
             {
-                _gpioInterface.StartBlinkingSecondaryButton();
+                if (_configService.BlinkingEnabled)
+                {
+                    _gpioInterface.StartBlinkingSecondaryButton();
+                }
             }
             else
             {

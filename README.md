@@ -9,7 +9,7 @@
 
 The photobooth application is implemented in .Net 6 and uses blazor webassembly for the frontent (PWA).
 This means the frontent can be used in any browser which has access to the raspberry.
-Personally I use the Raspberry Pi touch panel and run the chromium browser directly in raspian.
+Personally I use the Raspberry Pi touch panel and run the chromium browser directly in raspian. The [cups print server](http://www.cups.org/) is used for printing. To control the camera I wrote a command line wrapper for [gphoto2](http://www.gphoto.org/).
 
 ## Setup
 
@@ -21,15 +21,17 @@ In my Setup I use:
 * Raspberry Pi 7" Touch
 * Nikon D7000
 * Canon SELPHY CP1300
+* fantec WK-200
 
 ## Screenshots
 
-| Test     | Screenshot 1                                | Screenshot 2                                | Screenshot 3                         |
-| -------- | ------------------------------------------- | ------------------------------------------- | ------------------------------------ |
-| Capture  | ![Ready](doc/screenshot_capture_ready.JPG)  | ![CountDown](doc/screenshot_count_down.JPG) | ![Review](doc/screenshot_review.JPG) |
-| Settings | ![Settings](doc/screenshot_settings.JPG)    |                                             |                                      |
-| Error    | ![Error](doc/screenshot_error.JPG)          |                                             |                                      |
-| Progress | ![Progress](doc/screenshot_in_progress.JPG) |                                             |                                      |
+| Topic    | Screenshot 1                                | Screenshot 2                                | Screenshot 3                           | Screenshot 4                           |
+| -------- | ------------------------------------------- | ------------------------------------------- | -------------------------------------- | -------------------------------------- |
+| Settings | ![Settings](doc/screenshot_settings.JPG)    |                                             |                                        |                                        |
+| Wizard   | ![Wizard](doc/screenshot_wizard_1.JPG)      | ![Wizard](doc/screenshot_wizard_2.JPG)      | ![Wizard](doc/screenshot_wizard_3.JPG) | ![Wizard](doc/screenshot_wizard_4.JPG) |
+| Capture  | ![Ready](doc/screenshot_capture_ready.JPG)  | ![CountDown](doc/screenshot_count_down.JPG) | ![Review](doc/screenshot_review.JPG)   | ![Review](doc/screenshot_review_2.JPG) |
+| Error    | ![Error](doc/screenshot_error.JPG)          |                                             |                                        |                                        |
+| Progress | ![Progress](doc/screenshot_in_progress.JPG) |                                             |                                        |                                        |
 
 ## Features
 
@@ -54,6 +56,7 @@ Version 2.0
 - [x] .Net 6 aot
 - [x] Wizard to check printer, camera
 - [x] Trigger image by raspberry input
+- [x] Support for two raspberry state outputs 
 - [x] Skip review count down
 - [x] Capture collage
 
@@ -70,3 +73,7 @@ Version 3.0
 ## Installation
 
 [Install-Guide](doc/Install.md)
+
+## Development
+
+[Development-Guide](doc/development.md)

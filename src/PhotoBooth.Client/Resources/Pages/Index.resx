@@ -121,7 +121,7 @@
     <value>Client Version:</value>
   </data>
   <data name="about.project" xml:space="preserve">
-    <value>Projekt:</value>
+    <value>Project:</value>
   </data>
   <data name="about.server_version" xml:space="preserve">
     <value>Server Version:</value>
@@ -140,6 +140,9 @@
   </data>
   <data name="capture.error.no_camera_available" xml:space="preserve">
     <value>No camera available</value>
+  </data>
+  <data name="capture.error.no_camera_sd_card_available" xml:space="preserve">
+    <value>File transfer failed, camera sd card available?</value>
   </data>
   <data name="capture.error.no_printer_available" xml:space="preserve">
     <value>No printer available</value>
@@ -260,6 +263,9 @@
   </data>
   <data name="printer_queue_dialog.printer_queue" xml:space="preserve">
     <value>Printer queue</value>
+  </data>
+  <data name="settings.blinking_enabled" xml:space="preserve">
+    <value>Use status led</value>
   </data>
   <data name="settings.captured_images" xml:space="preserve">
     <value>Captured Images</value>

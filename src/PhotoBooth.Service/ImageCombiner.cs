@@ -9,20 +9,20 @@ namespace PhotoBooth.Service
 {
     public class ImageCombiner : IImageCombiner
     {
-        private readonly IImageGalleryOffsetCalculator _offsetCalculator;
         private readonly IFileService _fileService;
+        private readonly IImageResizer _imageResizer;
 
-        public ImageCombiner(IImageGalleryOffsetCalculator offsetCalculator, IFileService fileService)
+        public ImageCombiner(IFileService fileService, IImageResizer imageResizer)
         {
-            _offsetCalculator = offsetCalculator;
             _fileService = fileService;
+            _imageResizer = imageResizer;
         }
 
-        public string Combine(IList<string> imageFilePaths, string destinationPath)
+        public string Combine(IImageGalleryOffsetCalculator offsetCalculator, IList<string> imageFilePaths, string destinationPath)
         {
-            if (imageFilePaths.Count != _offsetCalculator.RequiredImageCount)
+            if (imageFilePaths.Count != offsetCalculator.RequiredImageCount)
             {
-                throw new ArgumentException($"imageFilePathCount expected={_offsetCalculator.RequiredImageCount}, actual={imageFilePaths.Count}");
+                throw new ArgumentException($"imageFilePathCount expected={offsetCalculator.RequiredImageCount}, actual={imageFilePaths.Count}");
             }
 
             if (imageFilePaths.Count == 1)
@@ -31,7 +31,9 @@ namespace PhotoBooth.Service
                 return imageFilePaths.First();
             }
 
-            using (SKSurface tempSurface = SKSurface.Create(new SKImageInfo(2464, 1632)))
+            ImageDimensions dimensions = _imageResizer.LoadImageInfo(imageFilePaths.First());
+
+            using (SKSurface tempSurface = SKSurface.Create(new SKImageInfo(dimensions.Width, dimensions.Height)))
             {
                 SKCanvas canvas = tempSurface.Canvas;
 
@@ -43,7 +45,7 @@ namespace PhotoBooth.Service
                     {
                         using (SKBitmap bitmap = SKBitmap.Decode(stream))
                         {
-                            ImageOffsetInfo info = _offsetCalculator.GetOffset(i, bitmap.Width, bitmap.Height);
+                            ImageOffsetInfo info = offsetCalculator.GetOffset(i, bitmap.Width, bitmap.Height);
 
                             using (SKBitmap resizedBitmap = bitmap.Resize(new SKSizeI((int) info.Width, (int) info.Height), SKFilterQuality.Low))
                             {

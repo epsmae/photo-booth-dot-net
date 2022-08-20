@@ -30,7 +30,8 @@ namespace PhotoBooth.Server.Controllers
                 ReviewImageWidth = _service.ReviewImageWidth,
                 SelectedCamera = _service.SelectedCamera,
                 SelectedPrinter = _service.SelectedPrinter,
-                ReviewImageQuality = _service.ReviewImageQuality
+                ReviewImageQuality = _service.ReviewImageQuality,
+                BlinkingEnabled = _service.BlinkingEnabled
             };
         }
 
@@ -45,6 +46,7 @@ namespace PhotoBooth.Server.Controllers
             _service.SelectedCamera = settings.SelectedCamera;
             _service.SelectedPrinter = settings.SelectedPrinter;
             _service.ReviewImageQuality = settings.ReviewImageQuality;
+            _service.BlinkingEnabled = settings.BlinkingEnabled;
         }
 
         [HttpGet]

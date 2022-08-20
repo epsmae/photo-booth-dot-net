@@ -9,6 +9,12 @@ namespace PhotoBooth.Camera
     {
         public Task<CommandLineResult> Capture(string selectedCamera, string fileName)
         {
+            string directory = Path.GetDirectoryName(fileName);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             File.Copy("SampleImage.jpg", fileName);
 
             return Task.FromResult(CreateSuccessResult());

@@ -95,18 +95,18 @@ namespace PhotoBooth.Server.Controllers
         }
 
         [HttpGet]
-        [ActionName(nameof(CaptureLayout))]
-        public CaptureLayouts CaptureLayout()
+        [ActionName(nameof(CaptureState))]
+        public CaptureState CaptureState()
         {
-            return _workflowController.ActiveCaptureLayout;
-        }
-
-
-        [HttpGet]
-        [ActionName(nameof(State))]
-        public CaptureProcessState State()
-        {
-            return _workflowController.State;
+            return new CaptureState
+            {
+                ProcessState = _workflowController.State,
+                RequiredImageCount = _workflowController.RequiredImageCount,
+                CaptureLayout = _workflowController.ActiveCaptureLayout,
+                CurrentImageIndex = _workflowController.CurrentImageIndex,
+                PrinterQueueCount = _workflowController.PrinterQueueCount,
+                PrinterName = _workflowController.PrinterName
+            };
         }
 
         [HttpGet]

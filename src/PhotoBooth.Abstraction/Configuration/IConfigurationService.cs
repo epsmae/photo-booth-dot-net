@@ -9,6 +9,7 @@ namespace PhotoBooth.Abstraction.Configuration
         int ReviewImageQuality { get; set; }
         string SelectedPrinter { get; set; }
         string SelectedCamera { get; set; }
+        bool BlinkingEnabled { get; set; }
         void Register<T>(string key, T defaultValue);
     }
 }

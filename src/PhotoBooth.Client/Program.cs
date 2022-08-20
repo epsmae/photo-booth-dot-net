@@ -13,6 +13,7 @@ using Blazorise.Icons.Material;
 using Blazorise.Material;
 using Microsoft.JSInterop;
 using MudBlazor.Services;
+using PhotoBooth.Client.Extensions;
 
 namespace PhotoBooth.Client
 {
@@ -35,34 +36,12 @@ namespace PhotoBooth.Client
             builder.Services.AddMudServices();
 
             builder.Services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
-            //builder.Services.Configure<Request>(options =>
-            //{
-            //    // Define the list of cultures your app will support
-            //    var supportedCultures = new List<CultureInfo>()
-            //    {
-            //        new CultureInfo("en-US"),
-            //        new CultureInfo("de")
-            //    };
-
-
             
-
             WebAssemblyHost host = builder.Build();
-
+            
             ILogger<Program> logger = host.Services.GetService<ILogger<Program>>();
-
             logger.LogInformation("Starting....");
-            IJSRuntime jsInterop = host.Services.GetRequiredService<IJSRuntime>();
-            string language = await jsInterop.InvokeAsync<string>("getLanguage");
-
-            logger.LogInformation($"Language: {language}");
-
-            if (!string.IsNullOrEmpty(language))
-            {
-                CultureInfo culture = new CultureInfo(language);
-                CultureInfo.DefaultThreadCurrentCulture = culture;
-                CultureInfo.DefaultThreadCurrentUICulture = culture;
-            }
+            await host.SetDefaultCulture(new List<string> {"de", "en"}, "en");
 
             await host.RunAsync();
         }

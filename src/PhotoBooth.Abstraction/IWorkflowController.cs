@@ -79,6 +79,26 @@ namespace PhotoBooth.Abstraction
         }
 
         /// <summary>
+        /// Current capture index, may be used if a layout with more than one image is used
+        /// </summary>
+        int CurrentImageIndex { get; }
+
+        /// <summary>
+        /// Required image count for the current layout
+        /// </summary>
+        int RequiredImageCount { get; }
+
+        /// <summary>
+        /// Active printer name
+        /// </summary>
+        string PrinterName { get; }
+
+        /// <summary>
+        /// Active printer queue count
+        /// </summary>
+        int PrinterQueueCount { get; }
+
+        /// <summary>
         /// Trigger a capture command
         /// </summary>
         /// <returns></returns>

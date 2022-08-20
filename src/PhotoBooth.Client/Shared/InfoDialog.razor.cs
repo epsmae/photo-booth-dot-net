@@ -31,6 +31,12 @@ namespace PhotoBooth.Client.Shared
             StateHasChanged();
         }
 
+        public void Hide()
+        {
+            ShowConfirmation = false;
+            StateHasChanged();
+        }
+
         [Parameter]
         public EventCallback<bool> ConfirmationChanged { get; set; }
 

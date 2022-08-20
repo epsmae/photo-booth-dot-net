@@ -66,7 +66,6 @@ namespace PhotoBooth.Camera
             LogResult(result);
             EvaluateResult(result);
 
-
             string[] lines =
                 result.StandardOutput.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
 
@@ -89,7 +88,6 @@ namespace PhotoBooth.Camera
             
             return cameras;
         }
-
 
         public async Task<StorageInfo> FetchStorageInfo()
         {
@@ -118,12 +116,22 @@ namespace PhotoBooth.Camera
 
         private void EvaluateResult(CommandLineResult result)
         {
+            if (ContainsError(result, "Could not find file"))
+            {
+                throw new CameraFileNotFoundException("Could not find image file");
+            }
+
+            if (ContainsError(result, "PTP Store Not Available"))
+            {
+                throw new PtpStoreException();
+            }
+
             if (ContainsError(result, "Out of Focus"))
             {
                 throw new CameraOutOfFocusException("Camera Out of Focus");
             }
 
-            if (ContainsError(result, "no camera found"))
+            if (ContainsError(result, "no camera found") || ContainsError(result, "Could not detect any camera"))
             {
                 throw new CameraNotAvailableException("No camera found");
             }
@@ -133,18 +141,16 @@ namespace PhotoBooth.Camera
                 throw new CameraClaimException("Failed to claim camera");
             }
 
-            if (result.ExitCode != 0)
+            if (result.ExitCode != 0 || !string.IsNullOrEmpty(result.StandardError))
             {
                 throw new CameraException($"{result.StandardOutput}{result.StandardError}");
             }
         }
 
-
         private bool ContainsError(CommandLineResult result, string errorMessage)
         {
             return result.StandardOutput.ToLower().Contains(errorMessage.ToLower()) ||
                    result.StandardError.ToLower().Contains(errorMessage.ToLower());
-
         }
     }
 }

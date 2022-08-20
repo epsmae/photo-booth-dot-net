@@ -44,11 +44,16 @@
     <script>
         const CultureFieldName = 'culture';
 
-        function getLanguage() {
+        function getBrowserCulture() {
+            return (navigator.languages && navigator.languages.length) ? navigator.languages[0] : 
+                navigator.userLanguage || navigator.language || navigator.browserLanguage;
+        }
+
+        function getCulture() {
             return window.localStorage[CultureFieldName];
         }
 
-        function setLanguage(value) {
+        function setCulture(value) {
             window.localStorage[CultureFieldName] = value;
         }
 
@@ -59,7 +64,6 @@
         window.setUrlImage = async (imageElementId) => {
             document.getElementById(imageElementId).src = "https://avatars.githubusercontent.com/u/9141961";
         }
-
 
         window.setStreamImage = async (imageElementId, imageStream) => {
             const arrayBuffer = await imageStream.arrayBuffer();

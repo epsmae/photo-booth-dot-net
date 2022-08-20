@@ -1,6 +1,7 @@
 using Moq;
 using PhotoBooth.Abstraction;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace PhotoBooth.Service.Test
@@ -23,8 +24,10 @@ namespace PhotoBooth.Service.Test
                 throw new Exception("Mock Camera Exception");
             }
 
+            string fileName = Path.Combine(directory, $"img_{DateTime.Now:dd-MM-yyyy_HH_mm_ss_fff}.jpg");
+
             await Task.Delay(100);
-            return new CaptureResult();
+            return new CaptureResult() {FileName = "SampleImage.jpg" };
         }
 
         internal ICameraService Object

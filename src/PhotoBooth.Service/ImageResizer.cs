@@ -34,5 +34,13 @@ namespace PhotoBooth.Service
                 };
             }
         }
+
+        public ImageDimensions LoadImageInfo(string imageFilePath)
+        {
+            using (FileStream fileStream = File.OpenRead(imageFilePath))
+            {
+                return LoadImageInfo(fileStream);
+            }
+        }
     }
 }

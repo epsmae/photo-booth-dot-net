@@ -2,7 +2,7 @@
     padding: 0px;
     background-color: white;
     margin: 0px;
-    height: 400px;
+    height: 200px;
     display: flex;
     justify-content: center;
 }
@@ -12,7 +12,6 @@
     justify-content: space-between;
 }
 
-
 .spinner {
     border: 16px solid silver;
     border-top: 16px solid #1b6ec2;
@@ -21,6 +20,86 @@
     height: 80px;
     animation: spin 900ms linear infinite;
 }
+
+.round-button {
+    width: 200px;
+    height: 200px;
+}
+
+.round-button-small {
+    width: 140px;
+    height: 140px;
+    margin: 10px;
+}
+
+.round-button-mini {
+    width: 100px;
+    height: 100px;
+    margin: 10px auto;
+}
+
+.round-button-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid #cfdcec;
+    overflow: hidden;
+    background: #33691E;
+    box-shadow: 0 0 1px gray;
+}
+
+.round-button-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    color: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 1rem;
+}
+
+.round-button-circle:hover {
+    background: #689f38;
+}
+
+
+.content {
+    display: flex; /* establish flex container */
+    width: 100%;
+    height: 100%;
+/*    background: green;*/
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    /*justify-content: center;*/ /* align items vertically, in this case */
+    /*align-items: end;*/ /* align items horizontally, in this case */
+    /*    align-self: flex-start;*/
+}
+
+
+.left-center {
+    display: flex; /* establish flex container */
+    /*justify-content: center;*/ /* align items vertically, in this case */
+    flex-grow: 3; /* align items horizontally, in this case */
+/*    background: red;*/
+    align-items: center;
+    justify-content: center;
+}
+
+.right-center {
+    display: flex; /* establish flex container */
+    flex-grow: 1;
+    /*justify-content: center;*/ /* align items vertically, in this case */
+    justify-content: center;
+    align-items: center;
+    /*align-items: end;*/ /* align items horizontally, in this case */
+    flex-direction: column;
+}
+
 
 @keyframes spin {
     0% {

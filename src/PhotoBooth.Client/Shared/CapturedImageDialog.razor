@@ -25,16 +25,14 @@
                 </div>
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-secondary"
-                            @onclick="() => ClearImages()">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-2" OnClick="() => ClearImages()">
                         @localizer["captured_image_dialog.clear_images"]
-                    </button>
+                    </MudButton>
 
 
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"
-                            @onclick="() => OnCloseDialog()">
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2" OnClick="() => OnCloseDialog()">
                         @localizer["captured_image_dialog.ok"]
-                    </button>
+                    </MudButton>
                 </div>
             </div>
         </div>

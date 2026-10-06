@@ -25,16 +25,14 @@
                 </div>
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-secondary"
-                            @onclick="() => ClearPrinterQueue()">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-2" OnClick="() => ClearPrinterQueue()">
                         @localizer["printer_queue_dialog.clear_queue"]
-                    </button>
+                    </MudButton>
 
 
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"
-                            @onclick="() => OnCloseDialog()">
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2" OnClick="() => OnCloseDialog()">
                         @localizer["printer_queue_dialog.ok"]
-                    </button>
+                    </MudButton>
                 </div>
             </div>
         </div>

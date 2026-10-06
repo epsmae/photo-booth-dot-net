@@ -8,9 +8,6 @@ using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Blazorise;
-using Blazorise.Icons.Material;
-using Blazorise.Material;
 using Microsoft.JSInterop;
 using MudBlazor.Services;
 using PhotoBooth.Client.Extensions;
@@ -25,13 +22,6 @@ namespace PhotoBooth.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-            builder.Services.AddBlazorise(options =>
-            {
-                //options.ChangeTextOnKeyPress = true;
-            })
-            .AddMaterialProviders()
-            .AddMaterialIcons();
 
             builder.Services.AddMudServices();
 

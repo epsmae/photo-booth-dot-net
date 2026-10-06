@@ -8,23 +8,16 @@
     <div style="width: 100%; display: flex; flex-direction: column;">
 
         <div Class="header_container" style="width: 100%;">
-            <Blazorise.Button class="btn btn-secondary" @onclick="GoToPreviousStep" Disabled="@IsPreviousDisabled">
-                <Icon Name="IconName.ArrowLeft" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
-            </Blazorise.Button>
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Variant="Variant.Filled" Color="Color.Secondary" OnClick="GoToPreviousStep" Disabled="@IsPreviousDisabled" />
             <p>@Header</p>
-            <Blazorise.Button class="btn btn-primary" @onclick="GoToNextStep" Disabled="@IsNextDisabled">
-                <Icon Name="IconName.ArrowRight" IconStyle="IconStyle.Light" TextColor="TextColor.White" />
-            </Blazorise.Button>
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowForward" Variant="Variant.Filled" Color="Color.Primary" OnClick="GoToNextStep" Disabled="@IsNextDisabled" />
         </div>
 
         <div>
 
-            <Alert Color="Blazorise.Color.Success" Visible="true">
-                <AlertMessage>@Title</AlertMessage>
-                <AlertDescription>
-                    @Description
-                </AlertDescription>
-            </Alert>
+            <MudAlert Severity="Severity.Success">
+                <b>@Title</b> @Description
+            </MudAlert>
         </div>
 
         <div Elevation="0" Style="width: 100%; display: flex; flex-grow: 1; justify-content: center; align-items: stretch;">

@@ -17,16 +17,14 @@
 
                     @if (ShowNegativeButton)
                     {
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            @onclick="() => OnConfirmationChange(false)">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-2" OnClick="() => OnConfirmationChange(false)">
                             @NegativeButtonText
-                    </button>
+                    </MudButton>
                     }
 
-                <button type="button" class="btn btn-danger"
-                        @onclick="() => OnConfirmationChange(true)">
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2" OnClick="() => OnConfirmationChange(true)">
                         @PositiveButtonText
-                </button>
+                </MudButton>
                 </div>
             </div>
         </div>

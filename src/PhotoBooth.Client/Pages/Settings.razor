@@ -8,81 +8,48 @@
     <PrinterQueueDialog @ref="PrinterDialog" />
     <CapturedImageDialog @ref="ImageDialog" />
     
-    <Fields Style="margin:20px; max-width: 400px; height: 100%;">
-        <Field ColumnSize="ColumnSize.IsFull">
+    <MudStack Spacing="4" Style="margin:20px; max-width: 400px;">
 
-            <FieldLabel>@localizer["settings.selected_language"]</FieldLabel>
+        <MudSelect T="string" Label=@localizer["settings.selected_language"] @bind-Value="SelectedLanguage">
+            @foreach (var langCode in langCodes)
+            {
+                <MudSelectItem T="string" Value="@langCode.IsoCode">@langCode.Name</MudSelectItem>
+            }
+        </MudSelect>
 
-            <select class="form-control" @bind="SelectedLanguage">
-                @foreach (var langCode in langCodes)
-                {
-                <option value="@langCode.IsoCode">@langCode.Name</option>
-                }
-            </select>
-        </Field>
+        <MudTextField T="string" Label=@localizer["settings.selected_camera"] Value=@SelectedCamera Disabled="true" />
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.selected_camera"]</FieldLabel>
-            <TextInput Disabled Value=@SelectedCamera/>
-        </Field>
+        <MudTextField T="string" Label=@localizer["settings.selected_printer"] Value=@SelectedPrinter Disabled="true" />
 
+        <div>
+            <MudText Typo="Typo.caption">@localizer["settings.printer_queue"]</MudText>
+            <p><MudLink Href=@PrintServerUrl Target="_blank">Cups-Print-Server</MudLink></p>
+        </div>
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.selected_printer"]</FieldLabel>
-            <TextInput Disabled Value=@SelectedPrinter/>
-        </Field>
-
-
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.printer_queue"]</FieldLabel> 
-            <p><a href=@PrintServerUrl target="_blank" class="ml-md-auto">Cups-Print-Server</a></p>
-        </Field>
-
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.captured_images"]</FieldLabel>
+        <div>
+            <MudText Typo="Typo.caption">@localizer["settings.captured_images"]</MudText>
             <p>
-                <button class="btn btn-secondary" @onclick="() => ShowAvailableImages()">@localizer["settings.show_captured_images"]</button>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="ShowAvailableImages">@localizer["settings.show_captured_images"]</MudButton>
             </p>
-        </Field>
+        </div>
 
+        <MudNumericField T="int" Label=@localizer["settings.review_count_down_step_count"] @bind-Value="ReviewCountDownStepCount" />
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.review_count_down_step_count"]</FieldLabel>
-            <NumericInput TValue="int" @bind-Value="@ReviewCountDownStepCount" />
-        </Field>
+        <MudNumericField T="int" Label=@localizer["settings.capture_count_down_step_count"] @bind-Value="CaptureCountDownStepCount" />
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.capture_count_down_step_count"]</FieldLabel>
-            <NumericInput TValue="int" @bind-Value="@CaptureCountDownStepCount" />
-        </Field>
+        <MudNumericField T="double" Label=@localizer["settings.step_duration_in_seconds"] @bind-Value="StepDownDurationInSeconds" />
 
+        <MudNumericField T="int" Label=@localizer["settings.review_image_width"] @bind-Value="ReviewImageWidth" />
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.step_duration_in_seconds"]</FieldLabel>
-            <NumericInput TValue="double" @bind-Value="@StepDownDurationInSeconds" />
-        </Field>
+        <MudNumericField T="int" Label=@localizer["settings.review_image_quality"] @bind-Value="ReviewImageQuality" />
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.review_image_width"]</FieldLabel>
-            <NumericInput TValue="int" @bind-Value="@ReviewImageWidth" />
-        </Field>
+        <MudCheckBox T="bool" Label=@localizer["settings.blinking_enabled"] @bind-Value="BlinkingEnabled" />
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.review_image_quality"]</FieldLabel>
-            <NumericInput TValue="int" @bind-Value="@ReviewImageQuality" />
-        </Field>
+        <div>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveSettings">@localizer["settings.save_settings"]</MudButton>
+        </div>
 
-        <Field ColumnSize="ColumnSize.IsFull">
-            <FieldLabel>@localizer["settings.blinking_enabled"]</FieldLabel>
-            <Check TValue="bool" @bind-Value="@BlinkingEnabled"  />
-        </Field>
-
-
-        <Field ColumnSize="ColumnSize.IsFull">
-            <button class="btn btn-primary" @onclick="() => SaveSettings()">@localizer["settings.save_settings"]</button>
-        </Field>
-
-    </Fields>
+    </MudStack>
 
 
 </div>

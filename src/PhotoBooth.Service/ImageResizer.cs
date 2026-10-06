@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using PhotoBooth.Abstraction;
 using SkiaSharp;
@@ -6,17 +7,18 @@ namespace PhotoBooth.Service
 {
     public class ImageResizer : IImageResizer
     {
+        private static readonly SKSamplingOptions ResizeSampling = new SKSamplingOptions(SKFilterMode.Linear);
 
         public byte[] ResizeImage(Stream fileStream, int expectedWidth, int expectedQuality)
         {
-            using (SKBitmap srcBitmap = SKBitmap.Decode(fileStream))
+            using (SKCodec codec = CreateCodec(fileStream))
             {
+                double scaleFactor = ((double) expectedWidth) / codec.Info.Width;
+                int newWidth = (int) (codec.Info.Width * scaleFactor);
+                int newHeight = (int) (codec.Info.Height * scaleFactor);
 
-                double scaleFactor = ((double) expectedWidth) / srcBitmap.Width;
-                int newWidth = (int) (srcBitmap.Width * scaleFactor);
-                int newHeight = (int) (srcBitmap.Height * scaleFactor);
-                using (SKBitmap resizedBitmap =
-                    srcBitmap.Resize(new SKSizeI(newWidth, newHeight), new SKSamplingOptions(SKFilterMode.Linear)))
+                using (SKBitmap srcBitmap = DecodeScaled(codec, newWidth, newHeight))
+                using (SKBitmap resizedBitmap = srcBitmap.Resize(new SKSizeI(newWidth, newHeight), ResizeSampling))
                 {
                     return resizedBitmap.Encode(SKEncodedImageFormat.Jpeg, expectedQuality).ToArray();
                 }
@@ -25,12 +27,13 @@ namespace PhotoBooth.Service
 
         public ImageDimensions LoadImageInfo(Stream fileStream)
         {
-            using (SKBitmap srcBitmap = SKBitmap.Decode(fileStream))
+            // only the image header is read, the pixels are not decoded
+            using (SKCodec codec = CreateCodec(fileStream))
             {
                 return new ImageDimensions
                 {
-                    Height = srcBitmap.Height,
-                    Width = srcBitmap.Width
+                    Height = codec.Info.Height,
+                    Width = codec.Info.Width
                 };
             }
         }
@@ -41,6 +44,55 @@ namespace PhotoBooth.Service
             {
                 return LoadImageInfo(fileStream);
             }
+        }
+
+        internal static SKCodec CreateCodec(Stream stream)
+        {
+            SKCodec codec = SKCodec.Create(stream, out SKCodecResult result);
+
+            if (codec == null)
+            {
+                throw new ArgumentException($"Unable to decode image, result={result}");
+            }
+
+            return codec;
+        }
+
+        /// <summary>
+        /// Decodes the image with the smallest size the codec supports (JPEG: 1/8 steps)
+        /// which is still at least <paramref name="minWidth"/> x <paramref name="minHeight"/>.
+        /// Decoding a downscaled JPEG is a lot faster and needs less memory than decoding
+        /// the full resolution image and resizing it afterwards.
+        /// </summary>
+        internal static SKBitmap DecodeScaled(SKCodec codec, int minWidth, int minHeight)
+        {
+            SKImageInfo info = codec.Info;
+
+            float scale = Math.Max((float) minWidth / info.Width, (float) minHeight / info.Height);
+
+            if (scale < 1)
+            {
+                SKSizeI scaledSize = codec.GetScaledDimensions(scale);
+
+                if (scaledSize.Width >= minWidth && scaledSize.Height >= minHeight)
+                {
+                    info = info.WithSize(scaledSize.Width, scaledSize.Height);
+                }
+            }
+
+            if (info.AlphaType == SKAlphaType.Unpremul)
+            {
+                info = info.WithAlphaType(SKAlphaType.Premul);
+            }
+
+            SKBitmap bitmap = SKBitmap.Decode(codec, info);
+
+            if (bitmap == null)
+            {
+                throw new ArgumentException("Unable to decode image");
+            }
+
+            return bitmap;
         }
     }
 }

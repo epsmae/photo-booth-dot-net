@@ -42,15 +42,15 @@ namespace PhotoBooth.Service
                 for (int i = 0; i < imageFilePaths.Count; i++)
                 {
                     using (Stream stream = _fileService.OpenFile(imageFilePaths[i]))
+                    using (SKCodec codec = ImageResizer.CreateCodec(stream))
                     {
-                        using (SKBitmap bitmap = SKBitmap.Decode(stream))
-                        {
-                            ImageOffsetInfo info = offsetCalculator.GetOffset(i, bitmap.Width, bitmap.Height);
+                        ImageOffsetInfo info = offsetCalculator.GetOffset(i, codec.Info.Width, codec.Info.Height);
 
-                            using (SKBitmap resizedBitmap = bitmap.Resize(new SKSizeI((int) info.Width, (int) info.Height), new SKSamplingOptions(SKFilterMode.Linear)))
-                            {
-                                canvas.DrawBitmap(resizedBitmap, SKRect.Create((int) info.LeftOffset, (int) info.TopOffset, (int) info.Width, (int) info.Height), new SKSamplingOptions(SKFilterMode.Linear));
-                            }
+                        // decode directly in (roughly) the target size and let the canvas do the final scaling
+                        using (SKBitmap bitmap = ImageResizer.DecodeScaled(codec, (int) info.Width, (int) info.Height))
+                        using (SKImage image = SKImage.FromBitmap(bitmap))
+                        {
+                            canvas.DrawImage(image, SKRect.Create((int) info.LeftOffset, (int) info.TopOffset, (int) info.Width, (int) info.Height), new SKSamplingOptions(SKFilterMode.Linear));
                         }
                     }
                 }
@@ -59,7 +59,7 @@ namespace PhotoBooth.Service
                 {
                     using (SKData encoded = finalImage.Encode(SKEncodedImageFormat.Jpeg, 80))
                     {
-                        using (Stream outFile = File.OpenWrite(destinationPath))
+                        using (Stream outFile = File.Create(destinationPath))
                         {
                             encoded.SaveTo(outFile);
                         }

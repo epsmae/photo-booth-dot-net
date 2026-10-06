@@ -53,9 +53,8 @@ $ ifconfig -a
 
 ### .Net sdk and runtime
 
-Download the latest [dotnet core 6 SDK and runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
-The links should look similar as below.
-I use a Rasperry 4 with the arm64 raspberry pi desktop. If you do not use the arm64 image you should select the arm32 binaries.
+Install the [.NET 10 SDK and runtime](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
+I use a Rasperry 4 with the arm64 raspberry pi desktop. The 32bit (arm32) image is also supported by .NET 10, but arm64 is recommended.
 
 You can check the architecture with following command
 
@@ -63,52 +62,36 @@ You can check the architecture with following command
 arch
 ```
 
-The ruslt is armv7a for 32bit and armv8a for 64bit.
+The result is armv7l for 32bit and aarch64 for 64bit.
+
+The easiest way is to use the official install script, it detects the architecture automatically.
+The SDK contains the ASP.NET Core runtime as well.
 
 ```
-$ mkdir tmp
-$ wget https://download.visualstudio.microsoft.com/download/pr/33389348-a7d7-41ae-850f-ec46d3ca9612/36bad11f948b05a4fa9faac93c35e574/dotnet-sdk-6.0.302-linux-arm64.tar.gz
-$ wget https://download.visualstudio.microsoft.com/download/pr/b79c5fa9-a08d-4534-9424-4bacfc3cdc3d/449179d6fe8cda05f52b7be0f6828eb0/aspnetcore-runtime-6.0.7-linux-arm64.tar.gz
-```
-
-Now we have to move it depending on the version the downled archive may have different names.
-
-```
-$ sudo mkdir /opt/dotnet
-$ sudo tar -xvf dotnet-sdk-6.0.302-linux-arm64.tar.gz -C /opt/dotnet/
-$ sudo tar -xvf aspnetcore-runtime-6.0.7-linux-arm64.tar.gz -C /opt/dotnet/
+$ wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+$ chmod +x dotnet-install.sh
+$ sudo ./dotnet-install.sh --channel 10.0 --install-dir /opt/dotnet
 $ sudo ln -s /opt/dotnet/dotnet /usr/local/bin
 ```
 
-Check if dotnet is correctly installed (output shows arm64).
+If you only want to run the application (no build on the raspberry) the ASP.NET Core runtime is sufficient:
+
+```
+$ sudo ./dotnet-install.sh --channel 10.0 --runtime aspnetcore --install-dir /opt/dotnet
+```
+
+Check if dotnet is correctly installed (output shows arm64 and a 10.0.x runtime).
 
 ```
 $ dotnet --info
-.NET SDK (reflecting any global.json):
- Version:   6.0.302
- Commit:    c857713418
-
-Runtime Environment:
- OS Name:     debian
- OS Version:  11
- OS Platform: Linux
- RID:         debian.11-arm64
- Base Path:   /opt/dotnet/sdk/6.0.302/
-
-global.json file:
-  Not found
-
+...
 Host:
-  Version:      6.0.7
+  Version:      10.0.x
   Architecture: arm64
-  Commit:       0ec02c8c96
-
-.NET SDKs installed:
-  6.0.302 [/opt/dotnet/sdk]
-
+...
 .NET runtimes installed:
-  Microsoft.AspNetCore.App 6.0.7 [/opt/dotnet/shared/Microsoft.AspNetCore.App]
-  Microsoft.NETCore.App 6.0.7 [/opt/dotnet/shared/Microsoft.NETCore.App]
+  Microsoft.AspNetCore.App 10.0.x [/opt/dotnet/shared/Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 10.0.x [/opt/dotnet/shared/Microsoft.NETCore.App]
 ```
 
 ### gphoto2

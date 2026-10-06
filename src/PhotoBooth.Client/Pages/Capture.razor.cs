@@ -420,19 +420,11 @@ namespace PhotoBooth.Client.Pages
             {
                 Logger.LogInformation("Loading image from server");
 
-                using (MemoryStream stream = await HttpClient.GetStreamAsync("api/Capture/ImageDataStream") as MemoryStream)
+                // since .NET 8 the browser http handler streams the response, so this is not a MemoryStream anymore
+                using (Stream stream = await HttpClient.GetStreamAsync("api/Capture/ImageDataStream"))
+                using (DotNetStreamReference dotnetImageStream = new DotNetStreamReference(stream))
                 {
-                    if (stream == null)
-                    {
-                        ResetReviewImage();
-                    }
-                    else
-                    {
-                        using (DotNetStreamReference dotnetImageStream = new DotNetStreamReference(stream))
-                        {
-                            _imageObjectBlobUrl = await JsRuntime.InvokeAsync<string>("setStreamImage", "capture_image", dotnetImageStream);
-                        }
-                    }
+                    _imageObjectBlobUrl = await JsRuntime.InvokeAsync<string>("setStreamImage", "capture_image", dotnetImageStream);
                 }
             }
 

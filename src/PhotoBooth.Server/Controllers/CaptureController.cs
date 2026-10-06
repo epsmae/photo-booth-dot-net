@@ -149,10 +149,17 @@ namespace PhotoBooth.Server.Controllers
 
         [HttpGet]
         [ActionName(nameof(ImageDataStream))]
-        public MemoryStream ImageDataStream()
+        public IActionResult ImageDataStream()
         {
-            _logger.LogInformation($"Getting image data length={_workflowController.ImageData?.Length}");
-            return new MemoryStream(_workflowController?.ImageData);
+            byte[] imageData = _workflowController.ImageData;
+            _logger.LogInformation($"Getting image data length={imageData?.Length}");
+
+            if (imageData == null)
+            {
+                return NotFound();
+            }
+
+            return File(imageData, "image/jpeg");
         }
     }
 }

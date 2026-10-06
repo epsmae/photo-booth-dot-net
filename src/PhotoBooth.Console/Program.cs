@@ -47,15 +47,15 @@ namespace PhotoBooth.Console
 
             foreach (Command command in printerCommandHandler.BuildPrintCommand())
             {
-                rootCommand.AddCommand(command);
+                rootCommand.Subcommands.Add(command);
             }
 
             foreach (Command command in cameraCommandHandler.BuildPrintCommand())
             {
-                rootCommand.AddCommand(command);
+                rootCommand.Subcommands.Add(command);
             }
 
-            int resultCode = await rootCommand.InvokeAsync(args);
+            int resultCode = await rootCommand.Parse(args).InvokeAsync();
             
             logger.LogInformation($"Closing application with return code={resultCode}...");
 

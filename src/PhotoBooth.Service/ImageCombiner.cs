@@ -47,9 +47,9 @@ namespace PhotoBooth.Service
                         {
                             ImageOffsetInfo info = offsetCalculator.GetOffset(i, bitmap.Width, bitmap.Height);
 
-                            using (SKBitmap resizedBitmap = bitmap.Resize(new SKSizeI((int) info.Width, (int) info.Height), SKFilterQuality.Low))
+                            using (SKBitmap resizedBitmap = bitmap.Resize(new SKSizeI((int) info.Width, (int) info.Height), new SKSamplingOptions(SKFilterMode.Linear)))
                             {
-                                canvas.DrawBitmap(resizedBitmap, SKRect.Create((int) info.LeftOffset, (int) info.TopOffset, (int) info.Width, (int) info.Height));
+                                canvas.DrawBitmap(resizedBitmap, SKRect.Create((int) info.LeftOffset, (int) info.TopOffset, (int) info.Width, (int) info.Height), new SKSamplingOptions(SKFilterMode.Linear));
                             }
                         }
                     }

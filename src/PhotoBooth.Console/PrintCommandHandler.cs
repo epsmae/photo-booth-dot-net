@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
@@ -24,25 +23,29 @@ namespace PhotoBooth.Console
         {
             IList<Command> items = new List<Command>();
 
+            Option<string> printerOption = new Option<string>("--printer") {Required = true, Description = "Printer name"};
+            Option<string> fileOption = new Option<string>("--file") {Required = true, Description = "File to print"};
+
             Command printCommand = new Command("print")
             {
-                new Option<string>("--printer") {IsRequired = true, Description = "Printer name"},
-                new Option<string>("--file") {IsRequired = true, Description = "File to print"}
+                printerOption,
+                fileOption
             };
 
-            printCommand.Handler = CommandHandler.Create(async (string printer, string file) => await Print(printer, file));
+            printCommand.SetAction(async (parseResult, cancellationToken) =>
+                await Print(parseResult.GetValue(printerOption), parseResult.GetValue(fileOption)));
             items.Add(printCommand);
 
             Command listPrinter = new Command("listPrinter");
-            listPrinter.Handler = CommandHandler.Create(async () => await ListPrinter());
+            listPrinter.SetAction(async (parseResult, cancellationToken) => await ListPrinter());
             items.Add(listPrinter);
 
             Command clearQueue = new Command("clearQueue");
-            clearQueue.Handler = CommandHandler.Create(async() => await ClearQueue());
+            clearQueue.SetAction(async (parseResult, cancellationToken) => await ClearQueue());
             items.Add(clearQueue);
 
             Command listQueue = new Command("listQueue");
-            listQueue.Handler = CommandHandler.Create(async () => await ListQueue());
+            listQueue.SetAction(async (parseResult, cancellationToken) => await ListQueue());
             items.Add(listQueue);
 
             return items;

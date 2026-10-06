@@ -17,17 +17,18 @@ namespace PhotoBooth.Gpio
 
         private const int DebounceTime = 200;
 
-        private const int PinRelay1 = 37;
-        private const int PinRelay2 = 38;
-        private const int PinRelay3 = 40;
+        // Logical (BCM) GPIO numbers, physical board pin in comment
+        private const int PinRelay1 = 26; // board pin 37
+        private const int PinRelay2 = 20; // board pin 38
+        private const int PinRelay3 = 21; // board pin 40
 
-        private const int PinButton1 = 24;
-        private const int PinButton2 = 26;
+        private const int PinButton1 = 8; // board pin 24
+        private const int PinButton2 = 7; // board pin 26
 
         public GpioController(ILogger<GpioController> logger)
         {
             _logger = logger;
-            System.Device.Gpio.GpioController gpioController = new System.Device.Gpio.GpioController(PinNumberingScheme.Board);
+            System.Device.Gpio.GpioController gpioController = new System.Device.Gpio.GpioController();
 
             gpioController.OpenPin(PinRelay1, PinMode.Output);
             gpioController.OpenPin(PinRelay2, PinMode.Output);

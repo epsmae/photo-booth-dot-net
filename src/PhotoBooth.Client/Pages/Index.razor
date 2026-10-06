@@ -11,24 +11,17 @@
 
             <h3>@localizer["home.title.welcome"]</h3>
 
-            <Alert Color="Blazorise.Color.Warning" Visible="true">
-                <AlertMessage></AlertMessage>
-                <AlertDescription>
-                    @localizer["home.setup_intro"]
-                </AlertDescription>
-            </Alert>
+            <MudAlert Severity="Severity.Warning">
+                @localizer["home.setup_intro"]
+            </MudAlert>
 
             <div style="display: flex;">
 
-                <Blazorise.Button class="btn btn-primary" style="margin: 8px 16px;" Clicked=@StartSetup>setup</Blazorise.Button>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin: 8px 16px;" OnClick="@StartSetup">setup</MudButton>
 
-                <NavLink class="nav-link" href="settings">
-                    <Blazorise.Button class="btn btn-secondary">@localizer["home.check_settings"]</Blazorise.Button>
-                </NavLink>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" Style="margin: 8px 16px;" Href="settings">@localizer["home.check_settings"]</MudButton>
 
-                <NavLink class="nav-link" href="capture">
-                    <Blazorise.Button class="btn btn-primary">@localizer["home.lets_go"]</Blazorise.Button>
-                </NavLink>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin: 8px 16px;" Href="capture">@localizer["home.lets_go"]</MudButton>
             </div>
 
         </div>
@@ -46,27 +39,25 @@
                         <StepItem Header=@localizer["home.step_devices.header"] Title=@localizer["home.step_devices.title"] Description=@localizer["home.step_devices.description"] IsPreviousDisabled=@IsPreviousDisabled IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
                             <div style="height: 250px;">
-                                <Table Striped="true" Narrow="true" Bordered="true" style="height: 250px;">
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHeaderCell>
+                                <MudSimpleTable Dense="true" Striped="true" Bordered="true" FixedHeader="true" Style="height: 250px;">
+                                    <thead>
+                                        <tr>
+                                            <th>
                                                 @localizer["home.step_devices.available_devices"]
 
-                                                <Blazorise.Button @onclick="UpdateUsbDevice" Style="background-color: white; margin: 0px;">
-                                                    <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                                                </Blazorise.Button>
-                                            </TableHeaderCell>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody Style="height: 100%; overflow-y: scroll; display: block;">
+                                                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" OnClick="UpdateUsbDevice" />
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         @foreach (var device in UsbDevices)
                                         {
-                                            <TableRow style="width: 100%">
-                                                <TableRowCell>@device</TableRowCell>
-                                            </TableRow>
+                                            <tr>
+                                                <td>@device</td>
+                                            </tr>
                                         }
-                                    </TableBody>
-                                </Table>
+                                    </tbody>
+                                </MudSimpleTable>
                             </div>
                         </StepItem>
 
@@ -76,16 +67,16 @@
                     <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
                         <StepItem Header=@localizer["home.step_camera.header"] Title=@localizer["home.step_camera.title"] Description=@localizer["home.step_camera.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                            <select class="form-control" @bind="SelectedCamera" style="max-width: 300px; margin:10px">
-                                @foreach (var langCode in Cameras)
-                                {
-                                    <option value="@langCode.CameraModel">@langCode.CameraModel</option>
-                                }
-                            </select>
+                            <div class="d-flex align-center" style="align-self: flex-start;">
+                                <MudSelect T="string" @bind-Value="SelectedCamera" Style="width: 300px; margin:10px">
+                                    @foreach (var camera in Cameras)
+                                    {
+                                        <MudSelectItem T="string" Value="@camera.CameraModel">@camera.CameraModel</MudSelectItem>
+                                    }
+                                </MudSelect>
 
-                            <Blazorise.Button @onclick="ListCameras" Style="background-color: none; margin:10px">
-                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                            </Blazorise.Button>
+                                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Style="margin:10px" OnClick="ListCameras" />
+                            </div>
 
                         </StepItem>
                     </MudPaper>
@@ -94,16 +85,16 @@
                     <MudPaper Elevation="3" class="d-flex" style="height: 100%; width: 100%; padding:5px">
                         <StepItem Header=@localizer["home.step_printer.header"] Title=@localizer["home.step_printer.title"] Description=@localizer["home.step_printer.description"] IsNextDisabled=@IsNextDisabled NextAction=@GoToNextStep PreviousAction=@GoToPreviousStep>
 
-                            <select class="form-control" @bind="SelectedPrinter" style="max-width: 300px; margin:10px">
-                                @foreach (var langCode in Printers)
-                                {
-                                    <option value="@langCode.Name">@langCode.Name</option>
-                                }
-                            </select>
-                            
-                            <Blazorise.Button @onclick="ListPrinters" Style="background-color: none; margin:10px">
-                                <Icon Name="@("refresh")" IconStyle="IconStyle.Light" TextColor="TextColor.Black50" />
-                            </Blazorise.Button>
+                            <div class="d-flex align-center" style="align-self: flex-start;">
+                                <MudSelect T="string" @bind-Value="SelectedPrinter" Style="width: 300px; margin:10px">
+                                    @foreach (var printer in Printers)
+                                    {
+                                        <MudSelectItem T="string" Value="@printer.Name">@printer.Name</MudSelectItem>
+                                    }
+                                </MudSelect>
+
+                                <MudIconButton Icon="@Icons.Material.Filled.Refresh" Style="margin:10px" OnClick="ListPrinters" />
+                            </div>
 
                         </StepItem>
                     </MudPaper>
@@ -195,16 +186,16 @@
                 {
                     @if (i < MudSelectedIndex)
                     {
-                        <MudTimelineItem Color=MudBlazor.Color.Tertiary Size="Size.Small" Variant="Variant.Filled" Elevation="1" HideDot="false">
+                        <MudTimelineItem Color=Color.Tertiary Size="Size.Small" Variant="Variant.Filled" Elevation="1" HideDot="false">
 
                             <ItemDot>
-                                <MudIcon Size="Size.Small" Icon="@Icons.Outlined.Check" Color="@MudBlazor.Color.Dark" />
+                                <MudIcon Size="Size.Small" Icon="@Icons.Material.Outlined.Check" Color="@Color.Dark" />
                             </ItemDot>
                         </MudTimelineItem>
                     }
                     else
                     {
-                        <MudTimelineItem Color="MudBlazor.Color.Default" Size="Size.Small" Variant="Variant.Filled" Elevation="1" HideDot="false" />
+                        <MudTimelineItem Color="Color.Default" Size="Size.Small" Variant="Variant.Filled" Elevation="1" HideDot="false" />
                     }
                 }
 

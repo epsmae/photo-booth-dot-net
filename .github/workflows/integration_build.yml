@@ -58,7 +58,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: | 
           dotnet tool install --global dotnet-sonarscanner
-          dotnet-sonarscanner begin /k:"epsmae_photo-booth-dot-net" /o:"techprojects" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /s:$GITHUB_WORKSPACE/.github/SonarQube.Analysis.xml
+          dotnet-sonarscanner begin /k:"epsmae_photo-booth-dot-net" /o:"techprojects" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /s:$GITHUB_WORKSPACE/.github/SonarQube.Analysis.xml
           
       - name: dotnet Build
         run: dotnet build -c Debug -p:Version=${{ env.GitVersion_AssemblySemVer }} --no-restore ./src/PhotoBooth.sln
@@ -71,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: | 
-          dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Publish application
         run: dotnet publish ./src/PhotoBooth.Server/PhotoBooth.Server.csproj --configuration Release --framework net10.0 -p:Version=${{ env.GitVersion_AssemblySemVer }} -o publish

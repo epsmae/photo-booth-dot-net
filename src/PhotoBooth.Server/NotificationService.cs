@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using PhotoBooth.Abstraction;
+using PhotoBooth.Abstraction.LiveView;
 
 namespace PhotoBooth.Server
 {
@@ -8,11 +9,14 @@ namespace PhotoBooth.Server
     {
         private readonly IWorkflowController _workflowController;
         private readonly CaptureHub _hub;
+        private readonly ILiveViewService _liveViewService;
 
-        public NotificationService(IWorkflowController workflowController, CaptureHub hub)
+        public NotificationService(IWorkflowController workflowController, CaptureHub hub, ILiveViewService liveViewService)
         {
             _workflowController = workflowController;
             _hub = hub;
+            _liveViewService = liveViewService;
+            _liveViewService.StatusChanged += OnLiveViewStatusChanged;
             _workflowController.StateChanged += OnStateChanged;
             _workflowController.CountDownChanged += OnCountDownStepChanged;
             _workflowController.ReviewCountDownChanged += OnReviewCountDownChanged;
@@ -26,6 +30,18 @@ namespace PhotoBooth.Server
         private async void OnCountDownStepChanged(object? sender, EventArgs e)
         {
             await _hub.SendCountDownStepChanged(_workflowController.CurrentCountDownStep);
+        }
+
+        private async void OnLiveViewStatusChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                await _hub.SendLiveViewStatusChanged(_liveViewService.GetStatus());
+            }
+            catch
+            {
+                // ignore, clients poll the status as fallback
+            }
         }
 
         private async void OnStateChanged(object? sender, EventArgs e)

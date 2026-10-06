@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
+using PhotoBooth.Abstraction.LiveView;
 
 namespace PhotoBooth.Server
 {
@@ -14,9 +15,11 @@ namespace PhotoBooth.Server
         private readonly IPrinterService _printerService;
         private readonly IFileService _fileService;
         private readonly IImageResizer _imageResizer;
+        private readonly ILiveViewService _liveViewService;
 
-        public CaptureHub(ILogger<CaptureHub> logger, ICameraService cameraService, IPrinterService printerService, IFileService fileService, IImageResizer imageResizer)
+        public CaptureHub(ILogger<CaptureHub> logger, ICameraService cameraService, IPrinterService printerService, IFileService fileService, IImageResizer imageResizer, ILiveViewService liveViewService)
         {
+            _liveViewService = liveViewService;
             _logger = logger;
             _cameraService = cameraService;
             _printerService = printerService;
@@ -54,14 +57,26 @@ namespace PhotoBooth.Server
             }
         }
 
+        public async Task SendLiveViewStatusChanged(LiveViewStatus status)
+        {
+            if (Clients != null && Clients.All != null)
+            {
+                await Clients.All.SendAsync("ReceiveLiveViewStatusChanged", status);
+            }
+        }
+
         public async Task<string> CaptureImage(string camera)
         {
+            await _liveViewService.StopAsync();
             CaptureResult result = await _cameraService.CaptureImage(_fileService.PhotoDirectory, camera);
             return result.FileName;
         }
 
         public async Task<PreviewCaptureResult> CaptureImageData(string camera)
         {
+            // the camera can only be used by one gphoto2 process
+            await _liveViewService.StopAsync();
+
             try
             {
                 await _cameraService.Initialize();

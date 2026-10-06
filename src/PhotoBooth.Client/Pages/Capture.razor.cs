@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Exceptions;
+using PhotoBooth.Abstraction.LiveView;
 using PhotoBooth.Client.Models;
 
 namespace PhotoBooth.Client.Pages
@@ -22,6 +23,7 @@ namespace PhotoBooth.Client.Pages
         private const string ServerNotReachableError = "Server not reachable!";
         private string _imageObjectBlobUrl;
         private IJSInProcessRuntime _jsInProcessRuntime;
+        private int _liveViewSession;
 
         [Inject]
         protected HttpClient HttpClient { get; set; }
@@ -117,6 +119,34 @@ namespace PhotoBooth.Client.Pages
         
         protected InfoDialog InfoDialog { get; set; }
 
+        protected LiveViewStatus LiveViewStatus { get; set; }
+
+        protected string LiveViewUrl
+        {
+            get
+            {
+                // a new url forces the browser to reconnect after the live view was restarted
+                return $"api/LiveView/Stream?session={_liveViewSession}";
+            }
+        }
+
+        protected bool IsLiveViewVisible
+        {
+            get
+            {
+                return LiveViewStatus != null && LiveViewStatus.Enabled && LiveViewStatus.Running &&
+                       (State == CaptureProcessState.Ready || State == CaptureProcessState.CountDown);
+            }
+        }
+
+        protected bool IsLiveViewStartVisible
+        {
+            get
+            {
+                return LiveViewStatus != null && LiveViewStatus.Enabled && !LiveViewStatus.Running && State == CaptureProcessState.Ready;
+            }
+        }
+
         protected string LastError
         {
             get
@@ -196,6 +226,12 @@ namespace PhotoBooth.Client.Pages
                 StateHasChanged();
             });
 
+            _hubConnection.On<LiveViewStatus>("ReceiveLiveViewStatusChanged", (status) =>
+            {
+                HandleLiveViewStatus(status);
+                StateHasChanged();
+            });
+
             _hubConnection.On<int>("ReceiveCountDownStepChanged", (step) =>
             {
                 CountDownStep = step;
@@ -224,6 +260,7 @@ namespace PhotoBooth.Client.Pages
                 }
 
                 await UpdateServerState();
+                await UpdateLiveViewStatus();
             }
             catch (Exception ex)
             {
@@ -340,6 +377,41 @@ namespace PhotoBooth.Client.Pages
             {
                 Logger.LogError(ex, "Failed to print image");
             }
+        }
+
+        protected async Task StartLiveView()
+        {
+            try
+            {
+                await HttpClient.PostAsync("api/LiveView/Start", null);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to start live view");
+            }
+        }
+
+        private async Task UpdateLiveViewStatus()
+        {
+            try
+            {
+                HandleLiveViewStatus(await HttpClient.GetFromJsonAsync<LiveViewStatus>("api/LiveView/Status"));
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to fetch live view status");
+            }
+        }
+
+        private void HandleLiveViewStatus(LiveViewStatus status)
+        {
+            if (status != null && status.Running && (LiveViewStatus == null || !LiveViewStatus.Running))
+            {
+                _liveViewSession++;
+            }
+
+            LiveViewStatus = status;
         }
 
         private async Task UpdateErrorState()

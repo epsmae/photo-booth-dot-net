@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
+using PhotoBooth.Service.LiveView;
 
 namespace PhotoBooth.Service.Test
 {
@@ -35,7 +36,7 @@ namespace PhotoBooth.Service.Test
             ImageResizer imageResizer = new ImageResizer();
             ImageCombiner combiner = new ImageCombiner(fileService, imageResizer);
 
-            _controller = new WorkflowController(combiner, loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, imageResizer, fileService, configService);
+            _controller = new WorkflowController(combiner, loggerFactory.CreateLogger<WorkflowController>(), _cameraServiceMock.Object, _printerServiceMock.Object, imageResizer, fileService, configService, new NullLiveViewService());
             _controller.CountDownChanged += OnCountDownChanged;
             _controller.StateChanged += OnStateChanged;
 

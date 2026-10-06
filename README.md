@@ -62,7 +62,7 @@ Version 2.0
 
 Version 3.0
 
-- [ ] Preview
+- [ ] Preview / live view (proof of concept: [Live View](doc/LiveView.md))
 - [ ] Display capture images
 - [ ] Reprint captured images
 

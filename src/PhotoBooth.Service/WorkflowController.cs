@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Abstraction.Configuration;
 using PhotoBooth.Abstraction.Exceptions;
+using PhotoBooth.Abstraction.LiveView;
 using Stateless;
 using Stateless.Graph;
 
@@ -34,6 +35,7 @@ namespace PhotoBooth.Service
         private readonly IImageResizer _imageResizer;
         private readonly IFileService _fileService;
         private readonly IConfigurationService _configurationService;
+        private readonly ILiveViewService _liveViewService;
         private readonly Timer _countDownTimer;
         private readonly Timer _reviewTimer;
         private readonly StateMachine<CaptureStates, CaptureTriggers> _machine;
@@ -51,7 +53,7 @@ namespace PhotoBooth.Service
         private string _usedPrinter;
         private int _printerQueueCount;
 
-        public WorkflowController(IImageCombiner imageCombiner, ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService)
+        public WorkflowController(IImageCombiner imageCombiner, ILogger<WorkflowController> logger, ICameraService cameraService, IPrinterService printerService, IImageResizer imageResizer, IFileService fileService, IConfigurationService configurationService, ILiveViewService liveViewService)
         {
             _imageCombiner = imageCombiner;
             _logger = logger;
@@ -60,6 +62,7 @@ namespace PhotoBooth.Service
             _imageResizer = imageResizer;
             _fileService = fileService;
             _configurationService = configurationService;
+            _liveViewService = liveViewService;
             _capturedImagePaths = new List<string>();
 
             SetCaptureLayout(CaptureLayouts.SingleImage);
@@ -82,11 +85,13 @@ namespace PhotoBooth.Service
 
             _machine.Configure(CaptureStates.Ready)
                 .SubstateOf(CaptureStates.Processing)
+                .OnEntry(() => StartLiveView())
                 .Permit(CaptureTriggers.Capture, CaptureStates.CountDown);
 
             _machine.Configure(CaptureStates.CountDown)
                 .SubstateOf(CaptureStates.Processing)
                 .OnEntry(() => StartCountDownTimer())
+                .OnEntry(() => StartLiveView())
                 .Permit(CaptureTriggers.CountdownElapsed, CaptureStates.Capture);
 
             _machine.Configure(CaptureStates.Capture)
@@ -302,6 +307,34 @@ namespace PhotoBooth.Service
             });
         }
 
+        private void StartLiveView()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    // evaluated under the live view lock, a capture may have started in the meantime
+                    await _liveViewService.StartAsync(() => _state == CaptureStates.Ready || _state == CaptureStates.CountDown);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to start live view");
+                }
+            });
+        }
+
+        private async Task StopLiveView()
+        {
+            try
+            {
+                await _liveViewService.StopAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to stop live view");
+            }
+        }
+
         private void StopReviewTimer()
         {
             _reviewTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -354,6 +387,9 @@ namespace PhotoBooth.Service
             {
                 try
                 {
+                    // the camera can only be used by one gphoto2 process, release it from the live view
+                    await StopLiveView();
+
                     string selectedCamera = _configurationService.SelectedCamera;
 
                     if (string.IsNullOrEmpty(selectedCamera) && !await TrySetDefaultCamera())

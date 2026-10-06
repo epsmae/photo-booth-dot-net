@@ -6,7 +6,19 @@
 @inject IStringLocalizer<Index> localizer
 
 
-<div class="capture_container">
+<div class="capture_container @(IsLiveViewVisible ? "liveview-active" : "")">
+
+    @if (IsLiveViewVisible)
+    {
+        <img class="liveview @(LiveViewStatus.Mirror ? "liveview-mirror" : "")" src="@LiveViewUrl" alt="" />
+    }
+
+    @if (IsLiveViewStartVisible)
+    {
+        <div class="liveview-start">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Videocam" OnClick="StartLiveView">@localizer["capture.liveview.start"]</MudButton>
+        </div>
+    }
 
     <InfoDialog @ref="InfoDialog" ConfirmationChanged="ConfirmDelete_Click"
                 Description=@LastError PositiveButtonText=@localizer["capture.error_dialog.ok"] Title=@localizer["capture.error_dialog.error"]>

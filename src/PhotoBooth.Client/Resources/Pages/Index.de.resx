@@ -168,6 +168,9 @@
   <data name="capture.skip" xml:space="preserve">
     <value>WEITER</value>
   </data>
+  <data name="capture.liveview.start" xml:space="preserve">
+    <value>Live-View starten</value>
+  </data>
   <data name="capture.start" xml:space="preserve">
     <value>START</value>
   </data>

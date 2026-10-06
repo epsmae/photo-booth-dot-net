@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""
+Minimal gphoto2 stand-in for developing/testing the live view without a camera.
+
+Supported:
+  --capture-movie[=N|=Ns] --stdout   writes JPEG frames (MJPEG) to stdout until SIGINT
+  --auto-detect                      lists a fake Nikon D7000
+  --capture-image-and-download --filename <file>
+  --set-config ...                   ignored
+
+Environment variables:
+  FAKE_GPHOTO2_FPS            frames per second (default 15)
+  FAKE_GPHOTO2_ERROR          if set, live view fails with this message on stderr (exit code 1),
+                              e.g. "Liveview cannot start: Exposure Program Mode is not P/A/S/M"
+  FAKE_GPHOTO2_IGNORE_SIGINT  if set, SIGINT is ignored (tests the forced kill)
+"""
+import os
+import signal
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+FRAME_FILE = os.path.join(HERE, "frame.jpg")
+
+stop = False
+
+
+def on_sigint(signum, frame):
+    global stop
+    stop = True
+
+
+def capture_movie(args):
+    if os.environ.get("FAKE_GPHOTO2_ERROR"):
+        sys.stderr.write("*** Error ***\n" + os.environ["FAKE_GPHOTO2_ERROR"] + "\n")
+        return 1
+
+    if os.environ.get("FAKE_GPHOTO2_IGNORE_SIGINT"):
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+    else:
+        signal.signal(signal.SIGINT, on_sigint)
+
+    limit_frames = None
+    limit_seconds = None
+    for a in args:
+        if a.startswith("--capture-movie="):
+            value = a.split("=", 1)[1]
+            if value.endswith("s"):
+                limit_seconds = float(value[:-1])
+            else:
+                limit_frames = int(value)
+
+    with open(FRAME_FILE, "rb") as f:
+        frame = f.read()
+
+    fps = float(os.environ.get("FAKE_GPHOTO2_FPS", "15"))
+    sys.stderr.write("Capturing preview frames as movie to 'stdout'. Press Ctrl-C to abort.\n")
+    sys.stderr.flush()
+
+    out = sys.stdout.buffer
+    start = time.monotonic()
+    count = 0
+    try:
+        while not stop:
+            out.write(frame)
+            out.flush()
+            count += 1
+            if limit_frames is not None and count >= limit_frames:
+                break
+            if limit_seconds is not None and time.monotonic() - start >= limit_seconds:
+                break
+            time.sleep(1.0 / fps)
+    except BrokenPipeError:
+        return 1
+
+    if stop:
+        sys.stderr.write("Ctrl-C pressed ... Exiting.\n")
+    sys.stderr.write("Movie capture finished (%d frames)\n" % count)
+    return 0
+
+
+def main(args):
+    if "--capture-movie" in args or any(a.startswith("--capture-movie=") for a in args):
+        return capture_movie(args)
+
+    if "--auto-detect" in args:
+        print("Model                          Port")
+        print("----------------------------------------------------------")
+        print("Nikon DSC D7000 (PTP mode)     usb:001,004")
+        return 0
+
+    if "--capture-image-and-download" in args:
+        target = args[args.index("--filename") + 1]
+        with open(FRAME_FILE, "rb") as src, open(target, "wb") as dst:
+            dst.write(src.read())
+        print("Saving file as " + target)
+        return 0
+
+    if "--set-config" in args:
+        return 0
+
+    sys.stderr.write("fake gphoto2: unsupported arguments: %s\n" % " ".join(args))
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

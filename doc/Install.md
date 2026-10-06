@@ -102,6 +102,8 @@ Install gphoto2
 $ sudo apt-get install gphoto2
 ```
 
+For the live view (camera preview) see [Live View](LiveView.md).
+
 ### cups printserver
 
 Depending on the version cups is already installed, lets make sure we can access it from remote. 

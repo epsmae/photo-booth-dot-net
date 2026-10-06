@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PhotoBooth.Abstraction;
+using PhotoBooth.Abstraction.LiveView;
+using PhotoBooth.Camera.LiveView;
+using PhotoBooth.Service.LiveView;
 using PhotoBooth.Camera;
 using PhotoBooth.Printer;
 using PhotoBooth.Service;
@@ -26,11 +29,16 @@ namespace PhotoBooth.Console
             services.AddSingleton<IPrinterAdapter, PrinterAdapterSimulator>();
             services.AddSingleton<ICameraAdapter, CameraAdapterSimulator>();
             services.AddSingleton<IUsbService, UsbServiceStub>();
+            services.AddSingleton<ILiveViewSource, SimulatedLiveViewSource>();
 #else
             services.AddSingleton<IPrinterAdapter, CupsPrinterAdapter>();
             services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
             services.AddSingleton<IUsbService, UsbService>();
+            services.AddSingleton<ILiveViewSource, GPhoto2LiveViewSource>();
 #endif
+            services.Configure<LiveViewOptions>(options => { });
+            services.AddSingleton<IImageResizer, ImageResizer>();
+            services.AddSingleton<LiveViewCommandHandler>();
             services.AddSingleton<PrintCommandHandler>();
             services.AddSingleton<CameraCommandHandler>();
 
@@ -51,6 +59,11 @@ namespace PhotoBooth.Console
             }
 
             foreach (Command command in cameraCommandHandler.BuildPrintCommand())
+            {
+                rootCommand.Subcommands.Add(command);
+            }
+
+            foreach (Command command in serviceProvider.GetService<LiveViewCommandHandler>().BuildCommands())
             {
                 rootCommand.Subcommands.Add(command);
             }

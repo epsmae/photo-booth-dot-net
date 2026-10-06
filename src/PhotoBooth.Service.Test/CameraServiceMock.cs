@@ -17,8 +17,12 @@ namespace PhotoBooth.Service.Test
             _mock.Setup(m => m.CaptureImage(It.IsAny<string>(),It.IsAny<string>())).Returns((string directory, string camera)=> Capture(directory, camera));
         }
 
+        internal Action OnCapture { get; set; }
+
         private async Task<CaptureResult> Capture(string directory, string camera)
         {
+            OnCapture?.Invoke();
+
             if (_throwCaptureException)
             {
                 throw new Exception("Mock Camera Exception");

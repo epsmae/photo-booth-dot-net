@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\tools\fake-gphoto2\**" LinkBase="FakeGPhoto2" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="SampleResponses\" />
   </ItemGroup>
 

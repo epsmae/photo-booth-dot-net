@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using PhotoBooth.Abstraction;
 using PhotoBooth.Camera;
 using System.Linq;
 using PhotoBooth.Abstraction.Configuration;
+using PhotoBooth.Abstraction.LiveView;
+using PhotoBooth.Camera.LiveView;
+using PhotoBooth.Service.LiveView;
 using PhotoBooth.Gpio;
 using PhotoBooth.Printer;
 using PhotoBooth.Service;
@@ -43,6 +47,9 @@ namespace PhotoBooth.Server
             services.AddSingleton<IGpioInterface, GpioController>();
             services.AddSingleton<IHardwareController, HardwareController>();
 #endif
+            services.Configure<LiveViewOptions>(Configuration.GetSection(LiveViewOptions.SectionName));
+            services.AddSingleton<ILiveViewSource>(CreateLiveViewSource);
+            services.AddSingleton<ILiveViewService, LiveViewService>();
             services.AddSingleton<IImageCombiner, ImageCombiner>();
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<ICameraService, CameraService>();
@@ -59,6 +66,28 @@ namespace PhotoBooth.Server
             services.AddSignalR();
             // the Blazor framework files are served pre-compressed, binary payloads (images) do not compress well
             services.AddResponseCompression();
+        }
+
+        private static ILiveViewSource CreateLiveViewSource(IServiceProvider serviceProvider)
+        {
+#if DEBUG
+            string source = LiveViewOptions.SourceSimulator;
+#else
+            string source = LiveViewOptions.SourceGPhoto2;
+#endif
+            LiveViewOptions options = serviceProvider.GetRequiredService<IOptions<LiveViewOptions>>().Value;
+
+            if (!string.IsNullOrEmpty(options.Source))
+            {
+                source = options.Source;
+            }
+
+            if (string.Equals(source, LiveViewOptions.SourceSimulator, StringComparison.OrdinalIgnoreCase))
+            {
+                return new SimulatedLiveViewSource();
+            }
+
+            return ActivatorUtilities.CreateInstance<GPhoto2LiveViewSource>(serviceProvider);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

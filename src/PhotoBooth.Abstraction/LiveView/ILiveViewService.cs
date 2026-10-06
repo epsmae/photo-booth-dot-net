@@ -12,6 +12,11 @@ namespace PhotoBooth.Abstraction.LiveView
 
         bool IsRunning { get; }
 
+        /// <summary>
+        /// See <see cref="ILiveViewSource.SupportsCaptureDuringLiveView"/>.
+        /// </summary>
+        bool SupportsCaptureDuringLiveView { get; }
+
         LiveViewStatus GetStatus();
 
         /// <summary>

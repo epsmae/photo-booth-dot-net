@@ -1,5 +1,14 @@
 # Live View (Proof of Concept)
 
+> This branch contains two camera drivers, selected with `Camera:Driver` in `appsettings.json`:
+>
+> - `Cli`: `gphoto2` command line tool, described in this document (live view is stopped for
+>   every capture, expected 2-4 s interruption).
+> - `LibGPhoto2` (default on this branch): libgphoto2 in process, captures straight out of the
+>   live view, see [LiveViewLibGPhoto2.md](LiveViewLibGPhoto2.md).
+>
+> The camera setup, the streaming to the browser and the `LiveView` settings are the same for both.
+
 This branch adds a live view (camera preview) to the capture page. While the photo booth is
 **ready** and during the **count down** the guests see themselves on the screen; the camera
 switches back to normal photo mode right before the picture is taken.
@@ -183,7 +192,8 @@ Live view -> photo downloaded: 214 ms
 ### 6. Run the photo booth
 
 Deploy the server as described in the [install guide](Install.md). The live view is enabled by
-default (`LiveView:Enabled` in `appsettings.json`) and uses gphoto2 in Release builds.
+default (`LiveView:Enabled` in `appsettings.json`). Set `"Camera": { "Driver": "Cli" }` to use the
+gphoto2 command line live view described here.
 
 ## Hardware test checklist
 
@@ -217,7 +227,7 @@ default (`LiveView:Enabled` in `appsettings.json`) and uses gphoto2 in Release b
 | Setting | Default | Description |
 | ------- | ------- | ----------- |
 | `Enabled` | `true` | Enables the live view |
-| `Source` | empty | `GPhoto2` or `Simulator`; empty: simulator in Debug builds, gphoto2 in Release builds |
+| `Source` | empty | Only with `Camera:Driver = Cli`: `GPhoto2` or `Simulator`; empty: simulator in Debug builds, gphoto2 in Release builds |
 | `Mirror` | `true` | Show the live view mirrored (selfie view) |
 | `IdleTimeoutSeconds` | `300` | Stop the live view after this time without a capture, `0` disables the timeout |
 | `StopTimeoutMilliseconds` | `5000` | Time to wait for gphoto2 after `SIGINT` before it is killed |
@@ -253,7 +263,7 @@ Debug builds use `SimulatedLiveViewSource` (animated 640x424 frames, 15 fps):
 
 ```bash
 cd src/PhotoBooth.Server
-dotnet run
+Camera__Driver=Cli dotnet run
 # http://localhost:5050
 ```
 
@@ -266,7 +276,7 @@ the real `GPhoto2LiveViewSource` code:
 
 ```bash
 cd src/PhotoBooth.Server
-LiveView__Source=GPhoto2 LiveView__GPhoto2Path=$(realpath ../../tools/fake-gphoto2/gphoto2) dotnet run
+Camera__Driver=Cli LiveView__Source=GPhoto2 LiveView__GPhoto2Path=$(realpath ../../tools/fake-gphoto2/gphoto2) dotnet run
 ```
 
 Simulate camera problems with environment variables:

@@ -62,7 +62,7 @@ Version 2.0
 
 Version 3.0
 
-- [ ] Preview / live view (proof of concept: [Live View](doc/LiveView.md))
+- [ ] Preview / live view (proof of concept: [gphoto2 command line](doc/LiveView.md), [libgphoto2](doc/LiveViewLibGPhoto2.md))
 - [ ] Display capture images
 - [ ] Reprint captured images
 

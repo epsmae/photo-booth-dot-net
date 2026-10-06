@@ -46,5 +46,38 @@ namespace PhotoBooth.Service.Test.LiveView
 
             await liveViewService.StopAsync();
         }
+
+        [Test]
+        public async Task TestLiveViewKeepsRunningDuringCaptureWithSharedCamera()
+        {
+            CameraServiceMock cameraServiceMock = new CameraServiceMock();
+            FakeLiveViewSource source = new FakeLiveViewSource {SupportsCaptureDuringLiveView = true};
+            using LiveViewService liveViewService = new LiveViewService(NullLogger<LiveViewService>.Instance, source, Options.Create(new LiveViewOptions()));
+
+            bool? liveViewRunningDuringCapture = null;
+            cameraServiceMock.OnCapture = () => liveViewRunningDuringCapture = liveViewService.IsRunning;
+
+            IConfigurationService configService = new ConfigurationServiceMock().Object;
+            FileService fileService = new FileService();
+            ImageResizer imageResizer = new ImageResizer();
+
+            WorkflowController controller = new WorkflowController(new ImageCombiner(fileService, imageResizer), loggerFactory.CreateLogger<WorkflowController>(),
+                cameraServiceMock.Object, new PrinterServiceMock().Object, imageResizer, fileService, configService, liveViewService);
+
+            await WaitFor(() => controller.State == CaptureProcessState.Ready, TimeSpan.FromSeconds(5));
+            await WaitFor(() => liveViewService.IsRunning, TimeSpan.FromSeconds(5));
+
+            await controller.Capture();
+            await WaitFor(() => controller.State == CaptureProcessState.Review, TimeSpan.FromSeconds(10));
+
+            Assert.AreEqual(true, liveViewRunningDuringCapture, "shared camera connection: no stop before the capture");
+            await WaitFor(() => !liveViewService.IsRunning, TimeSpan.FromSeconds(5));
+
+            await controller.Skip();
+            await WaitFor(() => controller.State == CaptureProcessState.Ready, TimeSpan.FromSeconds(5));
+            await WaitFor(() => liveViewService.IsRunning, TimeSpan.FromSeconds(5));
+
+            await liveViewService.StopAsync();
+        }
     }
 }

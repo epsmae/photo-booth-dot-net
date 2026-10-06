@@ -39,6 +39,7 @@ namespace PhotoBooth.Console
             services.Configure<LiveViewOptions>(options => { });
             services.AddSingleton<IImageResizer, ImageResizer>();
             services.AddSingleton<LiveViewCommandHandler>();
+            services.AddSingleton<LibGPhoto2LiveViewCommandHandler>();
             services.AddSingleton<PrintCommandHandler>();
             services.AddSingleton<CameraCommandHandler>();
 
@@ -64,6 +65,11 @@ namespace PhotoBooth.Console
             }
 
             foreach (Command command in serviceProvider.GetService<LiveViewCommandHandler>().BuildCommands())
+            {
+                rootCommand.Subcommands.Add(command);
+            }
+
+            foreach (Command command in serviceProvider.GetService<LibGPhoto2LiveViewCommandHandler>().BuildCommands())
             {
                 rootCommand.Subcommands.Add(command);
             }

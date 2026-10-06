@@ -32,6 +32,14 @@ namespace PhotoBooth.Service.LiveView
             }
         }
 
+        public bool SupportsCaptureDuringLiveView
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public LiveViewStatus GetStatus()
         {
             return new LiveViewStatus();

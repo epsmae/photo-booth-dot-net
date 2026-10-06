@@ -11,6 +11,8 @@ using System.Linq;
 using PhotoBooth.Abstraction.Configuration;
 using PhotoBooth.Abstraction.LiveView;
 using PhotoBooth.Camera.LiveView;
+using PhotoBooth.Camera.LibGPhoto2;
+using PhotoBooth.Abstraction.LibGPhoto2;
 using PhotoBooth.Service.LiveView;
 using PhotoBooth.Gpio;
 using PhotoBooth.Printer;
@@ -34,13 +36,11 @@ namespace PhotoBooth.Server
             //services.AddSingleton<LiveViewHelper>();
 
 #if DEBUG
-            services.AddSingleton<ICameraAdapter, CameraAdapterSimulator>();
             services.AddSingleton<IPrinterAdapter, PrinterAdapterSimulator>();
             services.AddSingleton<IUsbService, UsbServiceStub>();
             services.AddSingleton<IGpioInterface, GpioControllerStub>();
             services.AddSingleton<IHardwareController, HardwareController>();
 #else
-            services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
             services.AddSingleton<IPrinterAdapter, CupsPrinterAdapter>();
             
             services.AddSingleton<IUsbService, UsbService>();
@@ -48,11 +48,11 @@ namespace PhotoBooth.Server
             services.AddSingleton<IHardwareController, HardwareController>();
 #endif
             services.Configure<LiveViewOptions>(Configuration.GetSection(LiveViewOptions.SectionName));
-            services.AddSingleton<ILiveViewSource>(CreateLiveViewSource);
+            services.Configure<CameraDriverOptions>(Configuration.GetSection(CameraDriverOptions.SectionName));
+            AddCamera(services, Configuration.GetSection(CameraDriverOptions.SectionName).Get<CameraDriverOptions>() ?? new CameraDriverOptions());
             services.AddSingleton<ILiveViewService, LiveViewService>();
             services.AddSingleton<IImageCombiner, ImageCombiner>();
             services.AddSingleton<IFileService, FileService>();
-            services.AddSingleton<ICameraService, CameraService>();
             services.AddSingleton<IImageResizer, ImageResizer>();
             services.AddSingleton<CaptureHub>();
             services.AddSingleton<NotificationService>();
@@ -66,6 +66,45 @@ namespace PhotoBooth.Server
             services.AddSignalR();
             // the Blazor framework files are served pre-compressed, binary payloads (images) do not compress well
             services.AddResponseCompression();
+        }
+
+        private static void AddCamera(IServiceCollection services, CameraDriverOptions options)
+        {
+#if DEBUG
+            bool simulate = options.Simulate ?? true;
+#else
+            bool simulate = options.Simulate ?? false;
+#endif
+            if (options.Driver == CameraDriver.LibGPhoto2)
+            {
+                // one in process camera connection shared by live view and capture
+                if (simulate)
+                {
+                    services.AddSingleton<IGPhoto2Api, SimulatedGPhoto2Api>();
+                }
+                else
+                {
+                    services.AddSingleton<IGPhoto2Api, GPhoto2Api>();
+                }
+
+                services.AddSingleton<CameraSession>();
+                services.AddSingleton<ICameraService, LibGPhoto2CameraService>();
+                services.AddSingleton<ILiveViewSource, LibGPhoto2LiveViewSource>();
+                return;
+            }
+
+            // gphoto2 command line tool
+            if (simulate)
+            {
+                services.AddSingleton<ICameraAdapter, CameraAdapterSimulator>();
+            }
+            else
+            {
+                services.AddSingleton<ICameraAdapter, GPhoto2CameraAdapter>();
+            }
+
+            services.AddSingleton<ICameraService, CameraService>();
+            services.AddSingleton<ILiveViewSource>(CreateLiveViewSource);
         }
 
         private static ILiveViewSource CreateLiveViewSource(IServiceProvider serviceProvider)

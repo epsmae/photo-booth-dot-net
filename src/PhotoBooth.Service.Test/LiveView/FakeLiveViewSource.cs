@@ -11,6 +11,8 @@ namespace PhotoBooth.Service.Test.LiveView
 
         public bool IgnoreStop { get; set; }
 
+        public bool SupportsCaptureDuringLiveView { get; set; }
+
         public Exception FailWith { get; set; }
 
         public int RunCount

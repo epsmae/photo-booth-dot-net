@@ -76,6 +76,7 @@ namespace PhotoBooth.Service
                 .Permit(CaptureTriggers.Error, CaptureStates.Error);
 
             _machine.Configure(CaptureStates.Error)
+                .OnEntry(() => StopLiveViewInBackground())
                 .Permit(CaptureTriggers.ConfirmError, CaptureStates.Ready);
 
             _machine.Configure(CaptureStates.Initializing)
@@ -103,6 +104,7 @@ namespace PhotoBooth.Service
             _machine.Configure(CaptureStates.Review)
                 .SubstateOf(CaptureStates.Processing)
                 .OnEntry(() => StartReviewTimer())
+                .OnEntry(() => StopLiveViewInBackground())
                 .OnExit(()=> StopReviewTimer())
                 .Permit(CaptureTriggers.ReviewCountDownElapsed, CaptureStates.Ready)
                 .Permit(CaptureTriggers.Print, CaptureStates.Print)
@@ -323,6 +325,12 @@ namespace PhotoBooth.Service
             });
         }
 
+        private void StopLiveViewInBackground()
+        {
+            // no live view during review/print/error (with a shared camera connection it keeps running into the capture)
+            Task.Run(StopLiveView);
+        }
+
         private async Task StopLiveView()
         {
             try
@@ -387,8 +395,11 @@ namespace PhotoBooth.Service
             {
                 try
                 {
-                    // the camera can only be used by one gphoto2 process, release it from the live view
-                    await StopLiveView();
+                    if (!_liveViewService.SupportsCaptureDuringLiveView)
+                    {
+                        // the camera can only be used by one gphoto2 process, release it from the live view
+                        await StopLiveView();
+                    }
 
                     string selectedCamera = _configurationService.SelectedCamera;
 

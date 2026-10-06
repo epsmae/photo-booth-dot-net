@@ -18,6 +18,15 @@ namespace PhotoBooth.Camera.LiveView
     /// </summary>
     public class GPhoto2LiveViewSource : ILiveViewSource
     {
+        public bool SupportsCaptureDuringLiveView
+        {
+            get
+            {
+                // separate gphoto2 process, the camera has to be released for the capture
+                return false;
+            }
+        }
+
         private readonly ILogger<GPhoto2LiveViewSource> _logger;
         private readonly LiveViewOptions _options;
 

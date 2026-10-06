@@ -10,6 +10,12 @@ namespace PhotoBooth.Abstraction.LiveView
     public interface ILiveViewSource
     {
         /// <summary>
+        /// True if the camera can capture while this live view is running (shared camera connection),
+        /// false if the live view has to be stopped (camera released) before a capture.
+        /// </summary>
+        bool SupportsCaptureDuringLiveView { get; }
+
+        /// <summary>
         /// Runs the live view until it ends by itself or one of the tokens is cancelled.
         /// </summary>
         /// <param name="onFrame">Called for every received JPEG frame.</param>

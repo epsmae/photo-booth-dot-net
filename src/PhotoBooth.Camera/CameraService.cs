@@ -149,8 +149,8 @@ namespace PhotoBooth.Camera
 
         private bool ContainsError(CommandLineResult result, string errorMessage)
         {
-            return result.StandardOutput.ToLower().Contains(errorMessage.ToLower()) ||
-                   result.StandardError.ToLower().Contains(errorMessage.ToLower());
+            return result.StandardOutput.Contains(errorMessage, StringComparison.OrdinalIgnoreCase) ||
+                   result.StandardError.Contains(errorMessage, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

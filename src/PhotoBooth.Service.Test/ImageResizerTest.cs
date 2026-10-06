@@ -57,5 +57,22 @@ namespace PhotoBooth.Service.Test
                 Assert.AreEqual(expectedHeight, dstDimension.Height);
             }
         }
+
+        [Test]
+        public void TestResizeThumbnail()
+        {
+            // small target size uses the 1/8 scaled JPEG decoding
+            using (Stream stream = File.OpenRead(SourceImagePath))
+            {
+                byte[] data = _resizer.ResizeImage(stream, 256, 30);
+
+                using (Stream thumbnail = new MemoryStream(data))
+                {
+                    ImageDimensions dimensions = _resizer.LoadImageInfo(thumbnail);
+                    Assert.AreEqual(256, dimensions.Width);
+                    Assert.AreEqual(169, dimensions.Height);
+                }
+            }
+        }
     }
 }

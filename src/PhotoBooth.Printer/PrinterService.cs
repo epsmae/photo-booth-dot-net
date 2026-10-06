@@ -25,12 +25,12 @@ namespace PhotoBooth.Printer
             LogResult(result);
             EvaluateResult(result);
             
-            if (result.StandardOutput.ToLower().Contains("error"))
+            if (result.StandardOutput.Contains("error", StringComparison.OrdinalIgnoreCase))
             {
                 throw new PrinterException($"Failed to print: {result.StandardOutput}");
             }
 
-            if (result.StandardOutput.ToLower().Contains("no such file or directory"))
+            if (result.StandardOutput.Contains("no such file or directory", StringComparison.OrdinalIgnoreCase))
             {
                 throw new PrinterException($"Failed to print: {result.StandardOutput}");
             }

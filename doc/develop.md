@@ -8,10 +8,10 @@ Note build takes at least 10 times longer!
 ```
 git clean -dxf
 
-dotnet publish --configuration Release --framework net6.0 src/PhotoBooth.Server/PhotoBooth.Server.csproj
+dotnet publish --configuration Release --framework net10.0 src/PhotoBooth.Server/PhotoBooth.Server.csproj
 ```
 
-Move src/PhotoBooth.Server/bin/Release/net6.0/publish folder to raspberry.
+Move src/PhotoBooth.Server/bin/Release/net10.0/publish folder to raspberry.
 Set the execution flag:
 
 ```

@@ -16,7 +16,7 @@ namespace PhotoBooth.Service
                 int newWidth = (int) (srcBitmap.Width * scaleFactor);
                 int newHeight = (int) (srcBitmap.Height * scaleFactor);
                 using (SKBitmap resizedBitmap =
-                    srcBitmap.Resize(new SKSizeI(newWidth, newHeight), SKFilterQuality.Low))
+                    srcBitmap.Resize(new SKSizeI(newWidth, newHeight), new SKSamplingOptions(SKFilterMode.Linear)))
                 {
                     return resizedBitmap.Encode(SKEncodedImageFormat.Jpeg, expectedQuality).ToArray();
                 }

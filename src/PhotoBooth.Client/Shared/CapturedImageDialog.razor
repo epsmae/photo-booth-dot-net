@@ -7,10 +7,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">@localizer["captured_image_dialog.available_images"]</h5>
-                    <Blazorise.button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             @onclick="() => OnCloseDialog()">
                         <span aria-hidden="true">&times;</span>
-                    </Blazorise.button>
+                    </button>
                 </div>
                 <div class="modal-body" style="overflow: hidden;">
 
@@ -25,16 +25,16 @@
                 </div>
                 <div class="modal-footer">
 
-                    <Blazorise.button type="button" class="btn btn-secondary"
+                    <button type="button" class="btn btn-secondary"
                             @onclick="() => ClearImages()">
                         @localizer["captured_image_dialog.clear_images"]
-                    </Blazorise.button>
+                    </button>
 
 
-                    <Blazorise.button type="button" class="btn btn-danger" data-dismiss="modal"
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"
                             @onclick="() => OnCloseDialog()">
                         @localizer["captured_image_dialog.ok"]
-                    </Blazorise.button>
+                    </button>
                 </div>
             </div>
         </div>

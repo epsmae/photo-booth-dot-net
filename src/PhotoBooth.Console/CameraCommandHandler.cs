@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,15 +27,15 @@ namespace PhotoBooth.Console
             IList<Command> items = new List<Command>();
 
             Command captureCommand = new Command("capture");
-            captureCommand.Handler = CommandHandler.Create(async() => await Capture());
+            captureCommand.SetAction(async (parseResult, cancellationToken) => await Capture());
             items.Add(captureCommand);
 
             Command listCameras = new Command("listCameras");
-            listCameras.Handler = CommandHandler.Create(async () => await ListCameras());
+            listCameras.SetAction(async (parseResult, cancellationToken) => await ListCameras());
             items.Add(listCameras);
 
             Command cameraStatus = new Command("cameraStatus");
-            cameraStatus.Handler = CommandHandler.Create(async () => await FetchCameraStatus());
+            cameraStatus.SetAction(async (parseResult, cancellationToken) => await FetchCameraStatus());
             items.Add(cameraStatus);
 
             return items;
